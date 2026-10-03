@@ -858,6 +858,22 @@ select {
       <button class="transport-btn" onclick="seekTo(currentTime + 1)" title="فریم بعد">⏩</button>
       <button class="transport-btn" onclick="seekToEnd()" title="پایان">⏭</button>
       <div class="time-display" id="time-display">00:00.00 / 00:07.00</div>
+      <div class="header-sep" style="margin:0 8px"></div>
+      <button class="btn btn-sm" onclick="undo()" title="Undo (Ctrl+Z)">↶ Undo</button>
+      <button class="btn btn-sm" onclick="redo()" title="Redo (Ctrl+Y)">↷ Redo</button>
+      <div class="header-sep" style="margin:0 8px"></div>
+      <button class="btn btn-sm" onclick="alignElements('left')" title="تراز چپ">⫹</button>
+      <button class="btn btn-sm" onclick="alignElements('centerH')" title="تراز افقی وسط">↔</button>
+      <button class="btn btn-sm" onclick="alignElements('right')" title="تراز راست">⫸</button>
+      <button class="btn btn-sm" onclick="alignElements('top')" title="تراز بالا">⫪</button>
+      <button class="btn btn-sm" onclick="alignElements('centerV')" title="تراز عمودی وسط">↕</button>
+      <button class="btn btn-sm" onclick="alignElements('bottom')" title="تراز پایین">⫻</button>
+      <button class="btn btn-sm" onclick="alignElements('distributeH')" title="توزیع افقی">⇔</button>
+      <button class="btn btn-sm" onclick="alignElements('distributeV')" title="توزیع عمودی">⇕</button>
+      <div class="header-sep" style="margin:0 8px"></div>
+      <button class="btn btn-sm" onclick="toggleSnapToGrid()" id="snap-btn" title="چسبیدن به شبکه">🧲 Snap</button>
+      <button class="btn btn-sm" onclick="toggleGridOverlay()" id="grid-btn" title="نمایش شبکه">▦ شبکه</button>
+      <button class="btn btn-sm" onclick="toggleOnionSkin()" id="onion-btn" title="پوست پیاز">👁 پیاز</button>
       <div style="flex:1"></div>
       <div class="header-group">
         <span class="header-label">🔍 زوم:</span>
@@ -907,6 +923,7 @@ select {
       <div class="tab" onclick="switchTab('background')"><span class="ico">🎨</span>پس‌زمینه</div>
       <div class="tab" onclick="switchTab('effects')"><span class="ico">✨</span>افکت‌ها</div>
       <div class="tab" onclick="switchTab('audio')"><span class="ico">🔊</span>صدا</div>
+      <div class="tab" onclick="switchTab('scene')"><span class="ico">🎥</span>صحنه</div>
     </div>
     <div class="panel-body">
       <div class="tab-content active" id="tab-properties">
@@ -933,6 +950,9 @@ select {
       </div>
       <div class="tab-content" id="tab-audio">
         <div id="audio-content"></div>
+      </div>
+      <div class="tab-content" id="tab-scene">
+        <div id="scene-content"></div>
       </div>
     </div>
   </div>
@@ -1349,6 +1369,120 @@ let particleState = [];
 let lastBgType = null;
 let audioElement = null;
 
+// ===== v3 NEW STATE =====
+let historyStack = [];
+let redoStack = [];
+const HISTORY_LIMIT = 50;
+let isRestoringHistory = false;
+let selectedElementIds = []; // multi-select
+let snapToGrid = false;
+let snapGridSize = 20;
+let showGridOverlay = false;
+let loopRegion = null; // {start, end}
+let showOnionSkin = false;
+let logoBug = null; // {src, position, size, opacity}
+let customFonts = []; // [{name, dataUrl}]
+let cameraEffect = { enabled: false, type: 'none', intensity: 0.5, speed: 1 };
+
+const BlendModes = [
+  'normal', 'multiply', 'screen', 'overlay', 'darken', 'lighten',
+  'color-dodge', 'color-burn', 'hard-light', 'soft-light', 'difference',
+  'exclusion', 'hue', 'saturation', 'color', 'luminosity'
+];
+
+const ColorPalettes = {
+  brand_red: { name: 'قرمز برند', colors: ['#D32F2F','#FFEB3B','#FFFFFF','#212121','#B71C1C'] },
+  ocean_blue: { name: 'آبی اقیانوس', colors: ['#0277BD','#4FC3F7','#80DEEA','#FFFFFF','#01579B'] },
+  forest: { name: 'جنگل', colors: ['#2E7D32','#66BB6A','#A5D6A7','#FFFFFF','#1B5E20'] },
+  sunset: { name: 'غروب', colors: ['#FF6F00','#FF9100','#FFC400','#FFFFFF','#E65100'] },
+  purple_dream: { name: 'رویای بنفش', colors: ['#6A1B9A','#AB47BC','#CE93D8','#FFFFFF','#4A148C'] },
+  mono_dark: { name: 'مونو تیره', colors: ['#212121','#424242','#616161','#FFFFFF','#000000'] },
+  mono_light: { name: 'مونو روشن', colors: ['#FAFAFA','#F5F5F5','#E0E0E0','#212121','#BDBDBD'] },
+  neon: { name: 'نئون', colors: ['#00FFFF','#FF00FF','#FFFF00','#000000','#00FF00'] },
+  pastel: { name: 'پاستل', colors: ['#F8BBD0','#B2DFDB','#FFF9C4','#D7CCC8','#B39DDB'] },
+  gold_lux: { name: 'طلایی لاکچری', colors: ['#D4AF37','#FFD700','#FFF8DC','#1a1a1a','#8B6914'] },
+};
+
+const AdditionalShapes = ['pentagon', 'octagon', 'diamond', 'cross', 'parallelogram', 'trapezoid'];
+
+// ===== HISTORY SYSTEM (Undo/Redo) =====
+function pushHistory() {
+  if (isRestoringHistory) return;
+  // Deep clone current project state
+  const snapshot = JSON.stringify({
+    elements: project.elements,
+    background: project.background,
+    effects: project.effects,
+    canvas: project.canvas,
+    cameraEffect: cameraEffect,
+    logoBug: logoBug,
+  });
+  historyStack.push(snapshot);
+  if (historyStack.length > HISTORY_LIMIT) historyStack.shift();
+  redoStack = [];
+  updateHistoryUI();
+}
+
+function undo() {
+  if (historyStack.length < 2) {
+    toast('چیزی برای undo وجود ندارد', 'info');
+    return;
+  }
+  // Push current to redo
+  const current = historyStack.pop();
+  redoStack.push(current);
+  // Restore previous
+  const prev = historyStack[historyStack.length - 1];
+  restoreFromSnapshot(prev);
+  toast('Undo', 'info');
+  updateHistoryUI();
+}
+
+function redo() {
+  if (redoStack.length === 0) {
+    toast('چیزی برای redo وجود دارد', 'info');
+    return;
+  }
+  const next = redoStack.pop();
+  historyStack.push(next);
+  restoreFromSnapshot(next);
+  toast('Redo', 'info');
+  updateHistoryUI();
+}
+
+function restoreFromSnapshot(snapshot) {
+  isRestoringHistory = true;
+  const data = JSON.parse(snapshot);
+  project.elements = data.elements;
+  project.background = data.background;
+  project.effects = data.effects;
+  project.canvas = data.canvas;
+  cameraEffect = data.cameraEffect;
+  logoBug = data.logoBug;
+  lastBgType = null;
+  updateCanvasSize();
+  renderElementList();
+  renderTimeline();
+  renderProperties();
+  renderAnimationPanel();
+  renderBackgroundPanel();
+  renderEffectsPanel();
+  renderFrame(currentTime);
+  isRestoringHistory = false;
+}
+
+function updateHistoryUI() {
+  // Could update button states
+}
+
+// Wrap mutating functions to push history
+function withHistory(fn) {
+  return function(...args) {
+    pushHistory();
+    return fn.apply(this, args);
+  };
+}
+
 // ---------- Element Factory ----------
 function createElement(type, custom = {}) {
   const id = 'el_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
@@ -1369,6 +1503,10 @@ function createElement(type, custom = {}) {
     glow: 0, glowColor: '#6366f1',
     shadowX: 0, shadowY: 0, shadowBlur: 0, shadowColor: '#000000',
     skewX: 0, skewY: 0,
+    blendMode: 'normal',
+    textGradient: false, textGradientColor1: '#6366f1', textGradientColor2: '#ec4899', textGradientAngle: 90,
+    textStroke: false, textStrokeColor: '#000000', textStrokeWidth: 2,
+    imageFilter: { brightness: 1, contrast: 1, saturate: 1, blur: 0, hueRotate: 0, sepia: 0, grayscale: 0, invert: 0 },
     entrance: { enabled: true, type: 'fade', duration: 0.8, delay: 0, easing: 'easeOutCubic' },
     hold: { enabled: false, type: 'pulse', intensity: 0.5, speed: 1 },
     exit: { enabled: false, type: 'fade', duration: 0.8, easing: 'easeOutCubic' },
@@ -1393,6 +1531,7 @@ function createElement(type, custom = {}) {
 }
 
 function addElement(type) {
+  pushHistory();
   const el = createElement(type);
   el.y = project.canvas.height / 2 + (project.elements.length % 5 - 2) * 80;
   project.elements.push(el);
@@ -1403,10 +1542,12 @@ function addElement(type) {
 }
 
 function deleteElement(id) {
+  pushHistory();
   const idx = project.elements.findIndex(e => e.id === id);
   if (idx === -1) return;
   project.elements.splice(idx, 1);
   if (selectedElementId === id) selectedElementId = null;
+  selectedElementIds = selectedElementIds.filter(x => x !== id);
   renderElementList();
   renderTimeline();
   renderProperties();
@@ -1414,6 +1555,7 @@ function deleteElement(id) {
 }
 
 function duplicateElement(id) {
+  pushHistory();
   const el = project.elements.find(e => e.id === id);
   if (!el) return;
   const copy = JSON.parse(JSON.stringify(el));
@@ -1439,6 +1581,7 @@ function getSelectedElement() {
 }
 
 function moveElement(id, direction) {
+  pushHistory();
   const idx = project.elements.findIndex(e => e.id === id);
   if (idx === -1) return;
   const newIdx = idx + direction;
@@ -1447,6 +1590,158 @@ function moveElement(id, direction) {
   project.elements.splice(newIdx, 0, el);
   renderElementList();
   renderTimeline();
+}
+
+// ===== v3: ALIGNMENT TOOLS =====
+function alignElements(type) {
+  pushHistory();
+  const targets = selectedElementIds.length > 1
+    ? selectedElementIds.map(id => project.elements.find(e => e.id === id)).filter(Boolean)
+    : project.elements.filter(e => e.visible);
+  if (targets.length < 2) { toast('حداقل دو عنصر لازم است', 'info'); return; }
+  const W = project.canvas.width, H = project.canvas.height;
+  switch (type) {
+    case 'left': { const min = Math.min(...targets.map(e => e.x - e.width/2)); targets.forEach(e => e.x = min + e.width/2); break; }
+    case 'centerH': targets.forEach(e => e.x = W / 2); break;
+    case 'right': { const max = Math.max(...targets.map(e => e.x + e.width/2)); targets.forEach(e => e.x = max - e.width/2); break; }
+    case 'top': { const min = Math.min(...targets.map(e => e.y - e.height/2)); targets.forEach(e => e.y = min + e.height/2); break; }
+    case 'centerV': targets.forEach(e => e.y = H / 2); break;
+    case 'bottom': { const max = Math.max(...targets.map(e => e.y + e.height/2)); targets.forEach(e => e.y = max - e.height/2); break; }
+    case 'distributeH': {
+      const sorted = [...targets].sort((a, b) => a.x - b.x);
+      const min = sorted[0].x, max = sorted[sorted.length - 1].x;
+      const step = (max - min) / (sorted.length - 1);
+      sorted.forEach((e, i) => e.x = min + step * i);
+      break;
+    }
+    case 'distributeV': {
+      const sorted = [...targets].sort((a, b) => a.y - b.y);
+      const min = sorted[0].y, max = sorted[sorted.length - 1].y;
+      const step = (max - min) / (sorted.length - 1);
+      sorted.forEach((e, i) => e.y = min + step * i);
+      break;
+    }
+  }
+  renderProperties();
+  renderFrame(currentTime);
+  toast('ترازبندی اعمال شد', 'success');
+}
+
+// ===== v3: MULTI-SELECT =====
+function toggleMultiSelect(id) {
+  const idx = selectedElementIds.indexOf(id);
+  if (idx === -1) selectedElementIds.push(id);
+  else selectedElementIds.splice(idx, 1);
+  if (selectedElementIds.length === 1) {
+    selectedElementId = selectedElementIds[0];
+  } else if (selectedElementIds.length === 0) {
+    selectedElementId = null;
+  }
+  renderElementList();
+  renderProperties();
+}
+
+// ===== v3: GROUP/UNGROUP =====
+let groupCounter = 0;
+function groupElements() {
+  pushHistory();
+  if (selectedElementIds.length < 2) { toast('حداقل دو عنصر انتخاب کنید', 'info'); return; }
+  groupCounter++;
+  const groupId = 'group_' + groupCounter;
+  selectedElementIds.forEach(id => {
+    const el = project.elements.find(e => e.id === id);
+    if (el) el.groupId = groupId;
+  });
+  toast('عناصر گروه شدند', 'success');
+}
+
+function ungroupElements() {
+  pushHistory();
+  selectedElementIds.forEach(id => {
+    const el = project.elements.find(e => e.id === id);
+    if (el) delete el.groupId;
+  });
+  toast('گروه برداشته شد', 'success');
+}
+
+// ===== v3: CAMERA EFFECTS =====
+function applyCamera(t, c) {
+  if (!cameraEffect.enabled || cameraEffect.type === 'none') return;
+  const W = canvas.width, H = canvas.height;
+  const intensity = cameraEffect.intensity;
+  const speed = cameraEffect.speed;
+  const tt = t * speed;
+  switch (cameraEffect.type) {
+    case 'panRight': c.translate(-Math.sin(tt * 0.5) * 100 * intensity, 0); break;
+    case 'panLeft': c.translate(Math.sin(tt * 0.5) * 100 * intensity, 0); break;
+    case 'panDown': c.translate(0, -Math.sin(tt * 0.5) * 100 * intensity); break;
+    case 'panUp': c.translate(0, Math.sin(tt * 0.5) * 100 * intensity); break;
+    case 'zoomIn': { const z = 1 + tt * 0.05 * intensity; c.translate(W/2, H/2); c.scale(z, z); c.translate(-W/2, -H/2); break; }
+    case 'zoomOut': { const z = 1 - tt * 0.03 * intensity; c.translate(W/2, H/2); c.scale(Math.max(0.5, z), Math.max(0.5, z)); c.translate(-W/2, -H/2); break; }
+    case 'zoomPulse': { const z = 1 + Math.sin(tt * 2) * 0.05 * intensity; c.translate(W/2, H/2); c.scale(z, z); c.translate(-W/2, -H/2); break; }
+    case 'shake': c.translate((Math.random() - 0.5) * 20 * intensity, (Math.random() - 0.5) * 20 * intensity); break;
+    case 'rotate': { c.translate(W/2, H/2); c.rotate(Math.sin(tt * 0.5) * 0.02 * intensity); c.translate(-W/2, -H/2); break; }
+    case 'orbit': { c.translate(W/2, H/2); c.rotate(tt * 0.1 * intensity); c.translate(-W/2, -H/2); break; }
+  }
+}
+
+// ===== v3: LOGO BUG =====
+async function drawLogoBug(c) {
+  if (!logoBug || !logoBug.src) return;
+  const W = canvas.width, H = canvas.height;
+  const size = logoBug.size || 100;
+  let x, y;
+  switch (logoBug.position) {
+    case 'top-left': x = 30; y = 30; break;
+    case 'top-right': x = W - size - 30; y = 30; break;
+    case 'bottom-left': x = 30; y = H - size - 30; break;
+    case 'bottom-right': x = W - size - 30; y = H - size - 30; break;
+    default: x = W - size - 30; y = H - size - 30;
+  }
+  const img = await loadImage(logoBug.src);
+  if (!img) return;
+  c.save();
+  c.globalAlpha = logoBug.opacity || 0.7;
+  c.drawImage(img, x, y, size, size);
+  c.restore();
+}
+
+// ===== v3: GRID OVERLAY =====
+function drawGridOverlay(c) {
+  if (!showGridOverlay) return;
+  const W = canvas.width, H = canvas.height;
+  c.save();
+  c.strokeStyle = 'rgba(99,102,241,0.15)';
+  c.lineWidth = 1;
+  const size = snapGridSize;
+  for (let x = 0; x <= W; x += size) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke(); }
+  for (let y = 0; y <= H; y += size) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+  // Center lines
+  c.strokeStyle = 'rgba(99,102,241,0.3)';
+  c.lineWidth = 2;
+  c.beginPath(); c.moveTo(W/2, 0); c.lineTo(W/2, H); c.stroke();
+  c.beginPath(); c.moveTo(0, H/2); c.lineTo(W, H/2); c.stroke();
+  c.restore();
+}
+
+// ===== v3: ONION SKIN =====
+async function drawOnionSkin(c, t) {
+  if (!showOnionSkin) return;
+  const prevT = Math.max(0, t - 1/30);
+  if (Math.abs(prevT - t) < 0.001) return;
+  c.save();
+  c.globalAlpha = 0.25;
+  for (const el of project.elements) {
+    if (!el.visible) continue;
+    await drawElementTo(c, el, prevT);
+  }
+  c.restore();
+}
+
+// ===== v3: SNAP TO GRID =====
+function snapValue(v) {
+  if (!snapToGrid) return v;
+  return Math.round(v / snapGridSize) * snapGridSize;
 }
 
 // ---------- Render Element List ----------
@@ -1553,8 +1848,14 @@ function renderProperties() {
         <option value="star" ${el.shape==='star'?'selected':''}>ستاره</option>
         <option value="line" ${el.shape==='line'?'selected':''}>خط</option>
         <option value="hexagon" ${el.shape==='hexagon'?'selected':''}>شش‌ضلعی</option>
+        <option value="pentagon" ${el.shape==='pentagon'?'selected':''}>پنج‌ضلعی</option>
+        <option value="octagon" ${el.shape==='octagon'?'selected':''}>هشت‌ضلعی</option>
+        <option value="diamond" ${el.shape==='diamond'?'selected':''}>لوزی</option>
+        <option value="cross" ${el.shape==='cross'?'selected':''}>صلیب</option>
         <option value="heart" ${el.shape==='heart'?'selected':''}>قلب</option>
         <option value="arrow" ${el.shape==='arrow'?'selected':''}>فلش</option>
+        <option value="parallelogram" ${el.shape==='parallelogram'?'selected':''}>متوازی‌الاضلاع</option>
+        <option value="trapezoid" ${el.shape==='trapezoid'?'selected':''}>ذوزنقه</option>
       </select></div></div>`;
     }
   }
@@ -1566,7 +1867,56 @@ function renderProperties() {
   html += colorRow('رنگ سایه', 'shadowColor', el.shadowColor);
   html += `</div>`;
 
+  // v3: Blend Mode
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🔀</span> حالت ترکیب (Blend Mode)</span></div>
+    <div class="form-row"><label>حالت:</label><div class="input-wrap"><select onchange="updateProp('blendMode', this.value)">
+      ${BlendModes.map(m => `<option value="${m}" ${el.blendMode===m?'selected':''}>${m}</option>`).join('')}
+    </select></div></div>
+  </div>`;
+
+  // v3: Text Gradient & Stroke (only for text elements)
+  if (['text','brand','tagline','phone','website','email','address','icon','social'].includes(el.type)) {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">🌈</span> گرادیان متن</span><div class="toggle ${el.textGradient ? 'on' : ''}" onclick="updateProp('textGradient', !getSelectedElement().textGradient); renderProperties()"></div></div>
+      ${el.textGradient ? `
+        ${colorRow('رنگ ۱', 'textGradientColor1', el.textGradientColor1)}
+        ${colorRow('رنگ ۲', 'textGradientColor2', el.textGradientColor2)}
+        <div class="form-row"><label>زاویه:</label><div class="input-wrap"><input type="range" min="0" max="360" value="${el.textGradientAngle}" oninput="updateProp('textGradientAngle', +this.value); document.getElementById('tga-v').textContent = this.value+'°'"></div><span id="tga-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${el.textGradientAngle}°</span></div>
+      ` : ''}
+    </div>`;
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">✏️</span> حاشیه متن (Stroke)</span><div class="toggle ${el.textStroke ? 'on' : ''}" onclick="updateProp('textStroke', !getSelectedElement().textStroke); renderProperties()"></div></div>
+      ${el.textStroke ? `
+        ${colorRow('رنگ حاشیه', 'textStrokeColor', el.textStrokeColor)}
+        <div class="form-row"><label>ضخامت:</label><div class="input-wrap"><input type="range" min="0.5" max="20" step="0.5" value="${el.textStrokeWidth}" oninput="updateProp('textStrokeWidth', +this.value); document.getElementById('tsw-v').textContent = this.value+'px'"></div><span id="tsw-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${el.textStrokeWidth}px</span></div>
+      ` : ''}
+    </div>`;
+  }
+
+  // v3: Image Filter (for logo/image elements)
+  if ((el.type === 'logo' || el.src) && el.src) {
+    const f = el.imageFilter || {};
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">🎨</span> فیلتر تصویر</span></div>
+      <div class="form-row"><label>روشنایی:</label><div class="input-wrap"><input type="range" min="0.3" max="2" step="0.05" value="${f.brightness||1}" oninput="updateImageFilter('brightness', +this.value); document.getElementById('ifb-v').textContent = this.value+'x'"></div><span id="ifb-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${f.brightness||1}x</span></div>
+      <div class="form-row"><label>کنتراست:</label><div class="input-wrap"><input type="range" min="0.3" max="2" step="0.05" value="${f.contrast||1}" oninput="updateImageFilter('contrast', +this.value); document.getElementById('ifc-v').textContent = this.value+'x'"></div><span id="ifc-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${f.contrast||1}x</span></div>
+      <div class="form-row"><label>اشباع:</label><div class="input-wrap"><input type="range" min="0" max="2" step="0.05" value="${f.saturate||1}" oninput="updateImageFilter('saturate', +this.value); document.getElementById('ifs-v').textContent = this.value+'x'"></div><span id="ifs-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${f.saturate||1}x</span></div>
+      <div class="form-row"><label>محوی:</label><div class="input-wrap"><input type="range" min="0" max="10" step="0.1" value="${f.blur||0}" oninput="updateImageFilter('blur', +this.value); document.getElementById('ifbl-v').textContent = this.value+'px'"></div><span id="ifbl-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${f.blur||0}px</span></div>
+      <div class="form-row"><label>چرخش رنگ:</label><div class="input-wrap"><input type="range" min="0" max="360" value="${f.hueRotate||0}" oninput="updateImageFilter('hueRotate', +this.value); document.getElementById('ifh-v').textContent = this.value+'°'"></div><span id="ifh-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${f.hueRotate||0}°</span></div>
+      <div class="form-row"><label>سپیا:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${f.sepia||0}" oninput="updateImageFilter('sepia', +this.value); document.getElementById('ifse-v').textContent = Math.round(this.value*100)+'%'"></div><span id="ifse-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round((f.sepia||0)*100)}%</span></div>
+      <div class="form-row"><label>خاکستری:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${f.grayscale||0}" oninput="updateImageFilter('grayscale', +this.value); document.getElementById('ifg-v').textContent = Math.round(this.value*100)+'%'"></div><span id="ifg-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round((f.grayscale||0)*100)}%</span></div>
+    </div>`;
+  }
+
   content.innerHTML = html;
+}
+
+function updateImageFilter(prop, value) {
+  const el = getSelectedElement();
+  if (!el) return;
+  if (!el.imageFilter) el.imageFilter = { brightness:1, contrast:1, saturate:1, blur:0, hueRotate:0, sepia:0, grayscale:0, invert:0 };
+  el.imageFilter[prop] = value;
 }
 
 function colorRow(label, prop, value) {
@@ -2378,6 +2728,8 @@ async function drawElement(el, t) {
   if (!state.visible || state.opacity <= 0.001) return;
   ctx.save();
   ctx.globalAlpha = Math.max(0, Math.min(1, state.opacity));
+  // v3: Blend mode
+  if (el.blendMode && el.blendMode !== 'normal') ctx.globalCompositeOperation = el.blendMode;
   const cx = el.x + state.offsetX, cy = el.y + state.offsetY;
   ctx.translate(cx, cy);
   ctx.rotate(state.rotation * Math.PI / 180);
@@ -2385,6 +2737,18 @@ async function drawElement(el, t) {
   ctx.scale(state.scale * state.scaleX, state.scale * state.scaleY);
 
   let filterStr = '';
+  // v3: Image filter
+  if ((el.type === 'logo' || el.src) && el.src && el.imageFilter) {
+    const f = el.imageFilter;
+    if (f.brightness && f.brightness !== 1) filterStr += `brightness(${f.brightness}) `;
+    if (f.contrast && f.contrast !== 1) filterStr += `contrast(${f.contrast}) `;
+    if (f.saturate && f.saturate !== 1) filterStr += `saturate(${f.saturate}) `;
+    if (f.blur && f.blur > 0) filterStr += `blur(${f.blur}px) `;
+    if (f.hueRotate && f.hueRotate > 0) filterStr += `hue-rotate(${f.hueRotate}deg) `;
+    if (f.sepia && f.sepia > 0) filterStr += `sepia(${f.sepia}) `;
+    if (f.grayscale && f.grayscale > 0) filterStr += `grayscale(${f.grayscale}) `;
+    if (f.invert && f.invert > 0) filterStr += `invert(${f.invert}) `;
+  }
   if (state.blur > 0) filterStr += `blur(${state.blur}px) `;
   const glowAmt = el.glow * state.glowMult;
   if (glowAmt > 0) {
@@ -2432,10 +2796,26 @@ function drawShape(el, halfW, halfH) {
     case 'triangle': ctx.beginPath(); ctx.moveTo(0, -halfH); ctx.lineTo(halfW, halfH); ctx.lineTo(-halfW, halfH); ctx.closePath(); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
     case 'star': drawStar(ctx, 0, 0, 5, halfW, halfW * 0.4); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
     case 'hexagon': drawPolygon(ctx, 0, 0, 6, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'pentagon': drawPolygon(ctx, 0, 0, 5, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'octagon': drawPolygon(ctx, 0, 0, 8, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'diamond': ctx.beginPath(); ctx.moveTo(0, -halfH); ctx.lineTo(halfW, 0); ctx.lineTo(0, halfH); ctx.lineTo(-halfW, 0); ctx.closePath(); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'cross': drawCross(ctx, halfW, halfH); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
     case 'heart': drawHeart(ctx, 0, 0, halfW, halfH); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
     case 'arrow': drawArrow(ctx, -halfW, 0, halfW * 2, el.height); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'parallelogram': ctx.beginPath(); ctx.moveTo(-halfW * 0.6, -halfH); ctx.lineTo(halfW, -halfH); ctx.lineTo(halfW * 0.6, halfH); ctx.lineTo(-halfW, halfH); ctx.closePath(); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'trapezoid': ctx.beginPath(); ctx.moveTo(-halfW * 0.6, -halfH); ctx.lineTo(halfW * 0.6, -halfH); ctx.lineTo(halfW, halfH); ctx.lineTo(-halfW, halfH); ctx.closePath(); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
     case 'line': ctx.strokeStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor; ctx.lineWidth = Math.max(1, el.height); ctx.beginPath(); ctx.moveTo(-halfW, 0); ctx.lineTo(halfW, 0); ctx.stroke(); break;
   }
+}
+
+function drawCross(c, halfW, halfH) {
+  const tW = halfW * 0.4, tH = halfH * 0.4;
+  c.beginPath();
+  c.moveTo(-tW, -halfH); c.lineTo(tW, -halfH); c.lineTo(tW, -tH);
+  c.lineTo(halfW, -tH); c.lineTo(halfW, tH); c.lineTo(tW, tH);
+  c.lineTo(tW, halfH); c.lineTo(-tW, halfH); c.lineTo(-tW, tH);
+  c.lineTo(-halfW, tH); c.lineTo(-halfW, -tH); c.lineTo(-tW, -tH);
+  c.closePath();
 }
 
 function roundRect(c, x, y, w, h, r) {
@@ -2492,7 +2872,18 @@ function drawText(el, halfW, halfH, state) {
   const fontWeight = el.fontWeight || 400;
   ctx.font = `${fontWeight} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = el.color;
+  // v3: Text gradient
+  if (el.textGradient) {
+    const rad = (el.textGradientAngle - 90) * Math.PI / 180;
+    const x = Math.cos(rad), y = Math.sin(rad);
+    const len = Math.abs(x * el.width) + Math.abs(y * el.fontSize * 2);
+    const grad = ctx.createLinearGradient(-len/2, 0, len/2, 0);
+    grad.addColorStop(0, el.textGradientColor1);
+    grad.addColorStop(1, el.textGradientColor2);
+    ctx.fillStyle = grad;
+  } else {
+    ctx.fillStyle = el.color;
+  }
   if (el.letterSpacing && ctx.letterSpacing !== undefined) ctx.letterSpacing = el.letterSpacing + 'px';
   let text = el.text || '';
   if (state.textProgress < 1) {
@@ -2509,6 +2900,13 @@ function drawText(el, halfW, halfH, state) {
   const baseX = align === 'center' ? 0 : align === 'left' ? -halfW : halfW;
   lines.forEach((line, i) => {
     const y = -totalHeight / 2 + lineHeight / 2 + i * lineHeight;
+    // v3: Text stroke
+    if (el.textStroke && el.textStrokeWidth > 0) {
+      ctx.strokeStyle = el.textStrokeColor;
+      ctx.lineWidth = el.textStrokeWidth;
+      ctx.lineJoin = 'round';
+      ctx.strokeText(line, baseX, y);
+    }
     ctx.fillText(line, baseX, y);
   });
   if (el.letterSpacing && ctx.letterSpacing !== undefined) ctx.letterSpacing = '0px';
@@ -2626,12 +3024,22 @@ function applyPostFX(c, t) {
 // ---------- Main render ----------
 async function renderFrame(t) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  // v3: Camera effects
+  applyCamera(t, ctx);
   renderBackground(t);
+  // v3: Onion skin (shows previous frame ghosted)
+  await drawOnionSkin(ctx, t);
   for (const el of project.elements) {
     if (!el.visible) continue;
     await drawElement(el, t);
   }
+  // v3: Logo bug (persistent watermark)
+  await drawLogoBug(ctx);
+  ctx.restore();
   applyPostFX(ctx, t);
+  // v3: Grid overlay (for design alignment, not rendered in export)
+  drawGridOverlay(ctx);
 }
 
 // ---------- Playback ----------
@@ -2697,7 +3105,7 @@ function toggleLoop() {
 // ---------- Tab switching ----------
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach((t, i) => {
-    const tabs = ['properties', 'animation', 'background', 'effects', 'audio'];
+    const tabs = ['properties', 'animation', 'background', 'effects', 'audio', 'scene'];
     t.classList.toggle('active', tabs[i] === name);
   });
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -2705,6 +3113,106 @@ function switchTab(name) {
   if (name === 'background') renderBackgroundPanel();
   if (name === 'effects') renderEffectsPanel();
   if (name === 'audio') renderAudioPanel();
+  if (name === 'scene') renderScenePanel();
+}
+
+// v3: SCENE PANEL (Camera + Logo Bug + Palettes)
+function renderScenePanel() {
+  const cam = cameraEffect;
+  let html = `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🎥</span> افکت دوربین</span><div class="toggle ${cam.enabled ? 'on' : ''}" onclick="cameraEffect.enabled = !cameraEffect.enabled; renderScenePanel()"></div></div>
+    <div class="form-row"><label>نوع:</label><div class="input-wrap"><select onchange="cameraEffect.type = this.value; renderScenePanel()">
+      <option value="none" ${cam.type==='none'?'selected':''}>بدون</option>
+      <option value="panRight" ${cam.type==='panRight'?'selected':''}>پن به راست</option>
+      <option value="panLeft" ${cam.type==='panLeft'?'selected':''}>پن به چپ</option>
+      <option value="panUp" ${cam.type==='panUp'?'selected':''}>پن به بالا</option>
+      <option value="panDown" ${cam.type==='panDown'?'selected':''}>پن به پایین</option>
+      <option value="zoomIn" ${cam.type==='zoomIn'?'selected':''}>زوم داخل</option>
+      <option value="zoomOut" ${cam.type==='zoomOut'?'selected':''}>زوم خارج</option>
+      <option value="zoomPulse" ${cam.type==='zoomPulse'?'selected':''}>نبض زوم</option>
+      <option value="shake" ${cam.type==='shake'?'selected':''}>لرزش</option>
+      <option value="rotate" ${cam.type==='rotate'?'selected':''}>چرخش ملایم</option>
+      <option value="orbit" ${cam.type==='orbit'?'selected':''}>مدار</option>
+    </select></div></div>
+    <div class="form-row"><label>شدت:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${cam.intensity}" oninput="cameraEffect.intensity = +this.value; document.getElementById('cam-i').textContent = Math.round(this.value*100)+'%'"></div><span id="cam-i" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(cam.intensity*100)}%</span></div>
+    <div class="form-row"><label>سرعت:</label><div class="input-wrap"><input type="range" min="0.1" max="3" step="0.1" value="${cam.speed}" oninput="cameraEffect.speed = +this.value; document.getElementById('cam-s').textContent = this.value+'x'"></div><span id="cam-s" style="font-size:10px;min-width:34px;color:var(--text-2)">${cam.speed}x</span></div>
+  </div>`;
+
+  // Logo Bug
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🏷️</span> لوگو水印 (Logo Bug)</span><div class="toggle ${logoBug ? 'on' : ''}" onclick="toggleLogoBug()"></div></div>
+    ${logoBug ? `
+      <div class="upload-area has-file" onclick="document.getElementById('bug-upload').click()">✓ لوگو水印 بارگذاری شد</div>
+      <input type="file" id="bug-upload" accept="image/*" style="display:none" onchange="uploadLogoBug(event)">
+      <div class="form-row"><label>موقعیت:</label><div class="input-wrap"><select onchange="logoBug.position = this.value">
+        <option value="top-left" ${logoBug.position==='top-left'?'selected':''}>بالا چپ</option>
+        <option value="top-right" ${logoBug.position==='top-right'?'selected':''}>بالا راست</option>
+        <option value="bottom-left" ${logoBug.position==='bottom-left'?'selected':''}>پایین چپ</option>
+        <option value="bottom-right" ${logoBug.position==='bottom-right'?'selected':''}>پایین راست</option>
+      </select></div></div>
+      <div class="form-row"><label>اندازه:</label><div class="input-wrap"><input type="range" min="40" max="300" value="${logoBug.size}" oninput="logoBug.size = +this.value; document.getElementById('bug-s').textContent = this.value+'px'"></div><span id="bug-s" style="font-size:10px;min-width:34px;color:var(--text-2)">${logoBug.size}px</span></div>
+      <div class="form-row"><label>شفافیت:</label><div class="input-wrap"><input type="range" min="0.1" max="1" step="0.05" value="${logoBug.opacity}" oninput="logoBug.opacity = +this.value; document.getElementById('bug-o').textContent = Math.round(this.value*100)+'%'"></div><span id="bug-o" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(logoBug.opacity*100)}%</span></div>
+    ` : `
+      <div class="upload-area" onclick="document.getElementById('bug-upload').click()">📁 انتخاب تصویر لوگو水印</div>
+      <input type="file" id="bug-upload" accept="image/*" style="display:none" onchange="uploadLogoBug(event)">
+      <div class="help-text">💡 لوگو水印 یک لوگوی کوچک دائمی در گوشه تصویر است که در سراسر انیمیشن ثابت می‌ماند.</div>
+    `}
+  </div>`;
+
+  // Color Palettes
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🎨</span> پالت‌های رنگی</span></div>
+    <div class="help-text">روی پالت کلیک کنید تا رنگ‌های آن به عنوان رنگ‌های پیش‌فرض استفاده شوند.</div>
+    ${Object.entries(ColorPalettes).map(([key, p]) => `
+      <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:6px;cursor:pointer" onclick="applyPalette('${key}')">
+        <div style="font-size:11px;font-weight:600;margin-bottom:4px">${p.name}</div>
+        <div style="display:flex;gap:2px;height:20px;border-radius:4px;overflow:hidden">
+          ${p.colors.map(c => `<div style="flex:1;background:${c}"></div>`).join('')}
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+
+  document.getElementById('scene-content').innerHTML = html;
+}
+
+function toggleLogoBug() {
+  if (logoBug) logoBug = null;
+  else logoBug = { src: null, position: 'bottom-right', size: 100, opacity: 0.7 };
+  renderScenePanel();
+}
+
+function uploadLogoBug(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    if (!logoBug) logoBug = { position: 'bottom-right', size: 100, opacity: 0.7 };
+    logoBug.src = e.target.result;
+    renderScenePanel();
+    toast('لوگو水印 بارگذاری شد', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function applyPalette(key) {
+  const p = ColorPalettes[key];
+  if (!p) return;
+  pushHistory();
+  // Apply palette colors to elements
+  project.elements.forEach((el, i) => {
+    if (el.type === 'brand' || el.type === 'logo') el.color = p.colors[0];
+    else if (el.type === 'tagline' || el.type === 'phone' || el.type === 'website') el.color = p.colors[1];
+    else if (el.type === 'shape') el.backgroundColor = p.colors[i % p.colors.length];
+    if (el.glowColor) el.glowColor = p.colors[0];
+  });
+  // Update background color1 to palette's last color (usually dark)
+  project.background.color1 = p.colors[3] || p.colors[0];
+  lastBgType = null;
+  renderProperties();
+  renderBackgroundPanel();
+  renderFrame(currentTime);
+  toast(`پالت "${p.name}" اعمال شد`, 'success');
 }
 
 // ---------- Canvas interaction ----------
@@ -2732,8 +3240,8 @@ canvas.addEventListener('mousemove', (e) => {
   if (!el) return;
   const rect = canvas.getBoundingClientRect();
   const scale = canvas.width / rect.width;
-  el.x = (e.clientX - rect.left) * scale - dragOffset.x;
-  el.y = (e.clientY - rect.top) * scale - dragOffset.y;
+  el.x = snapValue((e.clientX - rect.left) * scale - dragOffset.x);
+  el.y = snapValue((e.clientY - rect.top) * scale - dragOffset.y);
   renderProperties();
   renderFrame(currentTime);
 });
@@ -2788,6 +3296,9 @@ async function _renderFrameInternal(t, c) {
   const W = canvas.width, H = canvas.height;
   const realCtx = window.ctx;
   window.ctx = c;
+  c.save();
+  // v3: Camera effects
+  applyCamera(t, c);
   // Use the same rendering functions but with target context
   // Background
   const bg = project.background;
@@ -2843,6 +3354,11 @@ async function _renderFrameInternal(t, c) {
     await drawElementTo(c, el, t);
   }
 
+  // v3: Logo bug
+  await drawLogoBug(c);
+
+  c.restore();
+
   // Post-FX
   applyPostFX(c, t);
 
@@ -2854,12 +3370,25 @@ async function drawElementTo(c, el, t) {
   if (!state.visible || state.opacity <= 0.001) return;
   c.save();
   c.globalAlpha = Math.max(0, Math.min(1, state.opacity));
+  // v3: Blend mode
+  if (el.blendMode && el.blendMode !== 'normal') c.globalCompositeOperation = el.blendMode;
   const cx = el.x + state.offsetX, cy = el.y + state.offsetY;
   c.translate(cx, cy);
   c.rotate(state.rotation * Math.PI / 180);
   c.transform(1, state.skewY * Math.PI / 180, state.skewX * Math.PI / 180, 1, 0, 0);
   c.scale(state.scale * state.scaleX, state.scale * state.scaleY);
   let filterStr = '';
+  // v3: Image filter
+  if ((el.type === 'logo' || el.src) && el.src && el.imageFilter) {
+    const f = el.imageFilter;
+    if (f.brightness && f.brightness !== 1) filterStr += `brightness(${f.brightness}) `;
+    if (f.contrast && f.contrast !== 1) filterStr += `contrast(${f.contrast}) `;
+    if (f.saturate && f.saturate !== 1) filterStr += `saturate(${f.saturate}) `;
+    if (f.blur && f.blur > 0) filterStr += `blur(${f.blur}px) `;
+    if (f.hueRotate && f.hueRotate > 0) filterStr += `hue-rotate(${f.hueRotate}deg) `;
+    if (f.sepia && f.sepia > 0) filterStr += `sepia(${f.sepia}) `;
+    if (f.grayscale && f.grayscale > 0) filterStr += `grayscale(${f.grayscale}) `;
+  }
   if (state.blur > 0) filterStr += `blur(${state.blur}px) `;
   const glowAmt = el.glow * state.glowMult;
   if (glowAmt > 0) {
@@ -2893,14 +3422,32 @@ async function drawElementTo(c, el, t) {
       case 'triangle': c.beginPath(); c.moveTo(0, -halfH); c.lineTo(halfW, halfH); c.lineTo(-halfW, halfH); c.closePath(); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
       case 'star': drawStar(c, 0, 0, 5, halfW, halfW * 0.4); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
       case 'hexagon': drawPolygon(c, 0, 0, 6, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'pentagon': drawPolygon(c, 0, 0, 5, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'octagon': drawPolygon(c, 0, 0, 8, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'diamond': c.beginPath(); c.moveTo(0, -halfH); c.lineTo(halfW, 0); c.lineTo(0, halfH); c.lineTo(-halfW, 0); c.closePath(); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'cross': drawCross(c, halfW, halfH); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
       case 'heart': drawHeart(c, 0, 0, halfW, halfH); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
       case 'arrow': drawArrow(c, -halfW, 0, halfW * 2, el.height); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'parallelogram': c.beginPath(); c.moveTo(-halfW * 0.6, -halfH); c.lineTo(halfW, -halfH); c.lineTo(halfW * 0.6, halfH); c.lineTo(-halfW, halfH); c.closePath(); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'trapezoid': c.beginPath(); c.moveTo(-halfW * 0.6, -halfH); c.lineTo(halfW * 0.6, -halfH); c.lineTo(halfW, halfH); c.lineTo(-halfW, halfH); c.closePath(); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
       case 'line': c.strokeStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor; c.lineWidth = Math.max(1, el.height); c.beginPath(); c.moveTo(-halfW, 0); c.lineTo(halfW, 0); c.stroke(); break;
     }
   } else {
     const fontWeight = el.fontWeight || 400;
     c.font = `${fontWeight} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
-    c.textBaseline = 'middle'; c.fillStyle = el.color;
+    c.textBaseline = 'middle';
+    // v3: Text gradient
+    if (el.textGradient) {
+      const rad = (el.textGradientAngle - 90) * Math.PI / 180;
+      const x = Math.cos(rad), y = Math.sin(rad);
+      const len = Math.abs(x * el.width) + Math.abs(y * el.fontSize * 2);
+      const grad = c.createLinearGradient(-len/2, 0, len/2, 0);
+      grad.addColorStop(0, el.textGradientColor1);
+      grad.addColorStop(1, el.textGradientColor2);
+      c.fillStyle = grad;
+    } else {
+      c.fillStyle = el.color;
+    }
     if (el.letterSpacing && c.letterSpacing !== undefined) c.letterSpacing = el.letterSpacing + 'px';
     let text = el.text || '';
     if (state.textProgress < 1) { const charCount = Math.floor(text.length * state.textProgress); text = text.substring(0, charCount); }
@@ -2912,7 +3459,16 @@ async function drawElementTo(c, el, t) {
     else if (align === 'left') c.textAlign = 'left';
     else c.textAlign = 'right';
     const baseX = align === 'center' ? 0 : align === 'left' ? -halfW : halfW;
-    lines.forEach((line, i) => { const y = -totalHeight / 2 + lineHeight / 2 + i * lineHeight; c.fillText(line, baseX, y); });
+    lines.forEach((line, i) => {
+      const y = -totalHeight / 2 + lineHeight / 2 + i * lineHeight;
+      if (el.textStroke && el.textStrokeWidth > 0) {
+        c.strokeStyle = el.textStrokeColor;
+        c.lineWidth = el.textStrokeWidth;
+        c.lineJoin = 'round';
+        c.strokeText(line, baseX, y);
+      }
+      c.fillText(line, baseX, y);
+    });
     if (el.letterSpacing && c.letterSpacing !== undefined) c.letterSpacing = '0px';
   }
   c.restore();
@@ -3039,7 +3595,9 @@ async function exportGIF() {
 
 function exportJSON() {
   closeModal('export-modal');
-  const data = JSON.stringify(project, null, 2);
+  // Include cameraEffect and logoBug in the export
+  const exportData = { ...project, cameraEffect, logoBug };
+  const data = JSON.stringify(exportData, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -3070,6 +3628,9 @@ function loadProject(event) {
     try {
       const data = JSON.parse(e.target.result);
       Object.assign(project, data);
+      // v3: load cameraEffect and logoBug
+      if (data.cameraEffect) cameraEffect = data.cameraEffect;
+      if (data.logoBug) logoBug = data.logoBug;
       document.getElementById('project-name').value = project.name;
       document.getElementById('project-fps').value = project.canvas.fps;
       document.getElementById('project-duration').value = project.canvas.duration;
@@ -3077,9 +3638,11 @@ function loadProject(event) {
       const sel = document.getElementById('canvas-preset');
       const exists = Array.from(sel.options).some(o => o.value === sizeStr);
       sel.value = exists ? sizeStr : 'custom';
+      lastBgType = null;
       updateCanvasSize();
       selectedElementId = null;
-      renderElementList(); renderTimeline(); renderProperties(); renderAnimationPanel(); renderBackgroundPanel();
+      selectedElementIds = [];
+      renderElementList(); renderTimeline(); renderProperties(); renderAnimationPanel(); renderBackgroundPanel(); renderEffectsPanel(); renderScenePanel();
       seekTo(0);
       toast('پروژه بارگذاری شد', 'success');
     } catch (err) { toast('خطا در بارگذاری پروژه: ' + err.message, 'error'); }
@@ -3276,11 +3839,58 @@ document.fonts.ready.then(() => init());
 
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  // Ctrl/Cmd shortcuts
+  if (e.ctrlKey || e.metaKey) {
+    if (e.code === 'KeyZ' && !e.shiftKey) { e.preventDefault(); undo(); return; }
+    if (e.code === 'KeyY' || (e.code === 'KeyZ' && e.shiftKey)) { e.preventDefault(); redo(); return; }
+    if (e.code === 'KeyD' && selectedElementId) { e.preventDefault(); duplicateElement(selectedElementId); return; }
+    if (e.code === 'KeyS') { e.preventDefault(); saveProject(); return; }
+    if (e.code === 'KeyG' && selectedElementId) { e.preventDefault(); groupElements(); return; }
+    if (e.code === 'KeyU' && selectedElementId) { e.preventDefault(); ungroupElements(); return; }
+    if (e.code === 'KeyA') { e.preventDefault(); selectedElementIds = project.elements.map(el => el.id); renderElementList(); toast('همه عناصر انتخاب شدند', 'info'); return; }
+  }
   if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-  if (e.code === 'ArrowLeft') seekTo(currentTime - 0.1);
-  if (e.code === 'ArrowRight') seekTo(currentTime + 0.1);
+  if (e.code === 'ArrowLeft') { e.preventDefault(); nudgeSelected(-1, 0); }
+  if (e.code === 'ArrowRight') { e.preventDefault(); nudgeSelected(1, 0); }
+  if (e.code === 'ArrowUp') { e.preventDefault(); nudgeSelected(0, -1); }
+  if (e.code === 'ArrowDown') { e.preventDefault(); nudgeSelected(0, 1); }
   if (e.code === 'Delete' && selectedElementId) deleteElement(selectedElementId);
 });
+
+function nudgeSelected(dx, dy) {
+  const el = getSelectedElement();
+  if (!el) return;
+  const step = snapToGrid ? snapGridSize : 1;
+  el.x = snapValue(el.x + dx * step);
+  el.y = snapValue(el.y + dy * step);
+  renderProperties();
+  renderFrame(currentTime);
+}
+
+// v3: Toggle helper functions
+function toggleSnapToGrid() {
+  snapToGrid = !snapToGrid;
+  const btn = document.getElementById('snap-btn');
+  btn.style.background = snapToGrid ? 'var(--accent)' : '';
+  btn.style.color = snapToGrid ? 'white' : '';
+  toast(snapToGrid ? 'چسبیدن به شبکه فعال شد' : 'چسبیدن به شبکه خاموش شد', 'info');
+}
+
+function toggleGridOverlay() {
+  showGridOverlay = !showGridOverlay;
+  const btn = document.getElementById('grid-btn');
+  btn.style.background = showGridOverlay ? 'var(--accent)' : '';
+  btn.style.color = showGridOverlay ? 'white' : '';
+  renderFrame(currentTime);
+}
+
+function toggleOnionSkin() {
+  showOnionSkin = !showOnionSkin;
+  const btn = document.getElementById('onion-btn');
+  btn.style.background = showOnionSkin ? 'var(--accent)' : '';
+  btn.style.color = showOnionSkin ? 'white' : '';
+  renderFrame(currentTime);
+}
 
 </script>
 </body>
