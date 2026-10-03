@@ -1111,6 +1111,54 @@ select {
           <span class="ico">🌊</span><div class="name">اقیانوس</div>
           <div class="desc">آبی، موج‌ها، آرام</div>
         </div>
+        <div class="preset-card" onclick="loadPreset('cyberpunk')">
+          <span class="ico">🤖</span><div class="name">سایبرپانک</div>
+          <div class="desc">نئون، شهری، آینده</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('fireworks')">
+          <span class="ico">🎆</span><div class="name">آتش‌بازی</div>
+          <div class="desc">جشن، شادی، رنگارنگ</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('snowy')">
+          <span class="ico">❄️</span><div class="name">زمستانی</div>
+          <div class="desc">برف، سرد، آرام</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('matrix')">
+          <span class="ico">💻</span><div class="name">ماتریکس</div>
+          <div class="desc">سبز، دیجیتال، کلاسیک</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('cosmic')">
+          <span class="ico">🌌</span><div class="name">کیهانی</div>
+          <div class="desc">ستاره، بی‌نهایت، جادویی</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('energetic2')">
+          <span class="ico">⚡</span><div class="name">پرانرژی پلاس</div>
+          <div class="desc">میدان انرژی، قدرت</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('vintage2')">
+          <span class="ico">📻</span><div class="name">قدیمی نوستالژیک</div>
+          <div class="desc">قهوه‌ای، کلاسیک، گرم</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('game')">
+          <span class="ico">🎮</span><div class="name">گیمینگ</div>
+          <div class="desc">پیکسل، ۸بیتی، رنگارنگ</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('luxury2')">
+          <span class="ico">💎</span><div class="name">لاکچری پلاس</div>
+          <div class="desc">طلایی، تجمل، فاخر</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('neon2')">
+          <span class="ico">💡</span><div class="name">نئون پلاس</div>
+          <div class="desc">صورتی/فیروزه‌ای، درخشش</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('rain2')">
+          <span class="ico">🌧️</span><div class="name">بارانی</div>
+          <div class="desc">باران، ملانکولیک</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('spiral2')">
+          <span class="ico">🌀</span><div class="name">مارپیچ</div>
+          <div class="desc">چرخش، بی‌نهایت، روان</div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -1232,6 +1280,17 @@ const EntranceAnims = {
   scanline: { name: 'خط اسکن', icon: '─' },
   glitch: { name: 'گلیچ', icon: '▦' },
   draw: { name: 'رسم خط', icon: '✎' },
+  // v4 new entrance animations
+  explode: { name: 'انفجار', icon: '✦' },
+  materialize: { name: 'مادی شدن', icon: '◉' },
+  pixelate: { name: 'پیکسلی شدن', icon: '▦' },
+  shake: { name: 'لرزش ورود', icon: '〰' },
+  stretch: { name: 'کشیدگی', icon: '⇕' },
+  squeeze: { name: 'فشردگی', icon: '⇔' },
+  spiral: { name: 'مارپیچ', icon: '◉' },
+  orbit: { name: 'مداری', icon: '◌' },
+  typewriter2: { name: 'تایپ سریع', icon: '⌨' },
+  reveal: { name: 'آشکار شدن', icon: '◉' },
 };
 
 // ---------- Hold Animations ----------
@@ -1250,6 +1309,15 @@ const HoldAnims = {
   wave: { name: 'موج', icon: '〜' },
   orbit: { name: 'مدار', icon: '◌' },
   flicker: { name: 'سوسو زدن', icon: '✦' },
+  // v4 new hold animations
+  glowPulse: { name: 'نبض درخشش', icon: '✦' },
+  rubberBand: { name: 'کش‌آ Rubber', icon: '∼' },
+  jelly: { name: 'ژله‌ای', icon: '∼' },
+  swing3D: { name: 'تاب 3D', icon: '⌒' },
+  hover: { name: 'هاور', icon: '↑' },
+  spiral: { name: 'مارپیچ', icon: '◉' },
+  morph: { name: 'تغییر شکل', icon: '◯' },
+  electric: { name: 'الکتریکی', icon: '⚡' },
 };
 
 // ---------- Exit Animations ----------
@@ -1271,6 +1339,14 @@ const ExitAnims = {
   implode: { name: 'فروریختن', icon: '◉' },
   fly: { name: 'پر شدن', icon: '✦' },
   glitchOut: { name: 'گلیچ خارج', icon: '▦' },
+  // v4 new exit animations
+  explode: { name: 'انفجار', icon: '✦' },
+  pixelate: { name: 'پیکسلی', icon: '▦' },
+  spiral: { name: 'مارپیچ', icon: '◉' },
+  dematerialize: { name: 'ساطع شدن', icon: '◉' },
+  sink: { name: 'فرورفتن', icon: '↓' },
+  stretch: { name: 'کشیدگی', icon: '⇕' },
+  shatter: { name: 'تخریب', icon: '✦' },
 };
 
 // ---------- Background Types ----------
@@ -1295,6 +1371,22 @@ const BgTypes = {
   gradientWaves: { name: 'موج گرادیان', icon: '〜' },
   plasma: { name: 'پلاسما', icon: '◉' },
   topology: { name: 'توپولوژی', icon: '◉' },
+  // v4 new backgrounds
+  smoke: { name: 'دود', icon: '☁' },
+  rain: { name: 'باران', icon: '☂' },
+  snow: { name: 'برف', icon: '❄' },
+  fireworks: { name: 'آتش‌بازی', icon: '✦' },
+  confetti: { name: 'کنفتی', icon: '◆' },
+  bubbles: { name: 'حباب', icon: '○' },
+  matrixRain: { name: 'ماتریکس باران', icon: '▦' },
+  spiral: { name: 'مارپیچ', icon: '◉' },
+  fractal: { name: 'فراکتال', icon: '✦' },
+  cityscape: { name: 'شهری', icon: '▦' },
+  mountain: { name: 'کوهستان', icon: '▲' },
+  oceanBg: { name: 'اقیانوس متحرک', icon: '〜' },
+  lightBeam: { name: 'پرتو نور', icon: '※' },
+  energyField: { name: 'میدان انرژی', icon: '◉' },
+  starfield: { name: 'میدان ستاره', icon: '✦' },
 };
 
 // ---------- Project State ----------
@@ -1401,9 +1493,62 @@ const ColorPalettes = {
   neon: { name: 'نئون', colors: ['#00FFFF','#FF00FF','#FFFF00','#000000','#00FF00'] },
   pastel: { name: 'پاستل', colors: ['#F8BBD0','#B2DFDB','#FFF9C4','#D7CCC8','#B39DDB'] },
   gold_lux: { name: 'طلایی لاکچری', colors: ['#D4AF37','#FFD700','#FFF8DC','#1a1a1a','#8B6914'] },
+  // v4 new palettes
+  cyberpunk: { name: 'سایبرپانک', colors: ['#FCEE0A','#FF003C','#00F0FF','#0D0221','#08F7FE'] },
+  vaporwave: { name: 'ویپورویو', colors: ['#FF71CE','#01CDFE','#05FFA1','#B967FF','#48184A'] },
+  coffee: { name: 'قهوه', colors: ['#4E342E','#795548','#A1887F','#D7CCC8','#3E2723'] },
+  mint: { name: 'نعنایی', colors: ['#00897B','#4DB6AC','#B2DFDB','#E0F2F1','#004D40'] },
+  rose_gold: { name: 'رز گلد', colors: ['#E8B4B8','#D4A5A5','#B5838D','#F5E1E0','#7E5A5E'] },
+  ice: { name: 'یخی', colors: ['#0288D1','#29B6F6','#B3E5FC','#E1F5FE','#01579B'] },
+  fire: { name: 'آتش', colors: ['#B71C1C','#FF5722','#FF9800','#FFC107','#4E0000'] },
+  midnight: { name: 'نیمه‌شب', colors: ['#1A237E','#3949AB','#5C6BC0','#0D47A1','#000051'] },
+  emerald: { name: 'زمرد', colors: ['#004D40','#00796B','#009688','#4DB6AC','#001E17'] },
+  candy: { name: 'آبنبات', colors: ['#FF6B9D','#C44569','#F8B500','#3BCEAC','#1B9AAA'] },
 };
 
-const AdditionalShapes = ['pentagon', 'octagon', 'diamond', 'cross', 'parallelogram', 'trapezoid'];
+const AdditionalShapes = ['pentagon', 'octagon', 'diamond', 'cross', 'parallelogram', 'trapezoid',
+  // v4 new shapes
+  'speechBubble', 'cloud', 'sun', 'moon', 'lightning', 'sparkle', 'ring', 'gear'
+];
+
+// v4: New Background Types added to BgTypes at runtime
+const NewBgTypes = {
+  smoke: { name: 'دود', icon: '☁' },
+  rain: { name: 'باران', icon: '☂' },
+  snow: { name: 'برف', icon: '❄' },
+  fireworks: { name: 'آتش‌بازی', icon: '✦' },
+  confetti: { name: 'کنفتی', icon: '◆' },
+  bubbles: { name: 'حباب', icon: '○' },
+  matrixRain: { name: 'ماتریکس باران', icon: '▦' },
+  spiral: { name: 'مارپیچ', icon: '◉' },
+  fractal: { name: 'فراکتال', icon: '✦' },
+  cityscape: { name: 'شهری', icon: '▦' },
+  mountain: { name: 'کوهستان', icon: '▲' },
+  ocean: { name: 'اقیانوس', icon: '〜' },
+  lightBeam: { name: 'پرتو نور', icon: '※' },
+  energyField: { name: 'میدان انرژی', icon: '◉' },
+  starfield: { name: 'میدان ستاره', icon: '✦' },
+};
+
+// v4: New Post-FX
+const NewPostFX = {
+  pixelate: 'پیکسلی',
+  halftone: 'نیم‌تنه',
+  vhs: 'VHS',
+  crt: 'CRT',
+  dream: 'رویا',
+  vintage: 'قدیمی',
+  cinematic: 'سینمایی',
+  dramatic: 'دراماتیک',
+  softGlow: 'درخشش نرم',
+  edge: 'لبه',
+};
+
+// v4: 3D Layer System
+let layer3D = { enabled: false, perspective: 1000, rotateX: 0, rotateY: 0, rotateZ: 0 };
+
+// v4: Particle System for elements (not background)
+let particleEmitter = null; // {enabled, type, count, color, size, speed, spread, life}
 
 // ===== HISTORY SYSTEM (Undo/Redo) =====
 function pushHistory() {
@@ -1856,6 +2001,14 @@ function renderProperties() {
         <option value="arrow" ${el.shape==='arrow'?'selected':''}>فلش</option>
         <option value="parallelogram" ${el.shape==='parallelogram'?'selected':''}>متوازی‌الاضلاع</option>
         <option value="trapezoid" ${el.shape==='trapezoid'?'selected':''}>ذوزنقه</option>
+        <option value="speechBubble" ${el.shape==='speechBubble'?'selected':''}>حباب گفتگو</option>
+        <option value="cloud" ${el.shape==='cloud'?'selected':''}>ابر</option>
+        <option value="sun" ${el.shape==='sun'?'selected':''}>خورشید</option>
+        <option value="moon" ${el.shape==='moon'?'selected':''}>ماه</option>
+        <option value="lightning" ${el.shape==='lightning'?'selected':''}>صاعقه</option>
+        <option value="sparkle" ${el.shape==='sparkle'?'selected':''}>جرقه</option>
+        <option value="ring" ${el.shape==='ring'?'selected':''}>حلقه</option>
+        <option value="gear" ${el.shape==='gear'?'selected':''}>چرخ‌دنده</option>
       </select></div></div>`;
     }
   }
@@ -2361,6 +2514,74 @@ function applyEntrance(state, type, p, el) {
       break;
     }
     case 'draw': state.scaleX *= p; state.opacity *= Math.min(1, p * 1.5); break;
+    // v4 new entrance animations
+    case 'explode': {
+      state.scale *= 0.2 + 0.8 * p;
+      state.offsetX += Math.sin(p * 20) * (1 - p) * 60;
+      state.offsetY += Math.cos(p * 17) * (1 - p) * 60;
+      state.rotation += (1 - p) * 90;
+      state.opacity *= p;
+      break;
+    }
+    case 'materialize': {
+      state.opacity *= p;
+      state.scale *= 0.7 + 0.3 * p;
+      state.blur = (1 - p) * 8;
+      state.glowMult *= 1 + (1 - p) * 3;
+      break;
+    }
+    case 'pixelate': {
+      state.opacity *= p;
+      state.scale *= 0.5 + 0.5 * p;
+      state.blur = (1 - p) * 4;
+      break;
+    }
+    case 'shake': {
+      if (p < 0.7) {
+        state.offsetX += (Math.random() - 0.5) * 40 * (1 - p);
+        state.offsetY += (Math.random() - 0.5) * 40 * (1 - p);
+      }
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'stretch': {
+      state.scaleY *= 0.3 + 0.7 * p;
+      state.scaleX *= 1.3 - 0.3 * p;
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'squeeze': {
+      state.scaleX *= 0.3 + 0.7 * p;
+      state.scaleY *= 1.3 - 0.3 * p;
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'spiral': {
+      state.rotation += (1 - p) * 720;
+      state.scale *= 0.3 + 0.7 * p;
+      state.offsetX += Math.cos(p * Math.PI * 4) * (1 - p) * 100;
+      state.offsetY += Math.sin(p * Math.PI * 4) * (1 - p) * 100;
+      state.opacity *= p;
+      break;
+    }
+    case 'orbit': {
+      state.offsetX += Math.cos(p * Math.PI * 2) * (1 - p) * 150;
+      state.offsetY += Math.sin(p * Math.PI * 2) * (1 - p) * 150;
+      state.rotation += (1 - p) * 360;
+      state.opacity *= p;
+      break;
+    }
+    case 'typewriter2': {
+      state.textProgress = p * 1.5 > 1 ? 1 : p * 1.5;
+      state.opacity = 1;
+      break;
+    }
+    case 'reveal': {
+      state.scaleX *= p;
+      state.opacity *= Math.min(1, p * 1.2);
+      state.glowMult *= 2 - p;
+      break;
+    }
   }
 }
 
@@ -2382,6 +2603,55 @@ function applyExit(state, type, p, el) {
     case 'implode': state.scale *= (1 - p); state.rotation += p * 360; state.opacity *= (1 - p); break;
     case 'fly': state.offsetX += p * 400; state.offsetY -= p * 400; state.rotation += p * 90; state.opacity *= (1 - p); break;
     case 'glitchOut': state.offsetX += (Math.random() - 0.5) * 30 * p; state.offsetY += (Math.random() - 0.5) * 30 * p; state.opacity *= (1 - p); break;
+    // v4 new exit animations
+    case 'explode': {
+      state.scale *= 1 + p * 0.5;
+      state.offsetX += Math.sin(p * 20) * p * 80;
+      state.offsetY += Math.cos(p * 17) * p * 80;
+      state.rotation += p * 180;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'pixelate': {
+      state.blur = p * 6;
+      state.scale *= 1 + p * 0.2;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'spiral': {
+      state.rotation += p * 720;
+      state.scale *= 1 - p * 0.5;
+      state.offsetX += Math.cos(p * Math.PI * 4) * p * 100;
+      state.offsetY += Math.sin(p * Math.PI * 4) * p * 100;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'dematerialize': {
+      state.opacity *= (1 - p);
+      state.blur = p * 15;
+      state.glowMult *= 1 + p * 2;
+      state.scale *= 1 + p * 0.1;
+      break;
+    }
+    case 'sink': {
+      state.offsetY += p * 200;
+      state.scale *= 1 - p * 0.3;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'stretch': {
+      state.scaleY *= 1 + p * 0.8;
+      state.scaleX *= 1 - p * 0.3;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'shatter': {
+      state.offsetX += Math.sin(p * 30 + 1) * p * 40;
+      state.offsetY += Math.cos(p * 28 + 2) * p * 40;
+      state.rotation += p * 90;
+      state.opacity *= (1 - p);
+      break;
+    }
   }
 }
 
@@ -2402,6 +2672,46 @@ function applyHold(state, type, t, intensity, speed) {
     case 'wave': state.offsetY += Math.sin(tt * 2 * Math.PI) * 8 * intensity; state.rotation += Math.sin(tt * 2 * Math.PI) * 3 * intensity; break;
     case 'orbit': state.offsetX += Math.cos(tt * 2 * Math.PI) * 30 * intensity; state.offsetY += Math.sin(tt * 2 * Math.PI) * 30 * intensity; break;
     case 'flicker': state.opacity *= 0.7 + Math.random() * 0.3 * intensity + (1 - intensity); break;
+    // v4 new hold animations
+    case 'glowPulse': state.glowMult *= 1 + Math.sin(tt * 3 * Math.PI) * 0.7 * intensity; break;
+    case 'rubberBand': {
+      const rb = Math.sin(tt * 4 * Math.PI);
+      state.scaleX *= 1 + rb * 0.15 * intensity;
+      state.scaleY *= 1 - rb * 0.15 * intensity;
+      break;
+    }
+    case 'jelly': {
+      const j = Math.sin(tt * 3 * Math.PI);
+      state.scaleX *= 1 + j * 0.1 * intensity;
+      state.scaleY *= 1 - j * 0.1 * intensity;
+      state.offsetY += Math.sin(tt * 6 * Math.PI) * 4 * intensity;
+      break;
+    }
+    case 'swing3D': {
+      state.rotation += Math.sin(tt * 1.2 * Math.PI) * 12 * intensity;
+      state.scaleY *= 1 + Math.abs(Math.sin(tt * 1.2 * Math.PI)) * 0.05 * intensity;
+      break;
+    }
+    case 'hover': state.offsetY -= Math.sin(tt * Math.PI) * 8 * intensity; break;
+    case 'spiral': {
+      state.rotation += tt * 20 * intensity;
+      state.offsetX += Math.cos(tt * 2 * Math.PI) * 10 * intensity;
+      state.offsetY += Math.sin(tt * 2 * Math.PI) * 10 * intensity;
+      break;
+    }
+    case 'morph': {
+      const m = Math.sin(tt * Math.PI);
+      state.scaleX *= 1 + m * 0.1 * intensity;
+      state.scaleY *= 1 - m * 0.1 * intensity;
+      state.rotation += m * 5 * intensity;
+      break;
+    }
+    case 'electric': {
+      state.offsetX += (Math.random() - 0.5) * 3 * intensity;
+      state.offsetY += (Math.random() - 0.5) * 3 * intensity;
+      state.glowMult *= 1 + Math.random() * 0.5 * intensity;
+      break;
+    }
   }
 }
 
@@ -2515,6 +2825,23 @@ function renderBackground(t, c = ctx) {
   if (bg.type === 'noise' || bg.type === 'plasma' || bg.type === 'topology') {
     drawNoise(c, t, bg);
   }
+
+  // v4 new backgrounds
+  if (bg.type === 'smoke') drawSmoke(c, t, bg);
+  if (bg.type === 'rain') drawRain(c, t, bg);
+  if (bg.type === 'snow') drawSnow(c, t, bg);
+  if (bg.type === 'fireworks') drawFireworks(c, t, bg);
+  if (bg.type === 'confetti') drawConfetti(c, t, bg);
+  if (bg.type === 'bubbles') drawBubbles(c, t, bg);
+  if (bg.type === 'matrixRain') drawMatrixRain(c, t, bg);
+  if (bg.type === 'spiral') drawSpiralBg(c, t, bg);
+  if (bg.type === 'fractal') drawFractal(c, t, bg);
+  if (bg.type === 'cityscape') drawCityscape(c, t, bg);
+  if (bg.type === 'mountain') drawMountain(c, t, bg);
+  if (bg.type === 'oceanBg') drawOceanBg(c, t, bg);
+  if (bg.type === 'lightBeam') drawLightBeam(c, t, bg);
+  if (bg.type === 'energyField') drawEnergyField(c, t, bg);
+  if (bg.type === 'starfield') drawStarfield(c, t, bg);
 
   // Vignette
   if (bg.vignette > 0) {
@@ -2689,6 +3016,341 @@ function drawNoise(c, t, bg) {
   c.globalAlpha = 1;
 }
 
+// ===== v4 NEW BACKGROUND RENDER FUNCTIONS =====
+function drawSmoke(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#888888';
+  for (let i = 0; i < 12; i++) {
+    const seed = i * 17.3;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.3 + i) * 80;
+    const y = H - ((t * 30 + seed * 50) % (H + 200)) + 100;
+    const r = 80 + Math.sin(t + i) * 30;
+    const grad = c.createRadialGradient(x, y, 0, x, y, r);
+    grad.addColorStop(0, color + '40');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawRain(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#4FC3F7';
+  c.strokeStyle = color + '80';
+  c.lineWidth = 1.5;
+  for (let i = 0; i < 200; i++) {
+    const seed = i * 31.7;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W;
+    const y = ((t * 800 + seed * 100) % (H + 100));
+    const len = 20;
+    c.beginPath();
+    c.moveTo(x, y);
+    c.lineTo(x - 3, y + len);
+    c.stroke();
+  }
+}
+
+function drawSnow(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#FFFFFF';
+  for (let i = 0; i < 150; i++) {
+    const seed = i * 23.1;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.5 + i) * 30;
+    const y = ((t * 50 + seed * 80) % (H + 20));
+    const r = 2 + (i % 3);
+    c.fillStyle = color + 'CC';
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawFireworks(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = ['#FF1744', '#FFD600', '#00E676', '#2979FF', '#D500F9', '#FF6E40'];
+  // Multiple firework bursts
+  for (let f = 0; f < 4; f++) {
+    const burstT = (t + f * 1.3) % 4;
+    if (burstT < 0.05) continue;
+    const cx = (Math.sin(f * 7.3) * 0.3 + 0.5) * W;
+    const cy = (Math.cos(f * 5.1) * 0.3 + 0.4) * H;
+    const color = colors[f % colors.length];
+    const life = burstT / 2;
+    if (life > 1) continue;
+    for (let i = 0; i < 40; i++) {
+      const angle = (i / 40) * Math.PI * 2;
+      const dist = life * 150;
+      const x = cx + Math.cos(angle) * dist;
+      const y = cy + Math.sin(angle) * dist + life * life * 50;
+      const alpha = (1 - life) * 0.9;
+      c.fillStyle = color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+      c.beginPath(); c.arc(x, y, 3 - life * 2, 0, Math.PI * 2); c.fill();
+      // Trail
+      c.strokeStyle = color + Math.floor(alpha * 100).toString(16).padStart(2, '0');
+      c.lineWidth = 1;
+      c.beginPath();
+      c.moveTo(cx + Math.cos(angle) * dist * 0.7, cy + Math.sin(angle) * dist * 0.7);
+      c.lineTo(x, y); c.stroke();
+    }
+  }
+}
+
+function drawConfetti(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = ['#FF1744', '#FFD600', '#00E676', '#2979FF', '#D500F9', '#FF6E40', '#00E5FF'];
+  for (let i = 0; i < 100; i++) {
+    const seed = i * 41.3;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 2 + i) * 60;
+    const y = ((t * 200 + seed * 60) % (H + 40)) - 20;
+    const color = colors[i % colors.length];
+    const rot = t * 3 + i;
+    c.save();
+    c.translate(x, y);
+    c.rotate(rot);
+    c.fillStyle = color;
+    c.fillRect(-5, -8, 10, 16);
+    c.restore();
+  }
+}
+
+function drawBubbles(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#4FC3F7';
+  for (let i = 0; i < 30; i++) {
+    const seed = i * 19.7;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.7 + i) * 40;
+    const y = H - ((t * 60 + seed * 70) % (H + 50));
+    const r = 15 + (i % 4) * 8;
+    c.strokeStyle = color + '80';
+    c.lineWidth = 1.5;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.stroke();
+    // Highlight
+    c.fillStyle = color + '30';
+    c.beginPath(); c.arc(x - r * 0.3, y - r * 0.3, r * 0.3, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawMatrixRain(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#22c55e';
+  const cols = Math.floor(W / 20);
+  c.font = '16px "JetBrains Mono", monospace';
+  for (let i = 0; i < cols; i++) {
+    const x = i * 20;
+    const y = ((t * 200 + i * 50) % (H + 100));
+    const chars = '01ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ';
+    const ch = chars[Math.floor((t * 10 + i) % chars.length)];
+    c.fillStyle = color + 'FF';
+    c.fillText(ch, x, y);
+    c.fillStyle = color + '40';
+    for (let j = 1; j < 10; j++) {
+      const ch2 = chars[Math.floor((t * 10 + i + j) % chars.length)];
+      c.fillStyle = color + Math.floor((1 - j / 10) * 100).toString(16).padStart(2, '0');
+      c.fillText(ch2, x, y - j * 18);
+    }
+  }
+}
+
+function drawSpiralBg(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const color = bg.particleColor || bg.color2;
+  c.save();
+  c.translate(cx, cy);
+  c.rotate(t * 0.5);
+  for (let i = 0; i < 200; i++) {
+    const angle = i * 0.3;
+    const r = i * 4;
+    const x = Math.cos(angle) * r;
+    const y = Math.sin(angle) * r;
+    const size = 1 + (i % 3);
+    c.fillStyle = color + 'CC';
+    c.beginPath(); c.arc(x, y, size, 0, Math.PI * 2); c.fill();
+  }
+  c.restore();
+}
+
+function drawFractal(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || bg.color2;
+  c.save();
+  c.translate(W / 2, H / 2 + 100);
+  function branch(len, depth) {
+    if (depth === 0) return;
+    c.strokeStyle = color + Math.floor(depth * 30).toString(16).padStart(2, '0');
+    c.lineWidth = depth * 0.8;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(0, -len);
+    c.stroke();
+    c.translate(0, -len);
+    c.save();
+    c.rotate(0.4 + Math.sin(t) * 0.1);
+    branch(len * 0.7, depth - 1);
+    c.restore();
+    c.save();
+    c.rotate(-0.4 - Math.sin(t) * 0.1);
+    branch(len * 0.7, depth - 1);
+    c.restore();
+  }
+  branch(120, 9);
+  c.restore();
+}
+
+function drawCityscape(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || bg.color2;
+  // Sky gradient
+  const grad = c.createLinearGradient(0, 0, 0, H * 0.7);
+  grad.addColorStop(0, bg.color1);
+  grad.addColorStop(1, color + '80');
+  c.fillStyle = grad;
+  c.fillRect(0, 0, W, H);
+  // Buildings
+  c.fillStyle = color;
+  for (let i = 0; i < 25; i++) {
+    const x = i * (W / 25);
+    const w = W / 25 - 2;
+    const h = 100 + Math.sin(i * 1.7) * 100 + Math.cos(i * 0.9) * 50;
+    c.fillRect(x, H - h, w, h);
+    // Windows
+    c.fillStyle = '#FFE082';
+    for (let wy = H - h + 20; wy < H - 10; wy += 25) {
+      for (let wx = x + 8; wx < x + w - 8; wx += 15) {
+        if (Math.sin(wx + wy + t * 2) > 0.3) {
+          c.fillRect(wx, wy, 5, 8);
+        }
+      }
+    }
+    c.fillStyle = color;
+  }
+}
+
+function drawMountain(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  // Sky gradient
+  const grad = c.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, bg.color1);
+  grad.addColorStop(1, bg.color2);
+  c.fillStyle = grad;
+  c.fillRect(0, 0, W, H);
+  // Multiple mountain layers
+  const layers = [
+    { color: bg.color2 + '40', peaks: 4, h: 0.5 },
+    { color: bg.color2 + '80', peaks: 5, h: 0.6 },
+    { color: bg.color2 + 'C0', peaks: 6, h: 0.75 },
+  ];
+  layers.forEach((layer, li) => {
+    c.fillStyle = layer.color;
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let i = 0; i <= layer.peaks; i++) {
+      const x = (i / layer.peaks) * W;
+      const y = H * layer.h + Math.sin(i * 2.3 + li) * 80;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H);
+    c.closePath();
+    c.fill();
+  });
+}
+
+function drawOceanBg(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  // Sky
+  const grad = c.createLinearGradient(0, 0, 0, H * 0.6);
+  grad.addColorStop(0, bg.color1);
+  grad.addColorStop(1, bg.color2);
+  c.fillStyle = grad;
+  c.fillRect(0, 0, W, H * 0.6);
+  // Sun
+  c.fillStyle = '#FFD54F';
+  c.beginPath(); c.arc(W * 0.7, H * 0.4, 60, 0, Math.PI * 2); c.fill();
+  // Ocean
+  c.fillStyle = bg.color2;
+  c.fillRect(0, H * 0.6, W, H * 0.4);
+  // Wave layers
+  for (let layer = 0; layer < 3; layer++) {
+    c.fillStyle = bg.color2 + (layer === 0 ? 'CC' : layer === 1 ? '88' : '44');
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 10) {
+      const y = H * 0.6 + Math.sin(x * 0.01 + t * 2 + layer) * 15 + layer * 30;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H); c.closePath(); c.fill();
+  }
+}
+
+function drawLightBeam(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || bg.color2;
+  // Volumetric light beams
+  for (let i = 0; i < 5; i++) {
+    const angle = -Math.PI / 2 + (i - 2) * 0.15 + Math.sin(t * 0.3 + i) * 0.05;
+    const cx = W * 0.5 + (i - 2) * 50;
+    const cy = 0;
+    c.save();
+    c.translate(cx, cy);
+    c.rotate(angle);
+    const grad = c.createLinearGradient(0, 0, 0, H * 1.5);
+    grad.addColorStop(0, color + '00');
+    grad.addColorStop(0.3, color + '40');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad;
+    c.beginPath();
+    c.moveTo(-30, 0); c.lineTo(30, 0);
+    c.lineTo(150, H * 1.5); c.lineTo(-150, H * 1.5);
+    c.closePath(); c.fill();
+    c.restore();
+  }
+}
+
+function drawEnergyField(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || bg.color2;
+  // Pulsing energy rings
+  const cx = W / 2, cy = H / 2;
+  for (let i = 0; i < 8; i++) {
+    const phase = (t * 0.5 + i * 0.4) % 2;
+    const r = phase * Math.max(W, H) * 0.7;
+    const alpha = Math.max(0, 1 - phase / 2);
+    c.strokeStyle = color + Math.floor(alpha * 200).toString(16).padStart(2, '0');
+    c.lineWidth = 2 + (1 - phase / 2) * 4;
+    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.stroke();
+  }
+  // Central glow
+  const grad = c.createRadialGradient(cx, cy, 0, cx, cy, 200);
+  grad.addColorStop(0, color + '80');
+  grad.addColorStop(1, color + '00');
+  c.fillStyle = grad;
+  c.beginPath(); c.arc(cx, cy, 200, 0, Math.PI * 2); c.fill();
+}
+
+function drawStarfield(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  // Hyperspace starfield
+  const cx = W / 2, cy = H / 2;
+  for (let i = 0; i < 200; i++) {
+    const seed = i * 17.3;
+    const baseAngle = (Math.sin(seed) * 0.5 + 0.5) * Math.PI * 2;
+    const speed = 0.3 + (i % 5) * 0.1;
+    const dist = ((t * speed * 200 + seed * 100) % 800);
+    const x = cx + Math.cos(baseAngle) * dist;
+    const y = cy + Math.sin(baseAngle) * dist;
+    const size = 1 + (dist / 200);
+    const alpha = Math.min(1, dist / 100);
+    c.fillStyle = `rgba(255,255,255,${alpha})`;
+    c.beginPath(); c.arc(x, y, size, 0, Math.PI * 2); c.fill();
+    // Trail
+    if (dist > 50) {
+      c.strokeStyle = `rgba(255,255,255,${alpha * 0.5})`;
+      c.lineWidth = size * 0.5;
+      c.beginPath();
+      c.moveTo(cx + Math.cos(baseAngle) * dist * 0.8, cy + Math.sin(baseAngle) * dist * 0.8);
+      c.lineTo(x, y); c.stroke();
+    }
+  }
+}
+
 let grainCanvas = null;
 function drawGrainTo(c, intensity) {
   if (!grainCanvas || grainCanvas.width !== 200) {
@@ -2805,7 +3467,117 @@ function drawShape(el, halfW, halfH) {
     case 'parallelogram': ctx.beginPath(); ctx.moveTo(-halfW * 0.6, -halfH); ctx.lineTo(halfW, -halfH); ctx.lineTo(halfW * 0.6, halfH); ctx.lineTo(-halfW, halfH); ctx.closePath(); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
     case 'trapezoid': ctx.beginPath(); ctx.moveTo(-halfW * 0.6, -halfH); ctx.lineTo(halfW * 0.6, -halfH); ctx.lineTo(halfW, halfH); ctx.lineTo(-halfW, halfH); ctx.closePath(); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
     case 'line': ctx.strokeStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor; ctx.lineWidth = Math.max(1, el.height); ctx.beginPath(); ctx.moveTo(-halfW, 0); ctx.lineTo(halfW, 0); ctx.stroke(); break;
+    // v4 new shapes
+    case 'speechBubble': drawSpeechBubble(ctx, halfW, halfH); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'cloud': drawCloud(ctx, halfW, halfH); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'sun': drawSun(ctx, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'moon': drawMoon(ctx, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'lightning': drawLightning(ctx, halfW, halfH); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'sparkle': drawSparkle(ctx, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'ring': ctx.beginPath(); ctx.arc(0, 0, halfW * 0.8, 0, Math.PI * 2); ctx.arc(0, 0, halfW * 0.5, 0, Math.PI * 2, true); ctx.fill('evenodd'); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'gear': drawGear(ctx, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
   }
+}
+
+// v4: New shape drawing functions
+function drawSpeechBubble(c, halfW, halfH) {
+  c.beginPath();
+  c.moveTo(-halfW * 0.8, -halfH);
+  c.lineTo(halfW * 0.8, -halfH);
+  c.quadraticCurveTo(halfW, -halfH, halfW, -halfH * 0.7);
+  c.lineTo(halfW, halfH * 0.4);
+  c.quadraticCurveTo(halfW, halfH * 0.6, halfW * 0.8, halfH * 0.6);
+  c.lineTo(halfW * 0.2, halfH * 0.6);
+  c.lineTo(0, halfH);
+  c.lineTo(halfW * 0.1, halfH * 0.6);
+  c.lineTo(-halfW * 0.8, halfH * 0.6);
+  c.quadraticCurveTo(-halfW, halfH * 0.6, -halfW, halfH * 0.4);
+  c.lineTo(-halfW, -halfH * 0.7);
+  c.quadraticCurveTo(-halfW, -halfH, -halfW * 0.8, -halfH);
+  c.closePath();
+}
+
+function drawCloud(c, halfW, halfH) {
+  c.beginPath();
+  c.arc(-halfW * 0.5, 0, halfH * 0.6, 0, Math.PI * 2);
+  c.arc(0, -halfH * 0.3, halfH * 0.8, 0, Math.PI * 2);
+  c.arc(halfW * 0.5, 0, halfH * 0.6, 0, Math.PI * 2);
+  c.arc(0, halfH * 0.2, halfH * 0.7, 0, Math.PI * 2);
+  c.fill();
+}
+
+function drawSun(c, r) {
+  // Center circle
+  c.beginPath();
+  c.arc(0, 0, r * 0.5, 0, Math.PI * 2);
+  c.fill();
+  // Rays
+  for (let i = 0; i < 12; i++) {
+    const angle = (i / 12) * Math.PI * 2;
+    const x1 = Math.cos(angle) * r * 0.6;
+    const y1 = Math.sin(angle) * r * 0.6;
+    const x2 = Math.cos(angle) * r;
+    const y2 = Math.sin(angle) * r;
+    c.fillRect(Math.min(x1, x2) - 3, Math.min(y1, y2) - 3, Math.abs(x2 - x1) + 6, Math.abs(y2 - y1) + 6);
+  }
+}
+
+function drawMoon(c, r) {
+  c.beginPath();
+  c.arc(0, 0, r, 0, Math.PI * 2);
+  c.fill();
+  // Cut-out crescent using composite
+  c.save();
+  c.globalCompositeOperation = 'destination-out';
+  c.beginPath();
+  c.arc(r * 0.3, -r * 0.1, r * 0.9, 0, Math.PI * 2);
+  c.fill();
+  c.restore();
+}
+
+function drawLightning(c, halfW, halfH) {
+  c.beginPath();
+  c.moveTo(-halfW * 0.2, -halfH);
+  c.lineTo(halfW * 0.4, -halfH * 0.1);
+  c.lineTo(0, -halfH * 0.1);
+  c.lineTo(halfW * 0.2, halfH);
+  c.lineTo(-halfW * 0.4, halfH * 0.1);
+  c.lineTo(0, halfH * 0.1);
+  c.closePath();
+}
+
+function drawSparkle(c, r) {
+  c.beginPath();
+  c.moveTo(0, -r);
+  c.lineTo(r * 0.15, -r * 0.15);
+  c.lineTo(r, 0);
+  c.lineTo(r * 0.15, r * 0.15);
+  c.lineTo(0, r);
+  c.lineTo(-r * 0.15, r * 0.15);
+  c.lineTo(-r, 0);
+  c.lineTo(-r * 0.15, -r * 0.15);
+  c.closePath();
+}
+
+function drawGear(c, r) {
+  c.beginPath();
+  const teeth = 8;
+  for (let i = 0; i < teeth * 2; i++) {
+    const angle = (i / (teeth * 2)) * Math.PI * 2;
+    const radius = i % 2 === 0 ? r : r * 0.8;
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
+    if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
+  }
+  c.closePath();
+  c.fill();
+  // Hole
+  c.save();
+  c.globalCompositeOperation = 'destination-out';
+  c.beginPath();
+  c.arc(0, 0, r * 0.3, 0, Math.PI * 2);
+  c.fill();
+  c.restore();
 }
 
 function drawCross(c, halfW, halfH) {
@@ -3340,6 +4112,22 @@ async function _renderFrameInternal(t, c) {
   if (bg.type === 'aurora') drawAurora(c, t, bg);
   if (bg.type === 'rays') drawRays(c, t, bg);
   if (bg.type === 'noise' || bg.type === 'plasma' || bg.type === 'topology') drawNoise(c, t, bg);
+  // v4 new backgrounds (export)
+  if (bg.type === 'smoke') drawSmoke(c, t, bg);
+  if (bg.type === 'rain') drawRain(c, t, bg);
+  if (bg.type === 'snow') drawSnow(c, t, bg);
+  if (bg.type === 'fireworks') drawFireworks(c, t, bg);
+  if (bg.type === 'confetti') drawConfetti(c, t, bg);
+  if (bg.type === 'bubbles') drawBubbles(c, t, bg);
+  if (bg.type === 'matrixRain') drawMatrixRain(c, t, bg);
+  if (bg.type === 'spiral') drawSpiralBg(c, t, bg);
+  if (bg.type === 'fractal') drawFractal(c, t, bg);
+  if (bg.type === 'cityscape') drawCityscape(c, t, bg);
+  if (bg.type === 'mountain') drawMountain(c, t, bg);
+  if (bg.type === 'oceanBg') drawOceanBg(c, t, bg);
+  if (bg.type === 'lightBeam') drawLightBeam(c, t, bg);
+  if (bg.type === 'energyField') drawEnergyField(c, t, bg);
+  if (bg.type === 'starfield') drawStarfield(c, t, bg);
 
   if (bg.vignette > 0) {
     const grad = c.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.max(W, H) * 0.75);
@@ -3431,6 +4219,15 @@ async function drawElementTo(c, el, t) {
       case 'parallelogram': c.beginPath(); c.moveTo(-halfW * 0.6, -halfH); c.lineTo(halfW, -halfH); c.lineTo(halfW * 0.6, halfH); c.lineTo(-halfW, halfH); c.closePath(); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
       case 'trapezoid': c.beginPath(); c.moveTo(-halfW * 0.6, -halfH); c.lineTo(halfW * 0.6, -halfH); c.lineTo(halfW, halfH); c.lineTo(-halfW, halfH); c.closePath(); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
       case 'line': c.strokeStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor; c.lineWidth = Math.max(1, el.height); c.beginPath(); c.moveTo(-halfW, 0); c.lineTo(halfW, 0); c.stroke(); break;
+      // v4 new shapes (export)
+      case 'speechBubble': drawSpeechBubble(c, halfW, halfH); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'cloud': drawCloud(c, halfW, halfH); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'sun': drawSun(c, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'moon': drawMoon(c, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'lightning': drawLightning(c, halfW, halfH); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'sparkle': drawSparkle(c, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'ring': c.beginPath(); c.arc(0, 0, halfW * 0.8, 0, Math.PI * 2); c.arc(0, 0, halfW * 0.5, 0, Math.PI * 2, true); c.fill('evenodd'); if (el.borderWidth > 0) c.stroke(); break;
+      case 'gear': drawGear(c, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
     }
   } else {
     const fontWeight = el.fontWeight || 400;
@@ -3785,6 +4582,140 @@ function loadPreset(name) {
         createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 420, height: 420, glow: 20, glowColor: '#4fc3f7', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'float', intensity: 0.4, speed: 0.6 } }),
         createElement('brand', { name: 'نام برند', text: 'OCEAN', x: 960, y: 800, fontSize: 90, fontWeight: 700, color: '#ffffff', glow: 15, glowColor: '#4fc3f7', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1 } }),
         createElement('tagline', { name: 'شعار', text: 'آرامش در اعماق', x: 960, y: 900, fontSize: 28, fontWeight: 400, color: '#81d4fa', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    // v4 new presets
+    cyberpunk: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'cityscape', color1: '#0D0221', color2: '#FF003C', color3: '#00F0FF', angle: 135, particleCount: 80, particleColor: '#FCEE0A', particleSpeed: 1, particleSize: 2, gridColor: '#FCEE0A', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.6, grain: 0.08, blur: 0, brightness: 1, contrast: 1.2, saturate: 1.3 },
+      effects: { bloom: 0.4, bloomThreshold: 0.5, chromaticAberration: 6, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0.2, vignette: 0.4, sharpen: 0, glitch: 0.15, rgbShift: 4, flicker: 0.1, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 40, glowColor: '#00F0FF', entrance: { enabled: true, type: 'glitch', duration: 0.8, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'flicker', intensity: 0.4, speed: 4 } }),
+        createElement('brand', { name: 'نام برند', text: 'CYBER 2077', x: 960, y: 780, fontSize: 100, fontWeight: 900, color: '#FCEE0A', textGradient: true, textGradientColor1: '#FCEE0A', textGradientColor2: '#FF003C', glow: 30, glowColor: '#FCEE0A', entrance: { enabled: true, type: 'slideLeft', duration: 0.6, delay: 0.5, easing: 'easeOutQuart' }, hold: { enabled: true, type: 'pulse', intensity: 0.3, speed: 2 } }),
+        createElement('tagline', { name: 'شعار', text: 'NEON • FUTURE • CYBER', x: 960, y: 880, fontSize: 22, fontWeight: 600, color: '#00F0FF', letterSpacing: 4, entrance: { enabled: true, type: 'typewriter', duration: 1.5, delay: 1 } }),
+      ],
+    },
+    fireworks: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 8 },
+      background: { type: 'fireworks', color1: '#000022', color2: '#1a1a3e', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#ff6b6b', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 50, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.4, grain: 0.03, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.5, bloomThreshold: 0.5, chromaticAberration: 0, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0.15, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 30, glowColor: '#FFD600', entrance: { enabled: true, type: 'explode', duration: 1, delay: 0, easing: 'easeOutBack' } }),
+        createElement('brand', { name: 'نام برند', text: 'CELEBRATION', x: 960, y: 800, fontSize: 90, fontWeight: 800, color: '#FFD600', glow: 25, glowColor: '#FFD600', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1 } }),
+        createElement('tagline', { name: 'شعار', text: 'شادباش • جشن • خوشبختی', x: 960, y: 900, fontSize: 30, fontWeight: 400, color: '#ffffff', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    snowy: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'snow', color1: '#0a1628', color2: '#1e3a5f', color3: '#6366f1', angle: 135, particleCount: 150, particleColor: '#ffffff', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 80, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.4, grain: 0.04, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.2, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0.1, lightLeakColor: '#80deea', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 25, glowColor: '#80deea', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'float', intensity: 0.3, speed: 0.5 } }),
+        createElement('brand', { name: 'نام برند', text: 'WINTER', x: 960, y: 800, fontSize: 90, fontWeight: 300, color: '#ffffff', letterSpacing: 8, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 1, easing: 'easeOutCubic' } }),
+        createElement('tagline', { name: 'شعار', text: 'سرما • آرامش • زمستان', x: 960, y: 900, fontSize: 26, fontWeight: 400, color: '#80deea', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    matrix: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'matrixRain', color1: '#000000', color2: '#003300', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#22c55e', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.04, blur: 0, brightness: 1, contrast: 1.2, saturate: 1.3 },
+      effects: { bloom: 0.3, bloomThreshold: 0.5, chromaticAberration: 2, lightLeak: 0, lightLeakColor: '#22c55e', filmGrain: 0, scanlines: 0.2, vignette: 0.4, sharpen: 0, glitch: 0.05, rgbShift: 1, flicker: 0.1, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 30, glowColor: '#22c55e', entrance: { enabled: true, type: 'pixelate', duration: 1, delay: 0, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'MATRIX', x: 960, y: 800, fontSize: 100, fontWeight: 900, color: '#22c55e', glow: 25, glowColor: '#22c55e', entrance: { enabled: true, type: 'typewriter', duration: 1.5, delay: 0.5 } }),
+        createElement('tagline', { name: 'شعار', text: 'FOLLOW THE WHITE RABBIT', x: 960, y: 900, fontSize: 24, fontWeight: 400, color: '#22c55e', letterSpacing: 3, entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    cosmic: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 8 },
+      background: { type: 'starfield', color1: '#000011', color2: '#1a0033', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#ffffff', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 300, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.03, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.4, bloomThreshold: 0.5, chromaticAberration: 1, lightLeak: 0.15, lightLeakColor: '#a855f7', filmGrain: 0, scanlines: 0, vignette: 0.4, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0.05, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 430, height: 430, glow: 35, glowColor: '#a855f7', entrance: { enabled: true, type: 'materialize', duration: 1.5, delay: 0, easing: 'easeOutCubic' }, hold: { enabled: true, type: 'breathe', intensity: 0.4, speed: 0.4 } }),
+        createElement('brand', { name: 'نام برند', text: 'COSMIC', x: 960, y: 800, fontSize: 90, fontWeight: 700, color: '#ffffff', textGradient: true, textGradientColor1: '#a855f7', textGradientColor2: '#6366f1', glow: 20, glowColor: '#a855f7', entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 1 } }),
+        createElement('tagline', { name: 'شعار', text: 'بی‌نهایت • کیهانی • جاودان', x: 960, y: 900, fontSize: 26, fontWeight: 300, color: '#c4b5fd', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    energetic2: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 5 },
+      background: { type: 'energyField', color1: '#1a0033', color2: '#FF003C', color3: '#00F0FF', angle: 135, particleCount: 80, particleColor: '#FCEE0A', particleSpeed: 2, particleSize: 3, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 80, waveFrequency: 2, vignette: 0.4, grain: 0, blur: 0, brightness: 1, contrast: 1.1, saturate: 1.4 },
+      effects: { bloom: 0.4, bloomThreshold: 0.5, chromaticAberration: 3, lightLeak: 0.15, lightLeakColor: '#FF003C', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0.05, rgbShift: 2, flicker: 0.15, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 420, height: 420, glow: 35, glowColor: '#FCEE0A', entrance: { enabled: true, type: 'explode', duration: 0.8, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'pulse', intensity: 0.4, speed: 2 } }),
+        createElement('brand', { name: 'نام برند', text: 'POWER!', x: 960, y: 800, fontSize: 110, fontWeight: 900, color: '#ffffff', textGradient: true, textGradientColor1: '#FCEE0A', textGradientColor2: '#FF003C', glow: 25, glowColor: '#FCEE0A', entrance: { enabled: true, type: 'slideLeft', duration: 0.5, delay: 0.5, easing: 'easeOutQuart' }, hold: { enabled: true, type: 'shake', intensity: 0.2, speed: 4 } }),
+        createElement('tagline', { name: 'شعار', text: 'انرژی • سرعت • قدرت', x: 960, y: 920, fontSize: 28, fontWeight: 700, color: '#00F0FF', letterSpacing: 4, entrance: { enabled: true, type: 'slideRight', duration: 0.5, delay: 1 } }),
+      ],
+    },
+    vintage2: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'mountain', color1: '#3E2723', color2: '#5D4037', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#D7CCC8', particleSpeed: 0.5, particleSize: 1.5, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.12, blur: 0, brightness: 0.95, contrast: 1.1, saturate: 0.7 },
+      effects: { bloom: 0.1, bloomThreshold: 0.7, chromaticAberration: 1, lightLeak: 0.3, lightLeakColor: '#FF9800', filmGrain: 0.3, scanlines: 0, vignette: 0.5, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0.05, sepia: 0.4, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 380, height: 380, glow: 5, glowColor: '#D7CCC8', entrance: { enabled: true, type: 'fade', duration: 2, delay: 0, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'VINTAGE', x: 960, y: 780, fontSize: 80, fontWeight: 700, color: '#FFE0B2', letterSpacing: 6, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 0.8 } }),
+        createElement('tagline', { name: 'شعار', text: 'کلاسیک • نوستالژی • اصالت', x: 960, y: 880, fontSize: 24, fontWeight: 300, color: '#BCAAA4', letterSpacing: 3, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 1.3 } }),
+      ],
+    },
+    game: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'matrixRain', color1: '#0a0a0a', color2: '#1a1a1a', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#00ff00', particleSpeed: 1.5, particleSize: 2, gridColor: '#00ff00', gridSize: 40, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.04, blur: 0, brightness: 1, contrast: 1.2, saturate: 1.2 },
+      effects: { bloom: 0.3, bloomThreshold: 0.5, chromaticAberration: 4, lightLeak: 0, lightLeakColor: '#00ff00', filmGrain: 0, scanlines: 0.3, vignette: 0.4, sharpen: 0.1, glitch: 0.1, rgbShift: 3, flicker: 0.1, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 30, glowColor: '#00ff00', entrance: { enabled: true, type: 'pixelate', duration: 0.8, delay: 0, easing: 'easeOutBack' } }),
+        createElement('brand', { name: 'نام برند', text: 'GAME ON', x: 960, y: 800, fontSize: 100, fontWeight: 900, color: '#00ff00', textStroke: true, textStrokeColor: '#000000', textStrokeWidth: 3, glow: 20, glowColor: '#00ff00', entrance: { enabled: true, type: 'slideLeft', duration: 0.5, delay: 0.5, easing: 'easeOutQuart' } }),
+        createElement('tagline', { name: 'شعار', text: 'PRESS START TO PLAY', x: 960, y: 900, fontSize: 24, fontWeight: 600, color: '#00ff00', letterSpacing: 4, entrance: { enabled: true, type: 'typewriter', duration: 1.5, delay: 1 } }),
+      ],
+    },
+    luxury2: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 8 },
+      background: { type: 'radialGradient', color1: '#1a1a1a', color2: '#000000', color3: '#D4AF37', angle: 135, particleCount: 30, particleColor: '#D4AF37', particleSpeed: 0.3, particleSize: 1.5, gridColor: '#1a1a24', gridSize: 60, starCount: 80, bokehCount: 15, bokehColor: '#D4AF37', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.04, blur: 0, brightness: 1, contrast: 1.05, saturate: 1 },
+      effects: { bloom: 0.25, bloomThreshold: 0.7, chromaticAberration: 0, lightLeak: 0.2, lightLeakColor: '#D4AF37', filmGrain: 0, scanlines: 0, vignette: 0.4, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0, sepia: 0.1, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 380, height: 380, glow: 20, glowColor: '#D4AF37', entrance: { enabled: true, type: 'materialize', duration: 2, delay: 0, easing: 'easeOutCubic' }, hold: { enabled: true, type: 'breathe', intensity: 0.3, speed: 0.4 } }),
+        createElement('divider', { name: 'خط جدا', x: 960, y: 690, width: 200, height: 2, color: '#D4AF37', backgroundColor: '#D4AF37', entrance: { enabled: true, type: 'draw', duration: 1, delay: 1.5, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'LUXURY', x: 960, y: 770, fontSize: 80, fontWeight: 300, color: '#D4AF37', textGradient: true, textGradientColor1: '#FFD700', textGradientColor2: '#D4AF37', letterSpacing: 10, entrance: { enabled: true, type: 'fade', duration: 2, delay: 2, easing: 'easeOutCubic' } }),
+        createElement('tagline', { name: 'شعار', text: 'فاخر • منحصر • بی‌نظیر', x: 960, y: 870, fontSize: 24, fontWeight: 400, color: '#a0a0a0', letterSpacing: 5, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 2.5 } }),
+      ],
+    },
+    neon2: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'grid', color1: '#0a0010', color2: '#FF00FF', color3: '#00FFFF', angle: 135, particleCount: 80, particleColor: '#FF00FF', particleSpeed: 1, particleSize: 2, gridColor: '#FF00FF', gridSize: 50, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.05, blur: 0, brightness: 1, contrast: 1.1, saturate: 1.3 },
+      effects: { bloom: 0.5, bloomThreshold: 0.4, chromaticAberration: 4, lightLeak: 0.1, lightLeakColor: '#FF00FF', filmGrain: 0, scanlines: 0.1, vignette: 0.4, sharpen: 0, glitch: 0.05, rgbShift: 3, flicker: 0.15, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 50, glowColor: '#00FFFF', entrance: { enabled: true, type: 'spiral', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'glowPulse', intensity: 0.6, speed: 2 } }),
+        createElement('brand', { name: 'نام برند', text: 'NEON', x: 960, y: 800, fontSize: 120, fontWeight: 900, color: '#00FFFF', textGradient: true, textGradientColor1: '#00FFFF', textGradientColor2: '#FF00FF', glow: 40, glowColor: '#00FFFF', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1 }, hold: { enabled: true, type: 'flicker', intensity: 0.3, speed: 3 } }),
+        createElement('tagline', { name: 'شعار', text: 'GLOW • BRIGHT • ELECTRIC', x: 960, y: 920, fontSize: 22, fontWeight: 600, color: '#FF00FF', letterSpacing: 4, entrance: { enabled: true, type: 'typewriter', duration: 1.5, delay: 1.5 } }),
+      ],
+    },
+    rain2: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'rain', color1: '#1a1a2e', color2: '#16213e', color3: '#6366f1', angle: 135, particleCount: 200, particleColor: '#4FC3F7', particleSpeed: 2, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.05, blur: 0, brightness: 0.9, contrast: 1, saturate: 0.9 },
+      effects: { bloom: 0.2, bloomThreshold: 0.6, chromaticAberration: 1, lightLeak: 0.05, lightLeakColor: '#4FC3F7', filmGrain: 0, scanlines: 0, vignette: 0.4, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0, sepia: 0.1, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 20, glowColor: '#4FC3F7', entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 0, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'RAIN', x: 960, y: 800, fontSize: 100, fontWeight: 300, color: '#ffffff', letterSpacing: 12, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 0.8 } }),
+        createElement('tagline', { name: 'شعار', text: 'آرامش • تازگی • پاکی', x: 960, y: 900, fontSize: 26, fontWeight: 300, color: '#4FC3F7', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    spiral2: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'spiral', color1: '#000033', color2: '#6366f1', color3: '#a855f7', angle: 135, particleCount: 80, particleColor: '#a855f7', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.4, grain: 0.04, blur: 0, brightness: 1, contrast: 1, saturate: 1.1 },
+      effects: { bloom: 0.3, bloomThreshold: 0.5, chromaticAberration: 2, lightLeak: 0.1, lightLeakColor: '#a855f7', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 1, flicker: 0, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 420, height: 420, glow: 25, glowColor: '#a855f7', entrance: { enabled: true, type: 'spiral', duration: 1.5, delay: 0, easing: 'easeOutCubic' }, hold: { enabled: true, type: 'spiral', intensity: 0.3, speed: 0.5 } }),
+        createElement('brand', { name: 'نام برند', text: 'INFINITY', x: 960, y: 800, fontSize: 90, fontWeight: 800, color: '#ffffff', textGradient: true, textGradientColor1: '#6366f1', textGradientColor2: '#a855f7', glow: 20, glowColor: '#a855f7', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1 } }),
+        createElement('tagline', { name: 'شعار', text: 'بی‌نهایت در حرکت', x: 960, y: 900, fontSize: 28, fontWeight: 400, color: '#c4b5fd', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
       ],
     },
   };
