@@ -1,0 +1,63 @@
+{
+  "name": "نمونه شرکتی - شرکت نمونه",
+  "canvas": { "width": 1920, "height": 1080, "fps": 30, "duration": 6 },
+  "background": {
+    "type": "linearGradient", "color1": "#0f172a", "color2": "#1e3a8a", "color3": "#6366f1",
+    "angle": 180, "particleCount": 50, "particleColor": "#6366f1", "particleSpeed": 0.5, "particleSize": 2,
+    "gridColor": "#1a1a24", "gridSize": 60, "starCount": 150, "bokehCount": 25, "bokehColor": "#6366f1",
+    "auroraColors": ["#6366f1","#a855f7","#ec4899"], "waveAmplitude": 50, "waveFrequency": 1,
+    "vignette": 0.3, "grain": 0.03, "blur": 0, "brightness": 1, "contrast": 1, "saturate": 1
+  },
+  "effects": {
+    "bloom": 0.1, "bloomThreshold": 0.6, "chromaticAberration": 0, "lightLeak": 0,
+    "lightLeakColor": "#ff6b6b", "filmGrain": 0, "scanlines": 0, "vignette": 0.2,
+    "sharpen": 0, "glitch": 0, "rgbShift": 0, "flicker": 0, "sepia": 0, "hueRotate": 0, "blur": 0, "invert": false
+  },
+  "audio": { "enabled": false, "src": null, "volume": 0.5, "fade": true },
+  "elements": [
+    {
+      "id": "el_logo_c1", "type": "logo", "name": "لوگو", "visible": true, "locked": false,
+      "x": 960, "y": 420, "width": 400, "height": 400, "rotation": 0, "opacity": 1,
+      "color": "#ffffff", "backgroundColor": "transparent", "borderColor": "transparent", "borderWidth": 0, "borderRadius": 0,
+      "text": "", "fontSize": 64, "fontFamily": "Vazirmatn", "fontWeight": 700, "textAlign": "center", "lineHeight": 1.2, "letterSpacing": 0,
+      "shape": "rectangle", "src": null, "glow": 15, "glowColor": "#3b82f6",
+      "shadowX": 0, "shadowY": 0, "shadowBlur": 0, "shadowColor": "#000000", "skewX": 0, "skewY": 0,
+      "entrance": { "enabled": true, "type": "fade", "duration": 1, "delay": 0, "easing": "easeOutCubic" },
+      "hold": { "enabled": false, "type": "pulse", "intensity": 0.5, "speed": 1 },
+      "exit": { "enabled": false, "type": "fade", "duration": 0.8, "easing": "easeOutCubic" }
+    },
+    {
+      "id": "el_brand_c1", "type": "brand", "name": "نام برند", "visible": true, "locked": false,
+      "x": 960, "y": 720, "width": 800, "height": 120, "rotation": 0, "opacity": 1,
+      "color": "#ffffff", "backgroundColor": "transparent", "borderColor": "transparent", "borderWidth": 0, "borderRadius": 0,
+      "text": "شرکت نمونه", "fontSize": 72, "fontFamily": "Vazirmatn", "fontWeight": 700, "textAlign": "center", "lineHeight": 1.2, "letterSpacing": 0,
+      "shape": "rectangle", "src": null, "glow": 10, "glowColor": "#3b82f6",
+      "shadowX": 0, "shadowY": 0, "shadowBlur": 0, "shadowColor": "#000000", "skewX": 0, "skewY": 0,
+      "entrance": { "enabled": true, "type": "fade", "duration": 1, "delay": 0.5, "easing": "easeOutCubic" },
+      "hold": { "enabled": false, "type": "pulse", "intensity": 0.5, "speed": 1 },
+      "exit": { "enabled": false, "type": "fade", "duration": 0.8, "easing": "easeOutCubic" }
+    },
+    {
+      "id": "el_tagline_c1", "type": "tagline", "name": "شعار", "visible": true, "locked": false,
+      "x": 960, "y": 810, "width": 800, "height": 60, "rotation": 0, "opacity": 1,
+      "color": "#94a3b8", "backgroundColor": "transparent", "borderColor": "transparent", "borderWidth": 0, "borderRadius": 0,
+      "text": "حرفه‌ای • قابل اعتماد • نوآور", "fontSize": 28, "fontFamily": "Vazirmatn", "fontWeight": 400, "textAlign": "center", "lineHeight": 1.2, "letterSpacing": 2,
+      "shape": "rectangle", "src": null, "glow": 0, "glowColor": "#6366f1",
+      "shadowX": 0, "shadowY": 0, "shadowBlur": 0, "shadowColor": "#000000", "skewX": 0, "skewY": 0,
+      "entrance": { "enabled": true, "type": "fade", "duration": 1, "delay": 1, "easing": "easeOutCubic" },
+      "hold": { "enabled": false, "type": "pulse", "intensity": 0.5, "speed": 1 },
+      "exit": { "enabled": false, "type": "fade", "duration": 0.8, "easing": "easeOutCubic" }
+    },
+    {
+      "id": "el_phone_c1", "type": "phone", "name": "تلفن", "visible": true, "locked": false,
+      "x": 960, "y": 900, "width": 500, "height": 50, "rotation": 0, "opacity": 1,
+      "color": "#64748b", "backgroundColor": "transparent", "borderColor": "transparent", "borderWidth": 0, "borderRadius": 0,
+      "text": "۰۲۱-۱۲۳۴۵۶۷۸", "fontSize": 24, "fontFamily": "Vazirmatn", "fontWeight": 400, "textAlign": "center", "lineHeight": 1.2, "letterSpacing": 0,
+      "shape": "rectangle", "src": null, "glow": 0, "glowColor": "#6366f1",
+      "shadowX": 0, "shadowY": 0, "shadowBlur": 0, "shadowColor": "#000000", "skewX": 0, "skewY": 0,
+      "entrance": { "enabled": true, "type": "fade", "duration": 0.8, "delay": 1.5, "easing": "easeOutCubic" },
+      "hold": { "enabled": false, "type": "pulse", "intensity": 0.5, "speed": 1 },
+      "exit": { "enabled": false, "type": "fade", "duration": 0.8, "easing": "easeOutCubic" }
+    }
+  ]
+}

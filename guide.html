@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>راهنمای تصویری Logo Motion Studio Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@page { size: 720px 1020px; margin: 0; }
+:root {
+  --c-bg: #0a0a12;
+  --c-card: #14141f;
+  --c-card-2: #1a1a28;
+  --c-text: #f0f0f5;
+  --c-text-2: #a0a0b0;
+  --c-text-3: #606078;
+  --c-accent: #6366f1;
+  --c-accent-2: #a855f7;
+  --c-accent-3: #ec4899;
+  --c-success: #22c55e;
+  --c-warning: #f59e0b;
+  --c-danger: #ef4444;
+  --c-border: #2a2a3a;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 720px;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: 'Vazirmatn', sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
+}
+@media screen {
+  html { display: flex; justify-content: center; background: #222; height: auto; }
+  body { margin: 20px auto; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+}
+
+/* ===== Cover ===== */
+.cover {
+  width: 720px;
+  height: 1020px;
+  background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #2d1b4e 100%);
+  position: relative;
+  overflow: hidden;
+  break-after: page;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 70px;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(99,102,241,0.3), transparent 70%);
+  border-radius: 50%;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  bottom: -150px; left: -150px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(168,85,247,0.25), transparent 70%);
+  border-radius: 50%;
+}
+.cover-logo {
+  width: 120px; height: 120px;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-accent-2));
+  border-radius: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 60px;
+  margin-bottom: 36px;
+  box-shadow: 0 20px 60px rgba(99,102,241,0.5);
+  position: relative;
+  z-index: 2;
+}
+.cover-badge {
+  background: rgba(99,102,241,0.15);
+  border: 1px solid rgba(99,102,241,0.4);
+  color: var(--c-accent);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 2;
+}
+.cover-title {
+  font-size: 56px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 2;
+}
+.cover-subtitle {
+  font-size: 18px;
+  color: var(--c-text-2);
+  text-align: center;
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 2;
+  font-weight: 300;
+}
+.cover-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 2;
+}
+.cover-feature {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+}
+.cover-feature .ico {
+  font-size: 20px;
+  width: 32px; height: 32px;
+  background: rgba(99,102,241,0.2);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cover-footer {
+  position: absolute;
+  bottom: 36px;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 11px;
+  color: var(--c-text-3);
+  z-index: 2;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  padding: 50px 55px 40px 55px;
+}
+.chapter-header {
+  break-after: avoid;
+  break-inside: avoid;
+  margin-top: 28px;
+  margin-bottom: 18px;
+}
+.chapter-header:first-child { margin-top: 0; }
+.chapter-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-accent-2));
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.chapter-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--c-text);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.chapter-desc {
+  font-size: 12px;
+  color: var(--c-text-2);
+  margin-bottom: 12px;
+}
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, var(--c-accent), transparent);
+  margin-bottom: 18px;
+}
+
+.body-text {
+  font-size: 13px;
+  color: var(--c-text);
+  line-height: 1.85;
+  margin-bottom: 12px;
+  text-align: justify;
+}
+.body-text strong { color: var(--c-accent); font-weight: 700; }
+
+/* Step card */
+.step-card {
+  break-inside: avoid;
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  display: flex;
+  gap: 16px;
+}
+.step-num {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-accent-2));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+}
+.step-content { flex: 1; }
+.step-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--c-text);
+}
+.step-desc {
+  font-size: 12px;
+  color: var(--c-text-2);
+  line-height: 1.7;
+}
+.step-desc strong { color: var(--c-accent); }
+
+/* Feature grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+  break-inside: avoid;
+}
+.feature-item {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.feature-ico {
+  font-size: 22px;
+  width: 36px; height: 36px;
+  background: rgba(99,102,241,0.15);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.feature-info { flex: 1; }
+.feature-name { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.feature-desc { font-size: 10px; color: var(--c-text-2); line-height: 1.5; }
+
+/* Tip box */
+.tip-box {
+  background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.03));
+  border: 1px solid rgba(34,197,94,0.3);
+  border-right: 4px solid var(--c-success);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  break-inside: avoid;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.tip-box .tip-label {
+  color: var(--c-success);
+  font-weight: 700;
+  margin-left: 6px;
+}
+.warning-box {
+  background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.03));
+  border: 1px solid rgba(245,158,11,0.3);
+  border-right: 4px solid var(--c-warning);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 14px 0;
+  break-inside: avoid;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.warning-box .warn-label {
+  color: var(--c-warning);
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+/* Color swatches */
+.color-row {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
+  break-inside: avoid;
+}
+.swatch {
+  flex: 1;
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.swatch-color {
+  height: 50px;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.swatch-info {
+  padding: 6px 10px;
+  font-size: 10px;
+  color: var(--c-text-2);
+}
+
+/* Stat */
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+  break-inside: avoid;
+}
+.stat-card {
+  background: linear-gradient(135deg, var(--c-card), var(--c-card-2));
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+.stat-num {
+  font-size: 28px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 10px;
+  color: var(--c-text-2);
+  font-weight: 500;
+}
+
+/* Keyboard shortcut */
+.shortcut-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  break-inside: avoid;
+}
+.kbd {
+  background: var(--c-card-2);
+  border: 1px solid var(--c-border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 3px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-accent);
+  min-width: 30px;
+  text-align: center;
+}
+.shortcut-desc { color: var(--c-text-2); flex: 1; }
+
+/* Two-column list */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 12px 0;
+  break-inside: avoid;
+}
+.col-item {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.col-item .ico {
+  font-size: 16px;
+  color: var(--c-accent);
+}
+
+/* Diagram */
+.diagram {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 14px 0;
+  break-inside: avoid;
+}
+.diagram-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c-text-2);
+  margin-bottom: 12px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.flow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.flow-step {
+  background: var(--c-card-2);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  position: relative;
+}
+.flow-step::after {
+  content: '↓';
+  position: absolute;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--c-accent);
+  font-size: 14px;
+}
+.flow-step:last-child::after { display: none; }
+.flow-step .ico {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--c-accent), var(--c-accent-2));
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* Section divider */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--c-border), transparent);
+  margin: 24px 0;
+}
+
+/* Ending */
+.ending {
+  width: 720px;
+  height: 1020px;
+  background: linear-gradient(135deg, #0a0a12 0%, #1a1a2e 50%, #2d1b4e 100%);
+  break-before: page;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 70px;
+  position: relative;
+}
+.ending::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(99,102,241,0.2), transparent 60%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.ending-icon {
+  font-size: 80px;
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+}
+.ending-title {
+  font-size: 36px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, #fff, #c4b5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.ending-text {
+  font-size: 14px;
+  color: var(--c-text-2);
+  text-align: center;
+  max-width: 480px;
+  line-height: 1.8;
+  margin-bottom: 36px;
+  position: relative;
+  z-index: 2;
+}
+.ending-cta {
+  background: linear-gradient(135deg, var(--c-accent), var(--c-accent-2));
+  color: white;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 8px 24px rgba(99,102,241,0.4);
+}
+.ending-footer {
+  position: absolute;
+  bottom: 40px;
+  font-size: 11px;
+  color: var(--c-text-3);
+  z-index: 2;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="cover-logo">🎬</div>
+  <div class="cover-badge">PRO EDITION v2.0</div>
+  <div class="cover-title">راهنمای تصویری<br>Logo Motion Studio</div>
+  <div class="cover-subtitle">استودیو حرفه‌ای ساخت لوگوموشن‌های سینمایی</div>
+  <div class="cover-features">
+    <div class="cover-feature"><div class="ico">✨</div><div>۳۰+ انیمیشن ورود</div></div>
+    <div class="cover-feature"><div class="ico">🎨</div><div>۲۰+ پس‌زمینه</div></div>
+    <div class="cover-feature"><div class="ico">📐</div><div>۱۲ قالب آماده</div></div>
+    <div class="cover-feature"><div class="ico">🔊</div><div>پشتیبانی صدا</div></div>
+  </div>
+  <div class="cover-footer">ساخته‌شده با ❤️ برای خالقان برند</div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+<!-- Chapter 1: معرفی -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۱</div>
+  <div class="chapter-title">معرفی اپلیکیشن</div>
+  <div class="chapter-desc">آشنایی با امکانات و قابلیت‌های Logo Motion Studio Pro</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  <strong>Logo Motion Studio Pro</strong> یک اپلیکیشن وب حرفه‌ای و کامل برای ساخت انیمیشن‌های لوگو و معرفی برند است. این ابزار به شما امکان می‌دهد بدون نیاز به نرم‌افزارهای پیچیده مانند After Effects، لوگوموشن‌های سینمایی با کیفیت بالا بسازید. کافیست فایل HTML را در مرورگر باز کنید و کار را شروع کنید.
+</div>
+
+<div class="stat-row">
+  <div class="stat-card"><div class="stat-num">۱۲</div><div class="stat-label">قالب آماده</div></div>
+  <div class="stat-card"><div class="stat-num">۵۰+</div><div class="stat-label">انیمیشن</div></div>
+  <div class="stat-card"><div class="stat-num">۲۰+</div><div class="stat-label">پس‌زمینه</div></div>
+</div>
+
+<div class="body-text">
+  اپلیکیشن شامل پنج تب اصلی است: <strong>ویژگی‌ها</strong> برای تنظیمات هر عنصر، <strong>انیمیشن</strong> برای کنترل ورود/خروج/حلقه، <strong>پس‌زمینه</strong> برای تنظیمات صحنه، <strong>افکت‌ها</strong> برای فیلترهای سینمایی، و <strong>صدا</strong> برای افزودن موسیقی. تمام تنظیمات به صورت زنده در پیش‌نمایش اعمال می‌شوند.
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">💡 نکته:</span>
+  این اپلیکیشن کاملاً در مرورگر شما اجرا می‌شود و نیازی به نصب یا اینترنت ندارد (پس از اولین بارگذاری). تمام اطلاعات شما محرمانه می‌مانند.
+</div>
+
+<!-- Chapter 2: شروع سریع -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۲</div>
+  <div class="chapter-title">شروع سریع در ۵ قدم</div>
+  <div class="chapter-desc">از صفر تا اولین لوگوموشن در کمتر از ۵ دقیقه</div>
+  <div class="divider"></div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">۱</div>
+  <div class="step-content">
+    <div class="step-title">باز کردن فایل HTML در مرورگر</div>
+    <div class="step-desc">
+      فایل <strong>logo-motion-studio-pro.html</strong> را با دابل‌کلیک در مرورگر Chrome یا Edge باز کنید. اپلیکیشن بلافاصله با یک قالب آماده سینمایی بارگذاری می‌شود تا دیدنید همه چیز چطور کار می‌کند.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">۲</div>
+  <div class="step-content">
+    <div class="step-title">انتخاب قالب آماده یا شروع از صفر</div>
+    <div class="step-desc">
+      روی دکمه <strong>✨ قالب‌ها</strong> در نوار بالا کلیک کنید تا ۱۲ قالب آماده را ببینید: سینمایی، مینیمال، پرانرژی، شرکتی، گرادیان، درخشش نئون، شفق قطبی، رترو ۸۰s، شیک و لاکچری، تکنولوژی، کاغذی، اقیانوس. هر قالب آماده شامل عناصر و انیمیشن‌های پیش‌فرض است.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">۳</div>
+  <div class="step-content">
+    <div class="step-title">افزودن عناصر خود</div>
+    <div class="step-desc">
+      از پنل چپ، روی دکمه‌های افزودن عنصر کلیک کنید: <strong>🖼️ لوگو</strong> (سپس تصویر آپلود کنید)، <strong>⭐ نام برند</strong>، <strong>💬 شعار</strong>، <strong>📞 تلفن</strong>، <strong>🌐 وب‌سایت</strong> و غیره. هر عنصر در مرکز صفحه قرار می‌گیرد و می‌توانید با موس آن را بکشید.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">۴</div>
+  <div class="step-content">
+    <div class="step-title">تنظیم انیمیشن‌ها</div>
+    <div class="step-desc">
+      عنصر را از لیست انتخاب کنید، سپس به تب <strong>🎬 انیمیشن</strong> در پنل راست بروید. نوع انیمیشن ورود (۳۰+ گزینه)، انیمیشن حلقه (نبض، شناور، درخشش...) و انیمیشن خروج را انتخاب کنید. مدت، تأخیر و منحنی easing را تنظیم کنید.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">۵</div>
+  <div class="step-content">
+    <div class="step-title">پخش و خروجی گرفتن</div>
+    <div class="step-desc">
+      دکمه <strong>▶</strong> را بزنید تا انیمیشن را ببینید. وقتی راضی شدید، روی <strong>⬇️ خروجی</strong> کلیک کنید و فرمت دلخواه را انتخاب کنید: ویدیو WebM، دنباله PNG در ZIP، فریم فعلی PNG، یا فایل پروژه JSON.
+    </div>
+  </div>
+</div>
+
+<!-- Chapter 3: عناصر -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۳</div>
+  <div class="chapter-title">انواع عناصر</div>
+  <div class="chapter-desc">۱۲ نوع عنصر قابل افزودن به انیمیشن</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  اپلیکیشن از ۱۲ نوع عنصر مختلف پشتیبانی می‌کند. هر عنصر دارای ویژگی‌های خاص خود است و می‌توانید موقعیت، اندازه، چرخش، شفافیت و استایل آن را تنظیم کنید.
+</div>
+
+<div class="feature-grid">
+  <div class="feature-item"><div class="feature-ico">🖼️</div><div class="feature-info"><div class="feature-name">لوگو</div><div class="feature-desc">آپلود تصویر لوگو با هر فرمت</div></div></div>
+  <div class="feature-item"><div class="feature-ico">⭐</div><div class="feature-info"><div class="feature-name">نام برند</div><div class="feature-desc">متن اصلی برند با فونت بزرگ</div></div></div>
+  <div class="feature-item"><div class="feature-ico">💬</div><div class="feature-info"><div class="feature-name">شعار</div><div class="feature-desc">توضیحات کوتاه برند</div></div></div>
+  <div class="feature-item"><div class="feature-ico">📝</div><div class="feature-info"><div class="feature-name">متن آزاد</div><div class="feature-desc">هر متنی که بخواهید</div></div></div>
+  <div class="feature-item"><div class="feature-ico">📞</div><div class="feature-info"><div class="feature-name">تلفن</div><div class="feature-desc">شماره تماس</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🌐</div><div class="feature-info"><div class="feature-name">وب‌سایت</div><div class="feature-desc">آدرس سایت</div></div></div>
+  <div class="feature-item"><div class="feature-ico">✉️</div><div class="feature-info"><div class="feature-name">ایمیل</div><div class="feature-desc">آدرس ایمیل</div></div></div>
+  <div class="feature-item"><div class="feature-ico">📍</div><div class="feature-info"><div class="feature-name">آدرس</div><div class="feature-desc">موقعیت مکانی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">⬜</div><div class="feature-info"><div class="feature-name">شکل</div><div class="feature-desc">مستطیل، دایره، مثلث، ستاره</div></div></div>
+  <div class="feature-item"><div class="feature-ico">✦</div><div class="feature-info"><div class="feature-name">آیکون</div><div class="feature-desc">آیکون‌های یونیکد</div></div></div>
+  <div class="feature-item"><div class="feature-ico">─</div><div class="feature-info"><div class="feature-name">خط جدا</div><div class="feature-desc">خط جداکننده افقی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">◍</div><div class="feature-info"><div class="feature-name">شبکه اجتماعی</div><div class="feature-desc">آیکون شبکه‌های اجتماعی</div></div></div>
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">💡 نکته:</span>
+  می‌توانید با کلیک روی دکمه <strong>⎘</strong> هر عنصر را کپی کنید. با کشیدن عناصر در لیست چپ می‌توانید ترتیب آن‌ها را تغییر دهید (عناصر بالایی روی عناصر پایینی رسم می‌شوند).
+</div>
+
+<!-- Chapter 4: انیمیشن‌ها -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۴</div>
+  <div class="chapter-title">سیستم انیمیشن سه‌مرحله‌ای</div>
+  <div class="chapter-desc">ورود، نگه‌داشتن، خروج - هر عنصر سه مرحله انیمیشن دارد</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  هر عنصر در اپلیکیشن دارای سه مرحله انیمیشن است که در تب <strong>🎬 انیمیشن</strong> قابل تنظیم است. این سیستم به شما امکان می‌دهد انیمیشن‌های پیچیده و حرفه‌ای بسازید.
+</div>
+
+<div class="diagram">
+  <div class="diagram-title">مراحل انیمیشن هر عنصر</div>
+  <div class="flow-steps">
+    <div class="flow-step"><div class="ico">📥</div><div><strong>ورود (Entrance):</strong> نحوه ظاهر شدن عنصر — مدت، تأخیر، نوع انیمیشن</div></div>
+    <div class="flow-step"><div class="ico">🔄</div><div><strong>نگه‌داشتن (Hold):</strong> انیمیشن حلقه در حین نمایش — نبض، شناور، درخشش</div></div>
+    <div class="flow-step"><div class="ico">📤</div><div><strong>خروج (Exit):</strong> نحوه ناپدید شدن — در پایان انیمیشن رخ می‌دهد</div></div>
+  </div>
+</div>
+
+<div class="body-text">
+  <strong>۳۰+ انیمیشن ورود:</strong> فید، بزرگ‌نمایی، پاپ، اسلاید از ۴ جهت، زوم داخل/خارج، چرخش، فلیپ ۲D/۳D، فید بلر، تایپ کردن، ریختن حروف، پرشی، الاستیک، تجمع ذرات، غلتیدن، پاک‌کن، خط اسکن، گلیچ، رسم خط و...
+</div>
+
+<div class="body-text">
+  <strong>۱۴ انیمیشن حلقه:</strong> نبض، شناور، چرخش، درخشش، نفس کشیدن، تاب خوردن، لرزش، پرش، لرزش آونگ، ضربان قلب، موج، مدار، سوسو زدن و...
+</div>
+
+<div class="body-text">
+  <strong>۱۷ انیمیشن خروج:</strong> فید، کوچک‌نمایی، اسلاید به ۴ جهت، زوم، چرخش، بلر، انحلال، جمع شدن، فروریختن، پر شدن، گلیچ خارج و...
+</div>
+
+<div class="warning-box">
+  <span class="warn-label">⚠️ توجه:</span>
+  انیمیشن خروج همیشه در پایان کل انیمیشن رخ می‌دهد. اگر مدت کل ۷ ثانیه و مدت خروج ۱ ثانیه باشد، خروج از ثانیه ۶ شروع می‌شود. مراقب باشید انیمیشن ورود با خروج هم‌پوشانی نداشته باشد.
+</div>
+
+<!-- Chapter 5: ایزینگ‌ها -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۵</div>
+  <div class="chapter-title">منحنی‌های Easing حرفه‌ای</div>
+  <div class="chapter-desc">۴۰+ منحنی سرعت برای حرکت طبیعی</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  منحنی‌های Easing سرعت تغییر در طول انیمیشن را کنترل می‌کنند. انتخاب درست easing تفاوت بین یک انیمیشن آماتور و حرفه‌ای است. به عنوان قانون کلی، <strong>easeOut</strong> برای ورود (شروع سریع، پایان آرام) و <strong>easeIn</strong> برای خروج (شروع آرام، پایان سریع) مناسب‌تر است.
+</div>
+
+<div class="two-col">
+  <div class="col-item"><span class="ico">▸</span><span>linear - خطی</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Quad - درجه ۲</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Cubic - درجه ۳</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Quart - درجه ۴</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Quint - درجه ۵</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Sine - سینوسی</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Expo - نمایی</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Circ - دایره‌ای</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Back - برگشتی</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Elastic - الاستیک</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Bounce - پرشی</span></div>
+  <div class="col-item"><span class="ico">▸</span><span>Step - پله‌ای</span></div>
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">💡 پیشنهاد:</span>
+  برای لوگو از <strong>easeOutBack</strong> (با کمی overshoot) استفاده کنید. برای متن از <strong>easeOutCubic</strong> یا <strong>easeOutQuart</strong>. برای خروج از <strong>easeInCubic</strong>. این ترکیب کلاسیک و حرفه‌ای است.
+</div>
+
+<!-- Chapter 6: پس‌زمینه‌ها -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۶</div>
+  <div class="chapter-title">۲۰ نوع پس‌زمینه حرفه‌ای</div>
+  <div class="chapter-desc">از رنگ ثابت تا شفق قطبی و ماتریکس</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  در تب <strong>🎨 پس‌زمینه</strong> می‌توانید از ۲۰ نوع پس‌زمینه مختلف انتخاب کنید. هر پس‌زمینه دارای تنظیمات اختصاصی خود است: رنگ‌ها، تعداد ذرات، سرعت، اندازه و...
+</div>
+
+<div class="feature-grid">
+  <div class="feature-item"><div class="feature-ico">■</div><div class="feature-info"><div class="feature-name">رنگ ثابت</div><div class="feature-desc">ساده و مینیمال</div></div></div>
+  <div class="feature-item"><div class="feature-ico">▤</div><div class="feature-info"><div class="feature-name">گرادیان خطی</div><div class="feature-desc">گرادیان با زاویه دلخواه</div></div></div>
+  <div class="feature-item"><div class="feature-ico">◉</div><div class="feature-info"><div class="feature-name">گرادیان شعاعی</div><div class="feature-desc">گرادیان از مرکز به اطراف</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🌈</div><div class="feature-info"><div class="feature-name">گرادیان متحرک</div><div class="feature-desc">گرادیان چرخان زنده</div></div></div>
+  <div class="feature-item"><div class="feature-ico">◐</div><div class="feature-info"><div class="feature-name">گرادیان مخروطی</div><div class="feature-desc">گرادیان دوار مخروطی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">◆</div><div class="feature-info"><div class="feature-name">گرادیان مش</div><div class="feature-desc">چند نقطه رنگی متحرک</div></div></div>
+  <div class="feature-item"><div class="feature-ico">✦</div><div class="feature-info"><div class="feature-name">ذرات</div><div class="feature-desc">ذرات معلق با درخشش</div></div></div>
+  <div class="feature-item"><div class="feature-ico">▦</div><div class="feature-info"><div class="feature-name">شبکه</div><div class="feature-desc">خطوط شبکه‌ای</div></div></div>
+  <div class="feature-item"><div class="feature-ico">✧</div><div class="feature-info"><div class="feature-name">ستارگان</div><div class="feature-desc">آسمان ستاره‌ای سوسوزن</div></div></div>
+  <div class="feature-item"><div class="feature-ico">◉</div><div class="feature-info"><div class="feature-name">بوکه</div><div class="feature-desc">دایره‌های نوری نرم</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🌠</div><div class="feature-info"><div class="feature-name">شفق قطبی</div><div class="feature-desc">موج‌های رنگی رویایی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">〜</div><div class="feature-info"><div class="feature-name">موج‌ها</div><div class="feature-desc">امواج متحرک</div></div></div>
+  <div class="feature-item"><div class="feature-ico">⬡</div><div class="feature-info"><div class="feature-name">شش‌ضلعی</div><div class="feature-desc">الگوی لانه زنبوری</div></div></div>
+  <div class="feature-item"><div class="feature-ico">⋯</div><div class="feature-info"><div class="feature-name">نقطه‌ها</div><div class="feature-desc">الگوی نقطه‌ای</div></div></div>
+  <div class="feature-item"><div class="feature-ico">※</div><div class="feature-info"><div class="feature-name">پرتوها</div><div class="feature-desc">پرتوهای نورانی چرخان</div></div></div>
+  <div class="feature-item"><div class="feature-ico">▦</div><div class="feature-info"><div class="feature-name">ماتریکس</div><div class="feature-desc">شبکه با نقاط درخشان</div></div></div>
+</div>
+
+<div class="body-text">
+  علاوه بر این، افکت‌های <strong>ویگنت</strong> (تاریک شدن گوشه‌ها)، <strong>نویز فیلم</strong>، <strong>محوی</strong>، <strong>روشنایی</strong>، <strong>کنتراست</strong> و <strong>اشباع</strong> روی همه پس‌زمینه‌ها قابل اعمال است.
+</div>
+
+<!-- Chapter 7: افکت‌های پسینایی -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۷</div>
+  <div class="chapter-title">افکت‌های سینمایی Post-FX</div>
+  <div class="chapter-desc">۱۳ افکت حرفه‌ای روی کل تصویر</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  در تب <strong>✨ افکت‌ها</strong> می‌توانید افکت‌های سینمایی حرفه‌ای را روی کل تصویر اعمال کنید. این افکت‌ها بعد از رندر همه عناصر اعمال می‌شوند و حس فیلم سینمایی می‌دهند.
+</div>
+
+<div class="feature-grid">
+  <div class="feature-item"><div class="feature-ico">✨</div><div class="feature-info"><div class="feature-name">Bloom</div><div class="feature-desc">درخشش نواحی روشن</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🎨</div><div class="feature-info"><div class="feature-name">Chromatic Aberration</div><div class="feature-desc">خطای رنگی لنز</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🌅</div><div class="feature-info"><div class="feature-name">Light Leak</div><div class="feature-desc">نور نشتی فیلم قدیمی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">📺</div><div class="feature-info"><div class="feature-name">Scanlines</div><div class="feature-desc">خطوط CRT</div></div></div>
+  <div class="feature-item"><div class="feature-ico">⚫</div><div class="feature-info"><div class="feature-name">Vignette</div><div class="feature-desc">تاریک شدن گوشه‌ها</div></div></div>
+  <div class="feature-item"><div class="feature-ico">▦</div><div class="feature-info"><div class="feature-name">Glitch</div><div class="feature-desc">اختلال دیجیتال</div></div></div>
+  <div class="feature-item"><div class="feature-ico">↔</div><div class="feature-info"><div class="feature-name">RGB Shift</div><div class="feature-desc">جابجایی کانال‌های RGB</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🔺</div><div class="feature-info"><div class="feature-name">Sharpen</div><div class="feature-desc">افزایش وضوح</div></div></div>
+  <div class="feature-item"><div class="feature-ico">⚡</div><div class="feature-info"><div class="feature-name">Flicker</div><div class="feature-desc">سوسو زدن</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🟤</div><div class="feature-info"><div class="feature-name">Sepia</div><div class="feature-desc">رنگ قهوه‌ای قدیمی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🎨</div><div class="feature-info"><div class="feature-name">Hue Rotate</div><div class="feature-desc">چرخش رنگ</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🌫</div><div class="feature-info"><div class="feature-name">Blur</div><div class="feature-desc">محوی کل تصویر</div></div></div>
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">💡 ترکیب پیشنهادی:</span>
+  برای حال‌وهوای سینمایی: <strong>Bloom 30%</strong> + <strong>Vignette 30%</strong> + <strong>Light Leak 15%</strong>. برای حالت رترو: <strong>Scanlines 30%</strong> + <strong>Chromatic Aberration 5px</strong> + <strong>Sepia 20%</strong>.
+</div>
+
+<!-- Chapter 8: صدا -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۸</div>
+  <div class="chapter-title">افزودن موسیقی و صدا</div>
+  <div class="chapter-desc">میكس صدا با انیمیشن</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  در تب <strong>🔊 صدا</strong> می‌توانید فایل MP3 یا WAV موسیقی خود را آپلود کنید. موسیقی همزمان با انیمیشن پخش می‌شود و در خروجی ویدیو هم ضبط می‌شود. می‌توانید صدا، فید صدا (شروع و پایان نرم) و بی‌صدا کردن را کنترل کنید.
+</div>
+
+<div class="step-card">
+  <div class="step-num">🎵</div>
+  <div class="step-content">
+    <div class="step-title">مراحل افزودن موسیقی</div>
+    <div class="step-desc">
+      ۱. به تب <strong>🔊 صدا</strong> بروید<br>
+      ۲. روی محدوده آپلود کلیک کنید و فایل MP3/WAV را انتخاب کنید<br>
+      ۳. ولوم صدا را تنظیم کنید (۰ تا ۱۰۰٪)<br>
+      ۴. اگر می‌خواهید صدا آرام شروع و تمام شود، <strong>فید صدا</strong> را فعال کنید<br>
+      ۵. دکمه ▶ را بزنید تا هم انیمیشن و هم صدا پخش شود
+    </div>
+  </div>
+</div>
+
+<!-- Chapter 9: خروجی -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۹</div>
+  <div class="chapter-title">خروجی گرفتن</div>
+  <div class="chapter-desc">۶ فرمت خروجی برای کاربردهای مختلف</div>
+  <div class="divider"></div>
+</div>
+
+<div class="body-text">
+  وقتی انیمیشن آماده شد، روی دکمه <strong>⬇️ خروجی</strong> کلیک کنید. در پنجره باز شده، ۶ فرمت خروجی موجود است:
+</div>
+
+<div class="feature-grid">
+  <div class="feature-item"><div class="feature-ico">🎥</div><div class="feature-info"><div class="feature-name">ویدیو WebM</div><div class="feature-desc">خروجی ویدیویی با کیفیت بالا</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🖼️</div><div class="feature-info"><div class="feature-name">دنباله PNG</div><div class="feature-desc">تمام فریم‌ها در ZIP</div></div></div>
+  <div class="feature-item"><div class="feature-ico">📸</div><div class="feature-info"><div class="feature-name">فریم فعلی</div><div class="feature-desc">عکس از زمان فعلی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🎞️</div><div class="feature-info"><div class="feature-name">GIF متحرک</div><div class="feature-desc">برای اشتراک‌گذاری</div></div></div>
+  <div class="feature-item"><div class="feature-ico">📦</div><div class="feature-info"><div class="feature-name">فایل پروژه</div><div class="feature-desc">JSON برای ویرایش بعدی</div></div></div>
+  <div class="feature-item"><div class="feature-ico">🌐</div><div class="feature-info"><div class="feature-name">HTML مستقل</div><div class="feature-desc">صفحه نمایش خودکار</div></div></div>
+</div>
+
+<div class="body-text">
+  در بخش تنظیمات خروجی می‌توانید <strong>کیفیت</strong> (فوق‌العاده ۱۲Mbps تا پایین ۲Mbps)، <strong>مقیاس</strong> (۱۰۰٪ تا ۲۵٪) و <strong>فریم‌ریت</strong> (۲۴/۳۰/۶۰ fps) را انتخاب کنید.
+</div>
+
+<div class="warning-box">
+  <span class="warn-label">⚠️ توجه:</span>
+  خروجی WebM در مرورگرهای Chrome و Edge بهترین کیفیت را دارد. برای تبدیل به MP4 می‌توانید از نرم‌افزار رایگان <strong>HandBrake</strong> یا ابزار خط فرمان <strong>ffmpeg</strong> استفاده کنید.
+</div>
+
+<!-- Chapter 10: میان‌برها -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۱۰</div>
+  <div class="chapter-title">میان‌برهای کیبورد</div>
+  <div class="chapter-desc">کار سریع‌تر با کیبورد</div>
+  <div class="divider"></div>
+</div>
+
+<div class="shortcut-row"><span class="kbd">Space</span><span class="shortcut-desc">پخش / توقف انیمیشن</span></div>
+<div class="shortcut-row"><span class="kbd">←</span><span class="shortcut-desc">حرکت به عقب (۰.۱ ثانیه)</span></div>
+<div class="shortcut-row"><span class="kbd">→</span><span class="shortcut-desc">حرکت به جلو (۰.۱ ثانیه)</span></div>
+<div class="shortcut-row"><span class="kbd">Del</span><span class="shortcut-desc">حذف عنصر انتخاب شده</span></div>
+
+<!-- Chapter 11: نکات حرفه‌ای -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۱۱</div>
+  <div class="chapter-title">نکات حرفه‌ای</div>
+  <div class="chapter-desc">تکنیک‌های پیشرفته برای نتایج بهتر</div>
+  <div class="divider"></div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">★</div>
+  <div class="step-content">
+    <div class="step-title">ترتیب زمانی عناصر</div>
+    <div class="step-desc">
+      عناصر را به ترتیب ظاهر شود تنظیم کنید: اول لوگو (تأخیر ۰)، سپس نام برند (تأخیر ۰.۵-۱ ثانیه)، بعد شعار (تأخیر ۱-۱.۵)، و در آخر اطلاعات تماس (تأخیر ۱.۵-۲.۵). این ریتم طبیعی و حرفه‌ای است.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">★</div>
+  <div class="step-content">
+    <div class="step-title">استفاده از درخشش (Glow)</div>
+    <div class="step-desc">
+      برای لوگو و نام برند، مقداری <strong>درخشش</strong> (۲۰-۴۰) اضافه کنید تا روی پس‌زمینه تیره برجسته شود. رنگ درخشش را هم‌رنگ برند انتخاب کنید تا هماهنگی ایجاد شود.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">★</div>
+  <div class="step-content">
+    <div class="step-title">انیمیشن حلقه برای لوگو</div>
+    <div class="step-desc">
+      بعد از ظاهر شدن لوگو، یک انیمیشن حلقه ملایم مثل <strong>نفس کشیدن</strong> یا <strong>نبض</strong> با شدت پایین (۳۰-۵۰٪) اضافه کنید تا لوگو زنده به نظر برسد اما حواس‌پرت نباشد.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">★</div>
+  <div class="step-content">
+    <div class="step-title">ذخیره پروژه</div>
+    <div class="step-desc">
+      همیشه قبل از بستن مرورگر، از دکمه <strong>💾 ذخیره</strong> فایل JSON پروژه را دانلود کنید. بعداً می‌توانید با <strong>📂 باز کردن</strong> پروژه را ادامه دهید. این فایل شامل تمام تنظیمات و تصاویر است.
+    </div>
+  </div>
+</div>
+
+<div class="step-card">
+  <div class="step-num">★</div>
+  <div class="step-content">
+    <div class="step-title">تنظیم مدت انیمیشن</div>
+    <div class="step-desc">
+      برای شبکه‌های اجتماعی ۳-۵ ثانیه، برای اینترو ویدیو ۵-۸ ثانیه، برای معرفی کامل ۸-۱۲ ثانیه مناسب است. در نوار بالا می‌توانید مدت کل را تغییر دهید.
+    </div>
+  </div>
+</div>
+
+<!-- Chapter 12: رفع مشکلات -->
+<div class="chapter-header">
+  <div class="chapter-tag">فصل ۱۲</div>
+  <div class="chapter-title">رفع مشکلات رایج</div>
+  <div class="chapter-desc">پاسخ سؤالات متداول</div>
+  <div class="divider"></div>
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">سؤال:</span>
+  چرا لوگوم نمایش داده نمی‌شود؟
+  <br><strong>پاسخ:</strong> روی عنصر لوگو کلیک کنید، به تب ویژگی‌ها بروید و تصویر را آپلود کنید. قبل از آپلود، یک placeholder نقطه‌چین نمایش داده می‌شود.
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">سؤال:</span>
+  خروجی ویدیو کند است یا گیر می‌کند.
+  <br><strong>پاسخ:</strong> کیفیت خروجی را به "متوسط" یا "پایین" کاهش دهید. مقیاس را به ۵۰٪ یا ۷۵٪ کاهش دهید. تعداد ذرات پس‌زمینه را کم کنید. افکت‌های سنگین مثل Bloom و Glitch را کاهش دهید.
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">سؤال:</span>
+  متن فارسی درست نمایش داده نمی‌شود.
+  <br><strong>پاسخ:</strong> فونت را روی <strong>Vazirmatn</strong> تنظیم کنید. این فونت از Google Fonts بارگذاری می‌شود و از فارسی پشتیبانی کامل دارد. برای اطمینان از بارگذاری فونت، صبر کنید تا صفحه کامل باز شود.
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">سؤال:</span>
+  چگونه MP4 بگیرم؟
+  <br><strong>پاسخ:</strong> مرورگرها به‌طور مستقیم MP4 تولید نمی‌کنند. فایل WebM را خروجی بگیرید و با <strong>HandBrake</strong> (رایگان) یا <strong>ffmpeg</strong> به MP4 تبدیل کنید. دستور ffmpeg: <code>ffmpeg -i input.webm -c:v libx264 output.mp4</code>
+</div>
+
+<div class="tip-box">
+  <span class="tip-label">سؤال:</span>
+  می‌توانم روی موبایل استفاده کنم؟
+  <br><strong>پاسخ:</strong> اپلیکیشن برای دسکتاپ بهینه شده است. روی تبلت با صفحه بزرگ قابل استفاده است اما روی موبایل توصیه نمی‌شود به دلیل پیچیدگی رابط کاربری.
+</div>
+
+</div>
+
+<!-- ===== ENDING ===== -->
+<div class="ending">
+  <div class="ending-icon">🎬</div>
+  <div class="ending-title">آماده ساخت شاهکار شماست</div>
+  <div class="ending-text">
+    حالا تمام ابزارهای لازم برای ساخت لوگوموشن‌های حرفه‌ای را دارید.<br>
+    خلاقیت کنید، آزمایش کنید، و از فرآیند لذت ببرید!
+  </div>
+  <div class="ending-cta">🎬 شروع کنید</div>
+  <div class="ending-footer">Logo Motion Studio Pro v2.0 — ساخته‌شده با ❤️</div>
+</div>
+
+</body>
+</html>

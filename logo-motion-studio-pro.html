@@ -1,0 +1,3287 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logo Motion Studio Pro — استودیو حرفه‌ای ساخت لوگوموشن</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root {
+  --bg-0: #07070b;
+  --bg-1: #0e0e15;
+  --bg-2: #15151f;
+  --bg-3: #1d1d2a;
+  --bg-4: #262635;
+  --bg-5: #2f2f42;
+  --border: #2a2a3a;
+  --border-light: #3a3a4f;
+  --border-strong: #4a4a63;
+  --text-0: #f5f5fa;
+  --text-1: #c8c8d4;
+  --text-2: #8888a0;
+  --text-3: #5a5a72;
+  --accent: #6366f1;
+  --accent-h: #818cf8;
+  --accent-d: #4f46e5;
+  --accent-2: #a855f7;
+  --accent-3: #ec4899;
+  --success: #22c55e;
+  --success-d: #16a34a;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #0ea5e9;
+  --red-glow: #ff4444;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 24px rgba(99,102,241,0.3);
+  --grad-accent: linear-gradient(135deg, #6366f1, #a855f7);
+  --grad-success: linear-gradient(135deg, #22c55e, #10b981);
+  --grad-danger: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 5px; border: 2px solid var(--bg-1); }
+*::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+html, body {
+  height: 100%; overflow: hidden;
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family: 'Vazirmatn', 'Inter', sans-serif;
+  font-size: 13px;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select, textarea { font-family: inherit; color: inherit; }
+
+input[type="text"], input[type="number"], input[type="url"], select, textarea {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 7px 10px;
+  font-size: 12px;
+  width: 100%;
+  outline: none;
+  transition: all 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+input[type="range"] {
+  -webkit-appearance: none; width: 100%; height: 5px;
+  background: var(--bg-3); border-radius: 3px; outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  background: var(--accent); border-radius: 50%; cursor: pointer;
+  border: 3px solid var(--bg-0); box-shadow: 0 0 8px rgba(99,102,241,0.5);
+  transition: transform 0.1s;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px; background: var(--accent); border-radius: 50%;
+  cursor: pointer; border: 3px solid var(--bg-0);
+}
+input[type="color"] {
+  -webkit-appearance: none; width: 36px; height: 28px;
+  border: 1px solid var(--border); border-radius: 6px; background: none;
+  cursor: pointer; padding: 0;
+}
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
+input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+
+/* === Layout === */
+#app {
+  display: grid;
+  grid-template-rows: 52px 1fr 200px;
+  grid-template-columns: 290px 1fr 340px;
+  grid-template-areas:
+    "header header header"
+    "left   center right"
+    "left   timeline right";
+  height: 100vh;
+  gap: 1px;
+  background: var(--border);
+}
+
+/* === Header === */
+header {
+  grid-area: header;
+  background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+  display: flex; align-items: center; padding: 0 18px; gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 700; font-size: 15px;
+}
+.logo-mark {
+  width: 32px; height: 32px;
+  background: var(--grad-accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+  position: relative;
+  overflow: hidden;
+}
+.logo-mark::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent 50%);
+}
+.logo-text-wrap { display: flex; flex-direction: column; line-height: 1.1; }
+.logo-text-wrap .sub { font-size: 10px; color: var(--text-2); font-weight: 400; }
+.header-sep { width: 1px; height: 28px; background: var(--border); }
+.header-group { display: flex; align-items: center; gap: 8px; }
+.header-label { font-size: 11px; color: var(--text-2); }
+.header-spacer { flex: 1; }
+
+.btn {
+  background: var(--bg-3);
+  border: 1px solid var(--border-light);
+  border-radius: 7px;
+  padding: 7px 13px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg-4); border-color: var(--accent); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-primary {
+  background: var(--grad-accent);
+  border-color: transparent; color: white;
+  box-shadow: 0 4px 12px rgba(99,102,241,0.35);
+}
+.btn-primary:hover { box-shadow: 0 6px 20px rgba(99,102,241,0.5); filter: brightness(1.1); }
+.btn-success { background: var(--grad-success); border-color: transparent; color: white; }
+.btn-success:hover { filter: brightness(1.1); }
+.btn-danger { background: var(--grad-danger); border-color: transparent; color: white; }
+.btn-icon { padding: 7px; width: 32px; height: 32px; justify-content: center; }
+.btn-sm { padding: 5px 9px; font-size: 11px; }
+
+/* === Panels === */
+.panel {
+  background: var(--bg-1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-1);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  flex-shrink: 0;
+  background: var(--bg-2);
+}
+.panel-body { flex: 1; overflow-y: auto; padding: 14px; }
+.panel-section { margin-bottom: 18px; }
+.panel-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.panel-section-title .ico { color: var(--accent); }
+
+/* === Left Panel === */
+#left-panel { grid-area: left; }
+.element-list { display: flex; flex-direction: column; gap: 5px; }
+.element-item {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.element-item:hover { border-color: var(--border-light); background: var(--bg-3); }
+.element-item.selected {
+  border-color: var(--accent);
+  background: linear-gradient(90deg, rgba(99,102,241,0.12), var(--bg-3));
+  box-shadow: 0 0 0 1px var(--accent), 0 0 16px rgba(99,102,241,0.15);
+}
+.element-item.selected::before {
+  content: '';
+  position: absolute;
+  right: -1px; top: 8px; bottom: 8px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.element-icon {
+  width: 28px; height: 28px;
+  background: var(--bg-4);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.element-info { flex: 1; min-width: 0; }
+.element-name { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.element-type { font-size: 10px; color: var(--text-2); margin-top: 1px; }
+.element-actions { display: flex; gap: 2px; opacity: 0; transition: opacity 0.15s; }
+.element-item:hover .element-actions, .element-item.selected .element-actions { opacity: 1; }
+.icon-btn {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 5px;
+  font-size: 11px;
+  color: var(--text-2);
+  transition: all 0.1s;
+}
+.icon-btn:hover { background: var(--bg-4); color: var(--text-0); }
+.icon-btn.danger:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+
+.add-element-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.add-element-btn {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 6px;
+  font-size: 11px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.add-element-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--grad-accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.add-element-btn:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.add-element-btn:hover::before { opacity: 0.1; }
+.add-element-btn > * { position: relative; z-index: 1; }
+.add-element-btn .ico { font-size: 18px; }
+.add-element-btn:hover .ico { transform: scale(1.15); transition: transform 0.2s; }
+
+/* === Center === */
+#center-panel { grid-area: center; background: var(--bg-0); display: flex; flex-direction: column; }
+.preview-toolbar {
+  height: 46px;
+  background: var(--bg-1);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 14px; gap: 10px;
+  flex-shrink: 0;
+}
+.preview-area {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    linear-gradient(45deg, #0a0a12 25%, transparent 25%),
+    linear-gradient(-45deg, #0a0a12 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #0a0a12 75%),
+    linear-gradient(-45deg, transparent 75%, #0a0a12 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
+  background-color: #050508;
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+}
+.canvas-wrap {
+  position: relative;
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+  max-width: 100%; max-height: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
+#preview-canvas { display: block; max-width: 100%; max-height: 100%; cursor: grab; }
+#preview-canvas.dragging { cursor: grabbing; }
+
+.canvas-overlay {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(99,102,241,0.04), transparent 30%);
+}
+
+.time-display {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 11px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+}
+.transport-btn {
+  width: 34px; height: 34px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.transport-btn:hover { background: var(--bg-3); border-color: var(--accent); color: var(--accent); }
+.transport-btn.play {
+  background: var(--grad-accent);
+  border-color: transparent; color: white;
+  width: 40px; height: 40px; font-size: 14px;
+  box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+}
+.transport-btn.play:hover { filter: brightness(1.1); transform: scale(1.05); }
+
+/* === Timeline === */
+#timeline-panel {
+  grid-area: timeline;
+  background: var(--bg-1);
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column;
+}
+.timeline-header {
+  height: 34px;
+  display: flex; align-items: center; padding: 0 14px; gap: 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; color: var(--text-1);
+  background: var(--bg-2);
+}
+.timeline-ruler {
+  height: 28px; position: relative;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  cursor: pointer;
+}
+.timeline-ruler-marks { position: absolute; inset: 0; display: flex; }
+.timeline-ruler-mark {
+  flex: 1; border-left: 1px solid var(--border);
+  font-size: 9px; color: var(--text-2);
+  padding: 5px 7px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.timeline-tracks { flex: 1; overflow-y: auto; padding: 4px 0; }
+.timeline-track {
+  height: 32px;
+  padding: 0 14px;
+  display: flex; align-items: center;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+.timeline-track:hover { background: rgba(99,102,241,0.05); }
+.timeline-track.selected { background: rgba(99,102,241,0.1); }
+.track-label {
+  width: 110px;
+  font-size: 11px; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 5px;
+}
+.track-bar-container {
+  flex: 1; height: 22px;
+  background: var(--bg-2);
+  border-radius: 5px;
+  position: relative;
+  margin-left: 10px;
+  overflow: hidden;
+}
+.track-bar {
+  position: absolute; height: 100%;
+  display: flex; cursor: pointer;
+  transition: filter 0.1s;
+}
+.track-bar:hover { filter: brightness(1.2); }
+.track-bar.entrance { background: linear-gradient(90deg, #16a34a, #4ade80); }
+.track-bar.hold { background: linear-gradient(90deg, #4f46e5, #6366f1); }
+.track-bar.exit { background: linear-gradient(90deg, #ea580c, #fb923c); }
+.track-bar-segment {
+  height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.playhead {
+  position: absolute; top: 0; bottom: 0;
+  width: 2px; background: var(--red-glow);
+  pointer-events: none; z-index: 10;
+  box-shadow: 0 0 12px var(--red-glow);
+}
+.playhead::before {
+  content: ''; position: absolute;
+  top: -4px; left: -5px;
+  width: 12px; height: 12px;
+  background: var(--red-glow); border-radius: 50%;
+  box-shadow: 0 0 12px var(--red-glow);
+}
+
+/* === Right Panel === */
+#right-panel { grid-area: right; }
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1;
+  padding: 12px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-2);
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.tab .ico { font-size: 14px; }
+.tab:hover { color: var(--text-0); background: var(--bg-3); }
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: linear-gradient(180deg, transparent, rgba(99,102,241,0.08));
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.2s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+/* === Forms === */
+.form-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.form-row label {
+  font-size: 11px; color: var(--text-1);
+  min-width: 76px; font-weight: 500;
+}
+.form-row .input-wrap { flex: 1; }
+.form-row-stack { margin-bottom: 12px; }
+.form-row-stack > label {
+  display: block; font-size: 11px; color: var(--text-1);
+  margin-bottom: 5px; font-weight: 500;
+}
+.input-group { display: flex; gap: 4px; align-items: center; }
+.input-group > * { flex: 1; }
+.input-suffix { font-size: 10px; color: var(--text-2); padding: 0 4px; white-space: nowrap; }
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238888a0' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 8px center;
+  padding-left: 26px;
+  cursor: pointer;
+}
+.color-input-wrap {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 3px 7px 3px 3px;
+  flex: 1;
+}
+.color-input-wrap input[type="text"] {
+  border: none; background: none; padding: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  width: 100%;
+}
+.color-input-wrap input[type="text"]:focus { box-shadow: none; }
+.color-input-wrap input[type="color"] { width: 32px; height: 24px; }
+
+/* === Animation Grid === */
+.anim-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.anim-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 8px 4px;
+  font-size: 9px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.anim-card:hover { border-color: var(--border-light); background: var(--bg-3); transform: translateY(-1px); }
+.anim-card.selected {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.1));
+  color: var(--accent-h);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 12px rgba(99,102,241,0.2);
+}
+.anim-card .ico { font-size: 16px; margin-bottom: 3px; display: block; }
+.anim-card.selected .ico { color: var(--accent); }
+
+/* === Empty State === */
+.empty-state {
+  padding: 50px 24px; text-align: center; color: var(--text-2);
+}
+.empty-state .ico { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+.empty-state .title { font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--text-1); }
+.empty-state .desc { font-size: 11px; line-height: 1.6; }
+
+/* === Modal === */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s;
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--bg-1);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  width: 90%; max-width: 600px;
+  max-height: 88vh;
+  display: flex; flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.modal-body { padding: 22px; overflow-y: auto; flex: 1; }
+.modal-footer {
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px;
+  background: var(--bg-2);
+}
+
+/* === Toast === */
+.toast-container {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%); z-index: 200;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--bg-3);
+  border: 1px solid var(--border-light);
+  border-radius: 9px;
+  padding: 11px 18px;
+  font-size: 12px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.3s ease-out;
+  pointer-events: auto;
+  min-width: 200px;
+}
+.toast.success { border-color: var(--success); background: linear-gradient(90deg, rgba(34,197,94,0.15), var(--bg-3)); }
+.toast.error { border-color: var(--danger); background: linear-gradient(90deg, rgba(239,68,68,0.15), var(--bg-3)); }
+.toast.info { border-color: var(--accent); background: linear-gradient(90deg, rgba(99,102,241,0.15), var(--bg-3)); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* === Progress === */
+.progress-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.9);
+  display: none; align-items: center; justify-content: center;
+  z-index: 150;
+  backdrop-filter: blur(12px);
+}
+.progress-overlay.show { display: flex; }
+.progress-box {
+  background: var(--bg-1);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 36px 44px;
+  text-align: center;
+  min-width: 400px;
+  box-shadow: var(--shadow-lg);
+}
+.progress-title { font-size: 14px; font-weight: 700; margin-bottom: 18px; }
+.progress-bar {
+  height: 8px;
+  background: var(--bg-3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+.progress-fill {
+  height: 100%;
+  background: var(--grad-accent);
+  width: 0%;
+  transition: width 0.2s;
+  box-shadow: 0 0 12px rgba(99,102,241,0.5);
+}
+.progress-text { font-size: 11px; color: var(--text-2); font-family: 'JetBrains Mono', monospace; }
+
+/* === Preset Cards === */
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+.preset-card {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.preset-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--grad-accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.preset-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.preset-card:hover::before { opacity: 0.08; }
+.preset-card > * { position: relative; z-index: 1; }
+.preset-card .ico { font-size: 28px; margin-bottom: 8px; display: block; }
+.preset-card .name { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
+.preset-card .desc { font-size: 10px; color: var(--text-2); line-height: 1.4; }
+
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+.help-text {
+  font-size: 10px; color: var(--text-2);
+  margin-top: 6px; line-height: 1.6;
+  padding: 8px 10px;
+  background: rgba(99,102,241,0.05);
+  border-right: 2px solid var(--accent);
+  border-radius: 4px;
+}
+
+.toggle {
+  position: relative;
+  width: 36px; height: 20px;
+  background: var(--bg-4);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: var(--text-1);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+.toggle.on { background: var(--accent); box-shadow: 0 0 8px rgba(99,102,241,0.4); }
+.toggle.on::after { left: 18px; background: white; }
+
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 10px;
+  background: var(--bg-4);
+  color: var(--text-1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge.accent { background: rgba(99,102,241,0.2); color: var(--accent-h); }
+.badge.success { background: rgba(34,197,94,0.2); color: var(--success); }
+
+.upload-area {
+  border: 1.5px dashed var(--border-light);
+  border-radius: 9px;
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--bg-1);
+}
+.upload-area:hover { border-color: var(--accent); background: var(--bg-2); }
+.upload-area.has-file { border-color: var(--success); border-style: solid; background: rgba(34,197,94,0.05); }
+
+/* === Keyframe timeline === */
+.keyframe-list {
+  display: flex; gap: 4px;
+  padding: 6px;
+  background: var(--bg-2);
+  border-radius: 6px;
+  margin-top: 6px;
+  min-height: 36px;
+  align-items: center;
+}
+.keyframe {
+  width: 14px; height: 14px;
+  background: var(--accent);
+  border-radius: 3px;
+  cursor: pointer;
+  transform: rotate(45deg);
+  position: relative;
+  transition: all 0.1s;
+}
+.keyframe:hover { transform: rotate(45deg) scale(1.2); background: var(--accent-h); }
+.keyframe.selected { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+
+/* === Layer effects === */
+.layer-effect-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px;
+  background: var(--bg-2);
+  border-radius: 6px;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+.layer-effect-row .name { flex: 1; }
+.layer-effect-row .value { color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+
+@media (max-width: 1280px) {
+  #app { grid-template-columns: 250px 1fr 290px; }
+  .anim-grid { grid-template-columns: 1fr 1fr; }
+  .preset-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <div class="logo-brand">
+      <div class="logo-mark">🎬</div>
+      <div class="logo-text-wrap">
+        <span>Logo Motion Studio</span>
+        <span class="sub">Pro Edition v2.0</span>
+      </div>
+    </div>
+    <div class="header-sep"></div>
+    <div class="header-group">
+      <span class="header-label">📁 پروژه:</span>
+      <input type="text" id="project-name" value="پروژه من" style="width: 150px;">
+    </div>
+    <div class="header-sep"></div>
+    <div class="header-group">
+      <span class="header-label">📐 سایز:</span>
+      <select id="canvas-preset" style="width: 140px;">
+        <option value="1920x1080">1920×1080 • 16:9 Full HD</option>
+        <option value="1280x720">1280×720 • 16:9 HD</option>
+        <option value="1080x1920">1080×1920 • 9:16 استوری</option>
+        <option value="1080x1350">1080×1350 • 4:5 پورتریت</option>
+        <option value="1080x1080">1080×1080 • 1:1 مربع</option>
+        <option value="2560x1440">2560×1440 • 2K</option>
+        <option value="3840x2160">3840×2160 • 4K</option>
+        <option value="custom">⚙️ سفارشی...</option>
+      </select>
+    </div>
+    <div class="header-group">
+      <span class="header-label">🎬 FPS:</span>
+      <select id="project-fps" style="width: 70px;">
+        <option value="24">24</option>
+        <option value="30" selected>30</option>
+        <option value="60">60</option>
+      </select>
+    </div>
+    <div class="header-group">
+      <span class="header-label">⏱ مدت:</span>
+      <input type="number" id="project-duration" value="7" min="2" max="30" step="0.5" style="width: 56px;">
+      <span style="font-size:10px;color:var(--text-2)">ثانیه</span>
+    </div>
+    <div class="header-spacer"></div>
+    <button class="btn btn-sm" onclick="openPresetModal()" title="قالب‌های آماده">✨ قالب‌ها</button>
+    <button class="btn btn-sm" onclick="document.getElementById('project-file-input').click()" title="باز کردن پروژه">📂 باز کردن</button>
+    <button class="btn btn-sm" onclick="saveProject()" title="ذخیره پروژه">💾 ذخیره</button>
+    <button class="btn btn-primary btn-sm" onclick="openExportModal()" title="خروجی گرفتن">⬇️ خروجی</button>
+    <input type="file" id="project-file-input" accept=".json" style="display:none" onchange="loadProject(event)">
+  </header>
+
+  <div id="left-panel" class="panel">
+    <div class="panel-header">
+      <span>🎨 عناصر انیمیشن</span>
+      <span class="badge accent" id="element-count">0</span>
+    </div>
+    <div class="panel-body">
+      <div class="panel-section">
+        <div class="panel-section-title"><span><span class="ico">＋</span> افزودن عنصر</span></div>
+        <div class="add-element-grid">
+          <button class="add-element-btn" onclick="addElement('logo')"><span class="ico">🖼️</span>لوگو</button>
+          <button class="add-element-btn" onclick="addElement('brand')"><span class="ico">⭐</span>نام برند</button>
+          <button class="add-element-btn" onclick="addElement('tagline')"><span class="ico">💬</span>شعار</button>
+          <button class="add-element-btn" onclick="addElement('text')"><span class="ico">📝</span>متن</button>
+          <button class="add-element-btn" onclick="addElement('phone')"><span class="ico">📞</span>تلفن</button>
+          <button class="add-element-btn" onclick="addElement('website')"><span class="ico">🌐</span>وب‌سایت</button>
+          <button class="add-element-btn" onclick="addElement('email')"><span class="ico">✉️</span>ایمیل</button>
+          <button class="add-element-btn" onclick="addElement('address')"><span class="ico">📍</span>آدرس</button>
+          <button class="add-element-btn" onclick="addElement('shape')"><span class="ico">⬜</span>شکل</button>
+          <button class="add-element-btn" onclick="addElement('icon')"><span class="ico">✦</span>آیکون</button>
+          <button class="add-element-btn" onclick="addElement('divider')"><span class="ico">─</span>خط جدا</button>
+          <button class="add-element-btn" onclick="addElement('social')"><span class="ico">◍</span>شبکه اجتماعی</button>
+        </div>
+      </div>
+      <div class="panel-section">
+        <div class="panel-section-title"><span><span class="ico">☰</span> لایه‌ها</span></div>
+        <div class="element-list" id="element-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="center-panel">
+    <div class="preview-toolbar">
+      <button class="transport-btn" onclick="seekTo(0)" title="ابتدا">⏮</button>
+      <button class="transport-btn" onclick="seekTo(currentTime - 1)" title="فریم قبل">⏪</button>
+      <button class="transport-btn play" onclick="togglePlay()" id="play-btn" title="پخش/توقف">▶</button>
+      <button class="transport-btn" onclick="seekTo(currentTime + 1)" title="فریم بعد">⏩</button>
+      <button class="transport-btn" onclick="seekToEnd()" title="پایان">⏭</button>
+      <div class="time-display" id="time-display">00:00.00 / 00:07.00</div>
+      <div style="flex:1"></div>
+      <div class="header-group">
+        <span class="header-label">🔍 زوم:</span>
+        <select id="zoom-level" style="width: 95px;" onchange="updateZoom()">
+          <option value="fit">جا شدن</option>
+          <option value="0.25">25%</option>
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1">100%</option>
+          <option value="1.5">150%</option>
+          <option value="2">200%</option>
+        </select>
+      </div>
+      <button class="btn btn-sm" onclick="toggleLoop()" id="loop-btn" title="تکرار">🔁 تکرار</button>
+      <button class="btn btn-sm" onclick="toggleMute()" id="mute-btn" title="صدا">🔊 صدا</button>
+    </div>
+    <div class="preview-area">
+      <div class="canvas-wrap" id="canvas-wrap">
+        <canvas id="preview-canvas" width="1920" height="1080"></canvas>
+        <div class="canvas-overlay"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="timeline-panel">
+    <div class="timeline-header">
+      <span style="font-weight:700">⏱ تایم‌لاین</span>
+      <div style="display:flex;gap:8px;font-size:10px;color:var(--text-2)">
+        <span style="color:#4ade80">● ورود</span>
+        <span style="color:#818cf8">● نگه‌داشتن</span>
+        <span style="color:#fb923c">● خروج</span>
+      </div>
+      <div style="flex:1"></div>
+      <span style="color:var(--text-2);font-size:10px">کلیک روی خط کش برای جابجایی • Space برای پخش</span>
+    </div>
+    <div class="timeline-ruler" id="timeline-ruler">
+      <div class="timeline-ruler-marks" id="ruler-marks"></div>
+      <div class="playhead" id="playhead" style="left:0"></div>
+    </div>
+    <div class="timeline-tracks" id="timeline-tracks"></div>
+  </div>
+
+  <div id="right-panel" class="panel">
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('properties')"><span class="ico">⚙️</span>ویژگی‌ها</div>
+      <div class="tab" onclick="switchTab('animation')"><span class="ico">🎬</span>انیمیشن</div>
+      <div class="tab" onclick="switchTab('background')"><span class="ico">🎨</span>پس‌زمینه</div>
+      <div class="tab" onclick="switchTab('effects')"><span class="ico">✨</span>افکت‌ها</div>
+      <div class="tab" onclick="switchTab('audio')"><span class="ico">🔊</span>صدا</div>
+    </div>
+    <div class="panel-body">
+      <div class="tab-content active" id="tab-properties">
+        <div class="empty-state" id="props-empty">
+          <div class="ico">⚙️</div>
+          <div class="title">عنصری انتخاب نشده</div>
+          <div class="desc">یک عنصر از لیست چپ انتخاب کنید یا عنصر جدید اضافه کنید</div>
+        </div>
+        <div id="props-content" style="display:none"></div>
+      </div>
+      <div class="tab-content" id="tab-animation">
+        <div class="empty-state" id="anim-empty">
+          <div class="ico">🎬</div>
+          <div class="title">عنصری انتخاب نشده</div>
+          <div class="desc">یک عنصر انتخاب کنید تا انیمیشن ورود، نگه‌داشتن و خروج آن را تنظیم کنید</div>
+        </div>
+        <div id="anim-content" style="display:none"></div>
+      </div>
+      <div class="tab-content" id="tab-background">
+        <div id="bg-content"></div>
+      </div>
+      <div class="tab-content" id="tab-effects">
+        <div id="fx-content"></div>
+      </div>
+      <div class="tab-content" id="tab-audio">
+        <div id="audio-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Export -->
+<div class="modal-overlay" id="export-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">⬇️ خروجی گرفتن</div>
+      <button class="icon-btn" onclick="closeModal('export-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="panel-section">
+        <div class="panel-section-title"><span>📁 فرمت خروجی</span></div>
+        <div class="preset-grid">
+          <div class="preset-card" onclick="exportVideo('webm')">
+            <span class="ico">🎥</span>
+            <div class="name">ویدیو WebM</div>
+            <div class="desc">خروجی ویدیویی با کیفیت بالا</div>
+          </div>
+          <div class="preset-card" onclick="exportPNGSequence()">
+            <span class="ico">🖼️</span>
+            <div class="name">دنباله PNG</div>
+            <div class="desc">تمام فریم‌ها در ZIP</div>
+          </div>
+          <div class="preset-card" onclick="exportCurrentFrame()">
+            <span class="ico">📸</span>
+            <div class="name">فریم فعلی</div>
+            <div class="desc">عکس از فریم فعلی</div>
+          </div>
+          <div class="preset-card" onclick="exportGIF()">
+            <span class="ico">🎞️</span>
+            <div class="name">GIF متحرک</div>
+            <div class="desc">برای اشتراک‌گذاری</div>
+          </div>
+          <div class="preset-card" onclick="exportJSON()">
+            <span class="ico">📦</span>
+            <div class="name">فایل پروژه</div>
+            <div class="desc">JSON قابل ویرایش</div>
+          </div>
+          <div class="preset-card" onclick="exportHTML()">
+            <span class="ico">🌐</span>
+            <div class="name">HTML مستقل</div>
+            <div class="desc">صفحه نمایش خودکار</div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="panel-section">
+        <div class="panel-section-title"><span>⚙️ تنظیمات خروجی ویدیو</span></div>
+        <div class="form-row">
+          <label>کیفیت:</label>
+          <div class="input-wrap">
+            <select id="export-quality">
+              <option value="ultra"> فوق‌العاده (12 Mbps)</option>
+              <option value="high" selected>بالا (8 Mbps)</option>
+              <option value="medium">متوسط (4 Mbps)</option>
+              <option value="low">پایین (2 Mbps)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>مقیاس:</label>
+          <div class="input-wrap">
+            <select id="export-scale">
+              <option value="1" selected>100% (اصلی)</option>
+              <option value="0.75">75%</option>
+              <option value="0.5">50%</option>
+              <option value="0.25">25%</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>فریم‌ریت:</label>
+          <div class="input-wrap">
+            <select id="export-fps">
+              <option value="24">24 fps (سینمایی)</option>
+              <option value="30" selected>30 fps (استاندارد)</option>
+              <option value="60">60 fps (نرم)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>شامل صدا:</label>
+          <div class="input-wrap">
+            <div class="toggle on" id="export-audio-toggle" onclick="this.classList.toggle('on')"></div>
+            <span style="font-size:11px;margin-right:8px;color:var(--text-2)">اگر موسیقی اضافه شده باشد</span>
+          </div>
+        </div>
+        <div class="help-text">
+          💡 خروجی WebM در مرورگرهای Chrome و Edge به بهترین کیفیت ضبط می‌شود. برای MP4 می‌توانید با HandBrake یا ffmpeg تبدیل کنید.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('export-modal')">بستن</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Presets -->
+<div class="modal-overlay" id="preset-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✨ قالب‌های آماده حرفه‌ای</div>
+      <button class="icon-btn" onclick="closeModal('preset-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="preset-grid">
+        <div class="preset-card" onclick="loadPreset('cinematic')">
+          <span class="ico">🎬</span><div class="name">سینمایی</div>
+          <div class="desc">پس‌زمینه تیره، ذرات، درخشش</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('minimal')">
+          <span class="ico">⚪</span><div class="name">مینیمال</div>
+          <div class="desc">سفید تمیز، فید نرم، ظرافت</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('energetic')">
+          <span class="ico">⚡</span><div class="name">پرانرژی</div>
+          <div class="desc">حرکت سریع، زوم، چرخش</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('corporate')">
+          <span class="ico">🏢</span><div class="name">شرکتی</div>
+          <div class="desc">حرفه‌ای، آبی، جدی</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('gradient')">
+          <span class="ico">🌈</span><div class="name">گرادیان رنگی</div>
+          <div class="desc">گرادیان متحرک، زنده</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('dark-glow')">
+          <span class="ico">✨</span><div class="name">درخشش نئون</div>
+          <div class="desc">مشکی، درخشش نئون</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('aurora')">
+          <span class="ico">🌠</span><div class="name">شفق قطبی</div>
+          <div class="desc">موج‌های رنگی، رویایی</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('retro')">
+          <span class="ico">📻</span><div class="name">رترو ۸۰s</div>
+          <div class="desc">خطوط نئون، گرید، مغناطیسی</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('elegant')">
+          <span class="ico">🎀</span><div class="name">شیک و لاکچری</div>
+          <div class="desc">طلایی، تجملی، فاخر</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('tech')">
+          <span class="ico">🤖</span><div class="name">تکنولوژی</div>
+          <div class="desc">هیولوگرام، آبی، مدرن</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('paper')">
+          <span class="ico">📄</span><div class="name">کاغذی</div>
+          <div class="desc">کرم، مینیمال، طبیعی</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('ocean')">
+          <span class="ico">🌊</span><div class="name">اقیانوس</div>
+          <div class="desc">آبی، موج‌ها، آرام</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('preset-modal')">بستن</button>
+    </div>
+  </div>
+</div>
+
+<div class="progress-overlay" id="progress-overlay">
+  <div class="progress-box">
+    <div class="progress-title" id="progress-title">در حال خروجی گرفتن...</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-text" id="progress-text">0%</div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ============================================================
+// LOGO MOTION STUDIO PRO - Main Engine v2.0
+// ============================================================
+
+// ---------- Easing Functions (40+ professional curves) ----------
+const Easings = {
+  linear: t => t,
+  // Quad
+  easeInQuad: t => t * t,
+  easeOutQuad: t => t * (2 - t),
+  easeInOutQuad: t => t < 0.5 ? 2*t*t : -1 + (4-2*t)*t,
+  // Cubic
+  easeInCubic: t => t*t*t,
+  easeOutCubic: t => 1 - Math.pow(1-t, 3),
+  easeInOutCubic: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2,
+  // Quart
+  easeInQuart: t => t*t*t*t,
+  easeOutQuart: t => 1 - Math.pow(1-t, 4),
+  easeInOutQuart: t => t < 0.5 ? 8*t*t*t*t : 1 - Math.pow(-2*t+2, 4)/2,
+  // Quint
+  easeInQuint: t => t*t*t*t*t,
+  easeOutQuint: t => 1 - Math.pow(1-t, 5),
+  easeInOutQuint: t => t < 0.5 ? 16*t*t*t*t*t : 1 - Math.pow(-2*t+2, 5)/2,
+  // Sine
+  easeInSine: t => 1 - Math.cos(t * Math.PI / 2),
+  easeOutSine: t => Math.sin(t * Math.PI / 2),
+  easeInOutSine: t => -(Math.cos(Math.PI * t) - 1) / 2,
+  // Expo
+  easeInExpo: t => t === 0 ? 0 : Math.pow(2, 10*t - 10),
+  easeOutExpo: t => t === 1 ? 1 : 1 - Math.pow(2, -10*t),
+  easeInOutExpo: t => t === 0 ? 0 : t === 1 ? 1 : t < 0.5 ? Math.pow(2, 20*t-10)/2 : (2 - Math.pow(2, -20*t+10))/2,
+  // Circ
+  easeInCirc: t => 1 - Math.sqrt(1 - t*t),
+  easeOutCirc: t => Math.sqrt(1 - Math.pow(t-1, 2)),
+  easeInOutCirc: t => t < 0.5 ? (1 - Math.sqrt(1 - 4*t*t))/2 : (Math.sqrt(1 - Math.pow(-2*t+2, 2)) + 1)/2,
+  // Back
+  easeInBack: t => { const c1 = 1.70158, c3 = c1 + 1; return c3*t*t*t - c1*t*t; },
+  easeOutBack: t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3*Math.pow(t-1, 3) + c1*Math.pow(t-1, 2); },
+  easeInOutBack: t => { const c1 = 1.70158, c2 = c1 * 1.525; return t < 0.5 ? (Math.pow(2*t, 2) * ((c2+1)*2*t - c2))/2 : (Math.pow(2*t-2, 2)*((c2+1)*(t*2-2)+c2)+2)/2; },
+  // Elastic
+  easeInElastic: t => t === 0 ? 0 : t === 1 ? 1 : -Math.pow(2, 10*t-10) * Math.sin((t*10-10.75) * 2*Math.PI/3),
+  easeOutElastic: t => t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10*t) * Math.sin((t*10-0.75) * 2*Math.PI/3) + 1,
+  easeInOutElastic: t => t === 0 ? 0 : t === 1 ? 1 : t < 0.5 ? -(Math.pow(2, 20*t-10) * Math.sin((20*t-11.125) * 2*Math.PI/4.5))/2 : (Math.pow(2, -20*t+10) * Math.sin((20*t-11.125) * 2*Math.PI/4.5))/2 + 1,
+  // Bounce
+  easeOutBounce: t => {
+    const n1 = 7.5625, d1 = 2.75;
+    if (t < 1/d1) return n1*t*t;
+    if (t < 2/d1) return n1*(t -= 1.5/d1)*t + 0.75;
+    if (t < 2.5/d1) return n1*(t -= 2.25/d1)*t + 0.9375;
+    return n1*(t -= 2.625/d1)*t + 0.984375;
+  },
+  easeInBounce: t => 1 - Easings.easeOutBounce(1 - t),
+  easeInOutBounce: t => t < 0.5 ? (1 - Easings.easeOutBounce(1 - 2*t))/2 : (1 + Easings.easeOutBounce(2*t - 1))/2,
+  // Step
+  step4: t => Math.floor(t * 4) / 4,
+  step8: t => Math.floor(t * 8) / 8,
+  // Bezier-like custom
+  easeOutExpo2: t => t === 1 ? 1 : 1 - Math.pow(2, -10*t) * Math.cos((t*10 - 0.5) * Math.PI),
+  easeInOutSharp: t => t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3)/2,
+  // Custom smooth
+  smoothStep: t => t*t*(3-2*t),
+  smootherStep: t => t*t*t*(t*(t*6 - 15) + 10),
+  // Decelerate
+  decel: t => 1 - Math.pow(1-t, 4),
+  // Accelerate
+  accel: t => Math.pow(t, 4),
+};
+
+// ---------- Entrance Animations (30+) ----------
+const EntranceAnims = {
+  none: { name: 'بدون', icon: '∅' },
+  fade: { name: 'فید', icon: '◐' },
+  fadeIn: { name: 'فید نرم', icon: '◯' },
+  scaleUp: { name: 'بزرگ‌نمایی', icon: '⤢' },
+  scaleOvershoot: { name: 'بزرگ + چرخش', icon: '⤢' },
+  pop: { name: 'پاپ', icon: '◉' },
+  slideRight: { name: 'ورود از راست', icon: '→' },
+  slideLeft: { name: 'ورود از چپ', icon: '←' },
+  slideUp: { name: 'ورود از پایین', icon: '↑' },
+  slideDown: { name: 'ورود از بالا', icon: '↓' },
+  slideDiagonal: { name: 'قطری', icon: '⤴' },
+  zoomIn: { name: 'زوم داخل', icon: '⊕' },
+  zoomOut: { name: 'زوم خارج', icon: '⊖' },
+  rotateIn: { name: 'چرخش ورود', icon: '↻' },
+  rotateScale: { name: 'چرخش + مقیاس', icon: '↻' },
+  rotateLeft: { name: 'چرخش چپ', icon: '↺' },
+  flipX: { name: 'فلیپ افقی', icon: '⇄' },
+  flipY: { name: 'فلیپ عمودی', icon: '⇅' },
+  flip3D: { name: 'فلیپ 3D', icon: '⟳' },
+  blurIn: { name: 'فید بلر', icon: '◌' },
+  typewriter: { name: 'تایپ کردن', icon: '⌨' },
+  letterDrop: { name: 'ریختن حروف', icon: '↓' },
+  letterFly: { name: 'پرش حروف', icon: '✦' },
+  bounce: { name: 'پرشی', icon: '⤓' },
+  elastic: { name: 'الاستیک', icon: '〰' },
+  converge: { name: 'تجمع ذرات', icon: '✦' },
+  roll: { name: 'غلتیدن', icon: '⊘' },
+  wipeRight: { name: 'پاک‌کن راست', icon: '⊐' },
+  wipeLeft: { name: 'پاک‌کن چپ', icon: '⊏' },
+  scanline: { name: 'خط اسکن', icon: '─' },
+  glitch: { name: 'گلیچ', icon: '▦' },
+  draw: { name: 'رسم خط', icon: '✎' },
+};
+
+// ---------- Hold Animations ----------
+const HoldAnims = {
+  none: { name: 'ثابت', icon: '∅' },
+  pulse: { name: 'نبض', icon: '◉' },
+  float: { name: 'شناور', icon: '〰' },
+  rotate: { name: 'چرخش', icon: '↻' },
+  glow: { name: 'درخشش', icon: '✦' },
+  breathe: { name: 'نفس', icon: '◐' },
+  swing: { name: 'تاب', icon: '⌒' },
+  shake: { name: 'لرزش', icon: '〰' },
+  bounce: { name: 'پرش', icon: '⤓' },
+  wobble: { name: 'لرزش آونگ', icon: '∽' },
+  heartbeat: { name: 'ضربان قلب', icon: '♡' },
+  wave: { name: 'موج', icon: '〜' },
+  orbit: { name: 'مدار', icon: '◌' },
+  flicker: { name: 'سوسو زدن', icon: '✦' },
+};
+
+// ---------- Exit Animations ----------
+const ExitAnims = {
+  none: { name: 'بدون', icon: '∅' },
+  fade: { name: 'فید', icon: '◑' },
+  fadeOut: { name: 'فید نرم', icon: '●' },
+  scaleDown: { name: 'کوچک‌نمایی', icon: '⤡' },
+  slideRight: { name: 'خروج به راست', icon: '→' },
+  slideLeft: { name: 'خروج به چپ', icon: '←' },
+  slideUp: { name: 'خروج به بالا', icon: '↑' },
+  slideDown: { name: 'خروج به پایین', icon: '↓' },
+  zoomIn: { name: 'زوم داخل', icon: '⊕' },
+  zoomOut: { name: 'زوم خارج', icon: '⊖' },
+  rotateOut: { name: 'چرخش خروج', icon: '↺' },
+  blurOut: { name: 'بلر خارج', icon: '◌' },
+  dissolve: { name: 'انحلال', icon: '∘' },
+  shrink: { name: 'جمع شدن', icon: '◉' },
+  implode: { name: 'فروریختن', icon: '◉' },
+  fly: { name: 'پر شدن', icon: '✦' },
+  glitchOut: { name: 'گلیچ خارج', icon: '▦' },
+};
+
+// ---------- Background Types ----------
+const BgTypes = {
+  solid: { name: 'رنگ ثابت', icon: '■' },
+  linearGradient: { name: 'گرادیان خطی', icon: '▤' },
+  radialGradient: { name: 'گرادیان شعاعی', icon: '◉' },
+  animatedGradient: { name: 'گرادیان متحرک', icon: '🌈' },
+  conicGradient: { name: 'گرادیان مخروطی', icon: '◐' },
+  meshGradient: { name: 'گرادیان مش', icon: '◆' },
+  particles: { name: 'ذرات', icon: '✦' },
+  grid: { name: 'شبکه', icon: '▦' },
+  stars: { name: 'ستارگان', icon: '✦' },
+  bokeh: { name: 'بوکه', icon: '◉' },
+  aurora: { name: 'شفق قطبی', icon: '🌠' },
+  waves: { name: 'موج‌ها', icon: '〜' },
+  hexagon: { name: 'شش‌ضلعی', icon: '⬡' },
+  dots: { name: 'نقطه‌ها', icon: '⋯' },
+  rays: { name: 'پرتوها', icon: '※' },
+  matrix: { name: 'ماتریکس', icon: '▦' },
+  noise: { name: 'نویز', icon: '░' },
+  gradientWaves: { name: 'موج گرادیان', icon: '〜' },
+  plasma: { name: 'پلاسما', icon: '◉' },
+  topology: { name: 'توپولوژی', icon: '◉' },
+};
+
+// ---------- Project State ----------
+const project = {
+  name: 'پروژه من',
+  canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+  background: {
+    type: 'particles',
+    color1: '#0a0a0f',
+    color2: '#1a1a2e',
+    color3: '#6366f1',
+    angle: 135,
+    particleCount: 80,
+    particleColor: '#ff4444',
+    particleSpeed: 1,
+    particleSize: 2,
+    gridColor: '#1a1a24',
+    gridSize: 60,
+    starCount: 150,
+    bokehCount: 25,
+    bokehColor: '#6366f1',
+    auroraColors: ['#6366f1','#a855f7','#ec4899'],
+    waveAmplitude: 50,
+    waveFrequency: 1,
+    vignette: 0.4,
+    grain: 0.06,
+    blur: 0,
+    brightness: 1,
+    contrast: 1,
+    saturate: 1,
+  },
+  effects: {
+    bloom: 0,
+    bloomThreshold: 0.6,
+    chromaticAberration: 0,
+    lightLeak: 0,
+    lightLeakColor: '#ff6b6b',
+    filmGrain: 0,
+    scanlines: 0,
+    vignette: 0.2,
+    sharpen: 0,
+    glitch: 0,
+    rgbShift: 0,
+    chroma: 0,
+    grain: 0,
+    flicker: 0,
+    posterize: 0,
+    invert: false,
+    sepia: 0,
+    hueRotate: 0,
+    blur: 0,
+  },
+  audio: {
+    enabled: false,
+    src: null,
+    volume: 0.5,
+    fade: true,
+  },
+  elements: [],
+};
+
+let selectedElementId = null;
+let currentTime = 0;
+let isPlaying = false;
+let isLooping = true;
+let isMuted = false;
+let playStartTime = 0;
+let playStartOffset = 0;
+let animationFrame = null;
+let loadedImages = {};
+let particleState = [];
+let lastBgType = null;
+let audioElement = null;
+
+// ---------- Element Factory ----------
+function createElement(type, custom = {}) {
+  const id = 'el_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+  const base = {
+    id, type, name: '', visible: true, locked: false,
+    x: project.canvas.width / 2,
+    y: project.canvas.height / 2,
+    width: 400, height: 200,
+    rotation: 0, opacity: 1,
+    color: '#ffffff',
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+    borderWidth: 0, borderRadius: 0,
+    text: '', fontSize: 64, fontFamily: 'Vazirmatn',
+    fontWeight: 700, textAlign: 'center', lineHeight: 1.2, letterSpacing: 0,
+    shape: 'rectangle',
+    src: null,
+    glow: 0, glowColor: '#6366f1',
+    shadowX: 0, shadowY: 0, shadowBlur: 0, shadowColor: '#000000',
+    skewX: 0, skewY: 0,
+    entrance: { enabled: true, type: 'fade', duration: 0.8, delay: 0, easing: 'easeOutCubic' },
+    hold: { enabled: false, type: 'pulse', intensity: 0.5, speed: 1 },
+    exit: { enabled: false, type: 'fade', duration: 0.8, easing: 'easeOutCubic' },
+  };
+
+  const presets = {
+    logo: { name: 'لوگو', width: 400, height: 400, entrance: { type: 'scaleOvershoot', duration: 1, delay: 0, easing: 'easeOutBack' } },
+    text: { name: 'متن', text: 'متن شما', fontSize: 64, width: 600, height: 80, entrance: { type: 'fade', duration: 0.8, delay: 0.3 } },
+    brand: { name: 'نام برند', text: 'نام برند', fontSize: 96, fontWeight: 800, color: '#ffffff', width: 800, height: 120, entrance: { type: 'slideLeft', duration: 1, delay: 0.5, easing: 'easeOutCubic' } },
+    tagline: { name: 'شعار', text: 'شعار برند شما', fontSize: 36, fontWeight: 400, color: '#c0c0cc', width: 700, height: 60, entrance: { type: 'fade', duration: 0.8, delay: 1.2 } },
+    phone: { name: 'تلفن', text: '۰۲۱-۱۲۳۴۵۶۷۸', fontSize: 32, fontWeight: 500, color: '#a0a0b0', width: 500, height: 50, y: project.canvas.height * 0.78, entrance: { type: 'slideUp', duration: 0.7, delay: 1.5 } },
+    website: { name: 'وب‌سایت', text: 'www.yoursite.com', fontSize: 32, fontWeight: 500, color: '#a0a0b0', width: 500, height: 50, y: project.canvas.height * 0.84, entrance: { type: 'slideUp', duration: 0.7, delay: 1.7 } },
+    email: { name: 'ایمیل', text: 'info@yoursite.com', fontSize: 28, fontWeight: 400, color: '#a0a0b0', width: 500, height: 50, y: project.canvas.height * 0.88, entrance: { type: 'slideUp', duration: 0.7, delay: 1.9 } },
+    address: { name: 'آدرس', text: 'تهران، خیابان ولیعصر', fontSize: 26, fontWeight: 400, color: '#a0a0b0', width: 700, height: 50, y: project.canvas.height * 0.92, entrance: { type: 'fade', duration: 0.8, delay: 2.1 } },
+    shape: { name: 'شکل', shape: 'rectangle', width: 300, height: 300, color: '#6366f1', backgroundColor: '#6366f1', entrance: { type: 'scaleUp', duration: 0.8, delay: 0 } },
+    icon: { name: 'آیکون', text: '★', fontSize: 120, width: 200, height: 200, entrance: { type: 'rotateScale', duration: 1, delay: 0.2, easing: 'easeOutBack' } },
+    divider: { name: 'خط جداکننده', shape: 'line', width: 400, height: 2, color: '#6366f1', backgroundColor: '#6366f1', y: project.canvas.height * 0.7, entrance: { type: 'draw', duration: 0.8, delay: 1 } },
+    social: { name: 'شبکه اجتماعی', text: '◍ Instagram  ◍ Telegram', fontSize: 24, fontWeight: 500, color: '#a0a0b0', width: 600, height: 40, y: project.canvas.height * 0.95, entrance: { type: 'fade', duration: 0.8, delay: 2.3 } },
+  };
+
+  return { ...base, ...presets[type], ...custom };
+}
+
+function addElement(type) {
+  const el = createElement(type);
+  el.y = project.canvas.height / 2 + (project.elements.length % 5 - 2) * 80;
+  project.elements.push(el);
+  selectElement(el.id);
+  renderElementList();
+  renderTimeline();
+  toast('عنصر جدید اضافه شد', 'success');
+}
+
+function deleteElement(id) {
+  const idx = project.elements.findIndex(e => e.id === id);
+  if (idx === -1) return;
+  project.elements.splice(idx, 1);
+  if (selectedElementId === id) selectedElementId = null;
+  renderElementList();
+  renderTimeline();
+  renderProperties();
+  renderAnimationPanel();
+}
+
+function duplicateElement(id) {
+  const el = project.elements.find(e => e.id === id);
+  if (!el) return;
+  const copy = JSON.parse(JSON.stringify(el));
+  copy.id = 'el_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+  copy.x += 30; copy.y += 30;
+  copy.name = el.name + ' کپی';
+  project.elements.push(copy);
+  selectElement(copy.id);
+  renderElementList();
+  renderTimeline();
+}
+
+function selectElement(id) {
+  selectedElementId = id;
+  renderElementList();
+  renderProperties();
+  renderAnimationPanel();
+  renderTimeline();
+}
+
+function getSelectedElement() {
+  return project.elements.find(e => e.id === selectedElementId);
+}
+
+function moveElement(id, direction) {
+  const idx = project.elements.findIndex(e => e.id === id);
+  if (idx === -1) return;
+  const newIdx = idx + direction;
+  if (newIdx < 0 || newIdx >= project.elements.length) return;
+  const [el] = project.elements.splice(idx, 1);
+  project.elements.splice(newIdx, 0, el);
+  renderElementList();
+  renderTimeline();
+}
+
+// ---------- Render Element List ----------
+function renderElementList() {
+  const list = document.getElementById('element-list');
+  document.getElementById('element-count').textContent = project.elements.length;
+  if (project.elements.length === 0) {
+    list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-2);font-size:11px;line-height:1.6">عنصری اضافه نشده.<br>از دکمه‌های بالا اضافه کنید.</div>';
+    return;
+  }
+  const typeIcons = { logo: '🖼️', text: '📝', brand: '⭐', tagline: '💬', phone: '📞', website: '🌐', email: '✉️', address: '📍', shape: '⬜', icon: '✦', divider: '─', social: '◍' };
+  const typeNames = { logo: 'لوگو', text: 'متن', brand: 'نام برند', tagline: 'شعار', phone: 'تلفن', website: 'وب‌سایت', email: 'ایمیل', address: 'آدرس', shape: 'شکل', icon: 'آیکون', divider: 'خط جدا', social: 'شبکه' };
+  list.innerHTML = project.elements.map((el, idx) => `
+    <div class="element-item ${el.id === selectedElementId ? 'selected' : ''}" onclick="selectElement('${el.id}')">
+      <div class="element-icon">${typeIcons[el.type] || '◦'}</div>
+      <div class="element-info">
+        <div class="element-name">${escapeHtml(el.name || typeNames[el.type] || 'عنصر')}</div>
+        <div class="element-type">${typeNames[el.type] || el.type} • ${idx + 1}</div>
+      </div>
+      <div class="element-actions">
+        <button class="icon-btn" title="بالا" onclick="event.stopPropagation();moveElement('${el.id}',-1)">▲</button>
+        <button class="icon-btn" title="پایین" onclick="event.stopPropagation();moveElement('${el.id}',1)">▼</button>
+        <button class="icon-btn" title="کپی" onclick="event.stopPropagation();duplicateElement('${el.id}')" style="font-size:13px">⎘</button>
+        <button class="icon-btn danger" title="حذف" onclick="event.stopPropagation();deleteElement('${el.id}')">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ---------- Properties Panel ----------
+function renderProperties() {
+  const empty = document.getElementById('props-empty');
+  const content = document.getElementById('props-content');
+  const el = getSelectedElement();
+  if (!el) {
+    empty.style.display = 'block';
+    content.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  content.style.display = 'block';
+
+  let html = '';
+
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">⚙</span> عمومی</span></div>
+    <div class="form-row"><label>نام:</label><div class="input-wrap"><input type="text" value="${escapeAttr(el.name)}" oninput="updateProp('name', this.value)"></div></div>
+    <div class="form-row"><label>موقعیت X:</label><div class="input-wrap"><input type="number" value="${Math.round(el.x)}" oninput="updateProp('x', +this.value)"></div></div>
+    <div class="form-row"><label>موقعیت Y:</label><div class="input-wrap"><input type="number" value="${Math.round(el.y)}" oninput="updateProp('y', +this.value)"></div></div>
+    <div class="form-row"><label>عرض:</label><div class="input-wrap"><input type="number" value="${Math.round(el.width)}" oninput="updateProp('width', +this.value)"></div></div>
+    <div class="form-row"><label>ارتفاع:</label><div class="input-wrap"><input type="number" value="${Math.round(el.height)}" oninput="updateProp('height', +this.value)"></div></div>
+    <div class="form-row"><label>چرخش:</label><div class="input-wrap"><input type="range" min="-180" max="180" value="${el.rotation}" oninput="updateProp('rotation', +this.value); document.getElementById('rot-val').textContent = Math.round(this.value)+'°'"></div><span id="rot-val" style="font-size:10px;color:var(--text-2);min-width:34px">${Math.round(el.rotation)}°</span></div>
+    <div class="form-row"><label>کج‌شدن X:</label><div class="input-wrap"><input type="range" min="-45" max="45" value="${el.skewX}" oninput="updateProp('skewX', +this.value); document.getElementById('skx-val').textContent = Math.round(this.value)+'°'"></div><span id="skx-val" style="font-size:10px;color:var(--text-2);min-width:34px">${Math.round(el.skewX)}°</span></div>
+    <div class="form-row"><label>کج‌شدن Y:</label><div class="input-wrap"><input type="range" min="-45" max="45" value="${el.skewY}" oninput="updateProp('skewY', +this.value); document.getElementById('sky-val').textContent = Math.round(this.value)+'°'"></div><span id="sky-val" style="font-size:10px;color:var(--text-2);min-width:34px">${Math.round(el.skewY)}°</span></div>
+    <div class="form-row"><label>شفافیت:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${el.opacity}" oninput="updateProp('opacity', +this.value); document.getElementById('op-val').textContent = Math.round(this.value*100)+'%'"></div><span id="op-val" style="font-size:10px;color:var(--text-2);min-width:34px">${Math.round(el.opacity*100)}%</span></div>
+  </div>`;
+
+  if (el.type === 'logo' || el.src) {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">🖼</span> تصویر لوگو</span></div>
+      <div class="upload-area ${el.src ? 'has-file' : ''}" onclick="document.getElementById('logo-upload-${el.id}').click()">
+        ${el.src ? '✓ تصویر بارگذاری شد — برای تغییر کلیک کنید' : '📁 انتخاب تصویر لوگو'}
+      </div>
+      <input type="file" id="logo-upload-${el.id}" accept="image/*" style="display:none" onchange="uploadLogo('${el.id}', event)">
+    </div>`;
+  }
+
+  if (['text', 'brand', 'tagline', 'phone', 'website', 'email', 'address', 'icon', 'social'].includes(el.type)) {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">📝</span> متن</span></div>
+      <div class="form-row-stack"><label>محتوای متن:</label><textarea rows="2" oninput="updateProp('text', this.value)">${escapeHtml(el.text)}</textarea></div>
+      <div class="form-row"><label>فونت:</label><div class="input-wrap"><select onchange="updateProp('fontFamily', this.value)">
+        ${['Vazirmatn','Inter','Arial','Georgia','Times New Roman','Courier New','Impact','JetBrains Mono'].map(f => `<option ${el.fontFamily===f?'selected':''}>${f}</option>`).join('')}
+      </select></div></div>
+      <div class="form-row"><label>اندازه:</label><div class="input-wrap"><input type="number" value="${el.fontSize}" oninput="updateProp('fontSize', +this.value)"></div><span class="input-suffix">px</span></div>
+      <div class="form-row"><label>وزن:</label><div class="input-wrap"><select onchange="updateProp('fontWeight', +this.value)">
+        ${[300,400,500,600,700,800,900].map(w => `<option value="${w}" ${el.fontWeight===w?'selected':''}>${w}</option>`).join('')}
+      </select></div></div>
+      <div class="form-row"><label>ترازبندی:</label><div class="input-wrap"><select onchange="updateProp('textAlign', this.value)">
+        <option value="right" ${el.textAlign==='right'?'selected':''}>راست</option>
+        <option value="center" ${el.textAlign==='center'?'selected':''}>وسط</option>
+        <option value="left" ${el.textAlign==='left'?'selected':''}>چپ</option>
+      </select></div></div>
+      <div class="form-row"><label>فاصله حروف:</label><div class="input-wrap"><input type="number" value="${el.letterSpacing}" oninput="updateProp('letterSpacing', +this.value)"></div><span class="input-suffix">px</span></div>
+      <div class="form-row"><label>ارتفاع خط:</label><div class="input-wrap"><input type="number" step="0.1" value="${el.lineHeight}" oninput="updateProp('lineHeight', +this.value)"></div></div>
+    </div>`;
+  }
+
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🎨</span> رنگ و استایل</span></div>`;
+  if (['text', 'brand', 'tagline', 'phone', 'website', 'email', 'address', 'icon', 'social'].includes(el.type)) {
+    html += colorRow('رنگ متن', 'color', el.color);
+  }
+  if (el.type === 'shape' || el.type === 'divider') {
+    html += colorRow('رنگ پر کردن', 'backgroundColor', el.backgroundColor);
+    html += colorRow('رنگ حاشیه', 'borderColor', el.borderColor);
+    html += `<div class="form-row"><label>ضخامت حاشیه:</label><div class="input-wrap"><input type="number" value="${el.borderWidth}" oninput="updateProp('borderWidth', +this.value)"></div><span class="input-suffix">px</span></div>`;
+    html += `<div class="form-row"><label>گردی گوشه:</label><div class="input-wrap"><input type="number" value="${el.borderRadius}" oninput="updateProp('borderRadius', +this.value)"></div><span class="input-suffix">px</span></div>`;
+    if (el.type === 'shape') {
+      html += `<div class="form-row"><label>نوع شکل:</label><div class="input-wrap"><select onchange="updateProp('shape', this.value)">
+        <option value="rectangle" ${el.shape==='rectangle'?'selected':''}>مستطیل</option>
+        <option value="circle" ${el.shape==='circle'?'selected':''}>دایره</option>
+        <option value="triangle" ${el.shape==='triangle'?'selected':''}>مثلث</option>
+        <option value="star" ${el.shape==='star'?'selected':''}>ستاره</option>
+        <option value="line" ${el.shape==='line'?'selected':''}>خط</option>
+        <option value="hexagon" ${el.shape==='hexagon'?'selected':''}>شش‌ضلعی</option>
+        <option value="heart" ${el.shape==='heart'?'selected':''}>قلب</option>
+        <option value="arrow" ${el.shape==='arrow'?'selected':''}>فلش</option>
+      </select></div></div>`;
+    }
+  }
+  html += `<div class="form-row"><label>درخشش:</label><div class="input-wrap"><input type="range" min="0" max="80" value="${el.glow}" oninput="updateProp('glow', +this.value); document.getElementById('glow-val').textContent = this.value"></div><span id="glow-val" style="font-size:10px;color:var(--text-2);min-width:24px">${el.glow}</span></div>`;
+  html += colorRow('رنگ درخشش', 'glowColor', el.glowColor);
+  html += `<div class="form-row"><label>سایه X:</label><div class="input-wrap"><input type="number" value="${el.shadowX}" oninput="updateProp('shadowX', +this.value)"></div></div>`;
+  html += `<div class="form-row"><label>سایه Y:</label><div class="input-wrap"><input type="number" value="${el.shadowY}" oninput="updateProp('shadowY', +this.value)"></div></div>`;
+  html += `<div class="form-row"><label>محوی سایه:</label><div class="input-wrap"><input type="number" value="${el.shadowBlur}" oninput="updateProp('shadowBlur', +this.value)"></div></div>`;
+  html += colorRow('رنگ سایه', 'shadowColor', el.shadowColor);
+  html += `</div>`;
+
+  content.innerHTML = html;
+}
+
+function colorRow(label, prop, value) {
+  const v = value === 'transparent' ? '#000000' : value;
+  return `<div class="form-row"><label>${label}:</label><div class="input-wrap"><div class="color-input-wrap"><input type="color" value="${v}" onchange="updateProp('${prop}', this.value)"><input type="text" value="${value}" oninput="updateProp('${prop}', this.value)"></div></div></div>`;
+}
+
+function updateProp(prop, value) {
+  const el = getSelectedElement();
+  if (!el) return;
+  el[prop] = value;
+  if (prop === 'name') renderElementList();
+  renderTimeline();
+}
+
+function uploadLogo(id, event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const el = project.elements.find(x => x.id === id);
+    if (el) {
+      el.src = e.target.result;
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 600;
+        const ratio = img.width / img.height;
+        if (img.width > maxW) {
+          el.width = maxW;
+          el.height = Math.round(maxW / ratio);
+        } else {
+          el.width = img.width;
+          el.height = img.height;
+        }
+        renderProperties();
+      };
+      img.src = e.target.result;
+    }
+    renderProperties();
+    toast('تصویر لوگو بارگذاری شد', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ---------- Animation Panel ----------
+function renderAnimationPanel() {
+  const empty = document.getElementById('anim-empty');
+  const content = document.getElementById('anim-content');
+  const el = getSelectedElement();
+  if (!el) {
+    empty.style.display = 'block';
+    content.style.display = 'none';
+    return;
+  }
+  empty.style.display = 'none';
+  content.style.display = 'block';
+
+  const easingOptions = Object.keys(Easings).map(name =>
+    `<option value="${name}" ${el.entrance.easing === name ? 'selected' : ''}>${name}</option>`
+  ).join('');
+
+  let html = '';
+
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">📥</span> انیمیشن ورود</span><div class="toggle ${el.entrance.enabled ? 'on' : ''}" onclick="toggleAnim('entrance')"></div></div>
+    <div class="anim-grid">
+      ${Object.entries(EntranceAnims).map(([k, v]) =>
+        `<div class="anim-card ${el.entrance.type === k ? 'selected' : ''}" onclick="setAnimType('entrance','${k}')"><span class="ico">${v.icon}</span>${v.name}</div>`
+      ).join('')}
+    </div>
+    <div class="form-row"><label>مدت:</label><div class="input-wrap"><input type="number" step="0.1" min="0.1" max="10" value="${el.entrance.duration}" oninput="updateAnim('entrance','duration',+this.value)"></div><span class="input-suffix">ثانیه</span></div>
+    <div class="form-row"><label>تأخیر:</label><div class="input-wrap"><input type="number" step="0.1" min="0" max="30" value="${el.entrance.delay}" oninput="updateAnim('entrance','delay',+this.value)"></div><span class="input-suffix">ثانیه</span></div>
+    <div class="form-row"><label>ایزینگ:</label><div class="input-wrap"><select onchange="updateAnim('entrance','easing',this.value)">${easingOptions}</select></div></div>
+  </div>`;
+
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🔄</span> انیمیشن نگه‌داشتن (حلقه)</span><div class="toggle ${el.hold.enabled ? 'on' : ''}" onclick="toggleAnim('hold')"></div></div>
+    <div class="anim-grid">
+      ${Object.entries(HoldAnims).map(([k, v]) =>
+        `<div class="anim-card ${el.hold.type === k ? 'selected' : ''}" onclick="setAnimType('hold','${k}')"><span class="ico">${v.icon}</span>${v.name}</div>`
+      ).join('')}
+    </div>
+    <div class="form-row"><label>شدت:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${el.hold.intensity}" oninput="updateAnim('hold','intensity',+this.value); document.getElementById('hold-i').textContent = Math.round(this.value*100)+'%'"></div><span id="hold-i" style="font-size:10px;color:var(--text-2);min-width:34px">${Math.round(el.hold.intensity*100)}%</span></div>
+    <div class="form-row"><label>سرعت:</label><div class="input-wrap"><input type="range" min="0.1" max="5" step="0.1" value="${el.hold.speed}" oninput="updateAnim('hold','speed',+this.value); document.getElementById('hold-s').textContent = this.value+'x'"></div><span id="hold-s" style="font-size:10px;color:var(--text-2);min-width:34px">${el.hold.speed}x</span></div>
+  </div>`;
+
+  const exitEasingOptions = Object.keys(Easings).map(name =>
+    `<option value="${name}" ${el.exit.easing === name ? 'selected' : ''}>${name}</option>`
+  ).join('');
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">📤</span> انیمیشن خروج</span><div class="toggle ${el.exit.enabled ? 'on' : ''}" onclick="toggleAnim('exit')"></div></div>
+    <div class="anim-grid">
+      ${Object.entries(ExitAnims).map(([k, v]) =>
+        `<div class="anim-card ${el.exit.type === k ? 'selected' : ''}" onclick="setAnimType('exit','${k}')"><span class="ico">${v.icon}</span>${v.name}</div>`
+      ).join('')}
+    </div>
+    <div class="form-row"><label>مدت:</label><div class="input-wrap"><input type="number" step="0.1" min="0.1" max="10" value="${el.exit.duration}" oninput="updateAnim('exit','duration',+this.value)"></div><span class="input-suffix">ثانیه</span></div>
+    <div class="form-row"><label>ایزینگ:</label><div class="input-wrap"><select onchange="updateAnim('exit','easing',this.value)">${exitEasingOptions}</select></div></div>
+    <div class="help-text">💡 خروج در پایان انیمیشن رخ می‌دهد. اگر مدت ۷ ثانیه و خروج ۱ ثانیه باشد، خروج از ثانیه ۶ شروع می‌شود.</div>
+  </div>`;
+
+  content.innerHTML = html;
+}
+
+function toggleAnim(kind) {
+  const el = getSelectedElement();
+  if (!el) return;
+  el[kind].enabled = !el[kind].enabled;
+  renderAnimationPanel();
+  renderTimeline();
+}
+
+function setAnimType(kind, type) {
+  const el = getSelectedElement();
+  if (!el) return;
+  el[kind].type = type;
+  el[kind].enabled = true;
+  renderAnimationPanel();
+  renderTimeline();
+}
+
+function updateAnim(kind, prop, value) {
+  const el = getSelectedElement();
+  if (!el) return;
+  el[kind][prop] = value;
+  renderTimeline();
+}
+
+// ---------- Background Panel ----------
+function renderBackgroundPanel() {
+  const bg = project.background;
+  let html = `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🎨</span> نوع پس‌زمینه</span></div>
+    <div class="anim-grid">
+      ${Object.entries(BgTypes).map(([k, v]) =>
+        `<div class="anim-card ${bg.type === k ? 'selected' : ''}" onclick="setBgType('${k}')"><span class="ico">${v.icon}</span>${v.name}</div>`
+      ).join('')}
+    </div>
+  </div>`;
+
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🎨</span> رنگ‌ها</span></div>
+    ${colorRow('رنگ ۱', 'bgColor1', bg.color1)}
+    ${bg.type.includes('Gradient') || bg.type === 'meshGradient' || bg.type === 'aurora' || bg.type === 'plasma' || bg.type === 'topology' ? colorRow('رنگ ۲', 'bgColor2', bg.color2) : ''}
+    ${bg.type === 'meshGradient' || bg.type === 'aurora' ? colorRow('رنگ ۳', 'bgColor3', bg.color3) : ''}
+    ${bg.type === 'linearGradient' || bg.type === 'animatedGradient' || bg.type === 'conicGradient' ? `<div class="form-row"><label>زاویه:</label><div class="input-wrap"><input type="range" min="0" max="360" value="${bg.angle}" oninput="updateBg('angle', +this.value); document.getElementById('bg-angle-v').textContent = this.value+'°'"></div><span id="bg-angle-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${bg.angle}°</span></div>` : ''}
+  </div>`;
+
+  if (bg.type === 'particles' || bg.type === 'stars' || bg.type === 'bokeh' || bg.type === 'dots') {
+    const countProp = bg.type === 'particles' ? 'particleCount' : bg.type === 'stars' ? 'starCount' : bg.type === 'bokeh' ? 'bokehCount' : 'particleCount';
+    const colorProp = bg.type === 'particles' ? 'particleColor' : 'bokehColor';
+    const count = bg[countProp] || 80;
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">⚙</span> تنظیمات ${BgTypes[bg.type].name}</span></div>
+      <div class="form-row"><label>تعداد:</label><div class="input-wrap"><input type="number" value="${count}" oninput="updateBg('${countProp}', +this.value)"></div></div>
+      ${bg.type !== 'stars' && bg.type !== 'dots' ? colorRow('رنگ', colorProp, bg[colorProp]) : ''}
+      ${bg.type === 'particles' ? `<div class="form-row"><label>سرعت:</label><div class="input-wrap"><input type="range" min="0.1" max="3" step="0.1" value="${bg.particleSpeed}" oninput="updateBg('particleSpeed', +this.value)"></div></div>` : ''}
+      ${bg.type === 'particles' ? `<div class="form-row"><label>اندازه:</label><div class="input-wrap"><input type="range" min="1" max="10" step="0.5" value="${bg.particleSize}" oninput="updateBg('particleSize', +this.value)"></div></div>` : ''}
+    </div>`;
+  }
+
+  if (bg.type === 'grid' || bg.type === 'hexagon' || bg.type === 'matrix') {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">⚙</span> تنظیمات ${BgTypes[bg.type].name}</span></div>
+      ${colorRow('رنگ شبکه', 'gridColor', bg.gridColor)}
+      <div class="form-row"><label>اندازه:</label><div class="input-wrap"><input type="number" value="${bg.gridSize}" oninput="updateBg('gridSize', +this.value)"></div><span class="input-suffix">px</span></div>
+    </div>`;
+  }
+
+  if (bg.type === 'waves' || bg.type === 'gradientWaves') {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">⚙</span> تنظیمات موج</span></div>
+      <div class="form-row"><label>دامنه:</label><div class="input-wrap"><input type="range" min="10" max="200" value="${bg.waveAmplitude}" oninput="updateBg('waveAmplitude', +this.value)"></div></div>
+      <div class="form-row"><label>فرکانس:</label><div class="input-wrap"><input type="range" min="0.1" max="5" step="0.1" value="${bg.waveFrequency}" oninput="updateBg('waveFrequency', +this.value)"></div></div>
+    </div>`;
+  }
+
+  if (bg.type === 'aurora') {
+    html += `<div class="help-text">🌠 شفق قطبی: رنگ‌های ۱، ۲ و ۳ برای موج‌های نور استفاده می‌شوند.</div>`;
+  }
+
+  html += `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">✨</span> افکت‌های پس‌زمینه</span></div>
+    <div class="form-row"><label>ویگنت:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${bg.vignette}" oninput="updateBg('vignette', +this.value); document.getElementById('vig-v').textContent = Math.round(this.value*100)+'%'"></div><span id="vig-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(bg.vignette*100)}%</span></div>
+    <div class="form-row"><label>نویز فیلم:</label><div class="input-wrap"><input type="range" min="0" max="0.3" step="0.01" value="${bg.grain}" oninput="updateBg('grain', +this.value); document.getElementById('grain-v').textContent = Math.round(this.value*100)+'%'"></div><span id="grain-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(bg.grain*100)}%</span></div>
+    <div class="form-row"><label>محوی:</label><div class="input-wrap"><input type="range" min="0" max="20" step="0.5" value="${bg.blur}" oninput="updateBg('blur', +this.value); document.getElementById('blur-v').textContent = this.value+'px'"></div><span id="blur-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${bg.blur}px</span></div>
+    <div class="form-row"><label>روشنایی:</label><div class="input-wrap"><input type="range" min="0.3" max="2" step="0.05" value="${bg.brightness}" oninput="updateBg('brightness', +this.value); document.getElementById('br-v').textContent = this.value+'x'"></div><span id="br-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${bg.brightness}x</span></div>
+    <div class="form-row"><label>کنتراست:</label><div class="input-wrap"><input type="range" min="0.3" max="2" step="0.05" value="${bg.contrast}" oninput="updateBg('contrast', +this.value); document.getElementById('ct-v').textContent = this.value+'x'"></div><span id="ct-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${bg.contrast}x</span></div>
+    <div class="form-row"><label>اشباع:</label><div class="input-wrap"><input type="range" min="0" max="2" step="0.05" value="${bg.saturate}" oninput="updateBg('saturate', +this.value); document.getElementById('sa-v').textContent = this.value+'x'"></div><span id="sa-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${bg.saturate}x</span></div>
+  </div>`;
+
+  document.getElementById('bg-content').innerHTML = html;
+}
+
+function setBgType(type) {
+  project.background.type = type;
+  lastBgType = null;
+  renderBackgroundPanel();
+}
+
+function updateBg(prop, value) {
+  project.background[prop] = value;
+  if (['particleCount','starCount','bokehCount'].includes(prop)) lastBgType = null;
+}
+
+// ---------- Effects Panel ----------
+function renderEffectsPanel() {
+  const fx = project.effects;
+  let html = `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">✨</span> افکت‌های پسینایی (Post-FX)</span></div>
+    <div class="help-text">افکت‌های سینمایی که روی کل تصویر اعمال می‌شوند.</div>
+    <div class="form-row"><label>Bloom:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.bloom}" oninput="updateFx('bloom', +this.value); document.getElementById('bloom-v').textContent = Math.round(this.value*100)+'%'"></div><span id="bloom-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.bloom*100)}%</span></div>
+    <div class="form-row"><label>Chromatic Aberr.:</label><div class="input-wrap"><input type="range" min="0" max="20" step="0.5" value="${fx.chromaticAberration}" oninput="updateFx('chromaticAberration', +this.value); document.getElementById('ca-v').textContent = this.value+'px'"></div><span id="ca-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${fx.chromaticAberration}px</span></div>
+    <div class="form-row"><label>Light Leak:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.lightLeak}" oninput="updateFx('lightLeak', +this.value); document.getElementById('ll-v').textContent = Math.round(this.value*100)+'%'"></div><span id="ll-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.lightLeak*100)}%</span></div>
+    ${colorRow('رنگ Light Leak', 'fxLightLeakColor', fx.lightLeakColor)}
+    <div class="form-row"><label>Scanlines:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.scanlines}" oninput="updateFx('scanlines', +this.value); document.getElementById('sl-v').textContent = Math.round(this.value*100)+'%'"></div><span id="sl-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.scanlines*100)}%</span></div>
+    <div class="form-row"><label>Vignette:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.vignette}" oninput="updateFx('vignette', +this.value); document.getElementById('fxvig-v').textContent = Math.round(this.value*100)+'%'"></div><span id="fxvig-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.vignette*100)}%</span></div>
+    <div class="form-row"><label>Glitch:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.glitch}" oninput="updateFx('glitch', +this.value); document.getElementById('gl-v').textContent = Math.round(this.value*100)+'%'"></div><span id="gl-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.glitch*100)}%</span></div>
+    <div class="form-row"><label>RGB Shift:</label><div class="input-wrap"><input type="range" min="0" max="20" step="0.5" value="${fx.rgbShift}" oninput="updateFx('rgbShift', +this.value); document.getElementById('rs-v').textContent = this.value+'px'"></div><span id="rs-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${fx.rgbShift}px</span></div>
+    <div class="form-row"><label>Sharpen:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.sharpen}" oninput="updateFx('sharpen', +this.value); document.getElementById('sh-v').textContent = Math.round(this.value*100)+'%'"></div><span id="sh-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.sharpen*100)}%</span></div>
+    <div class="form-row"><label>Flicker:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.flicker}" oninput="updateFx('flicker', +this.value); document.getElementById('fl-v').textContent = Math.round(this.value*100)+'%'"></div><span id="fl-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.flicker*100)}%</span></div>
+    <div class="form-row"><label>Sepia:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${fx.sepia}" oninput="updateFx('sepia', +this.value); document.getElementById('sep-v').textContent = Math.round(this.value*100)+'%'"></div><span id="sep-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(fx.sepia*100)}%</span></div>
+    <div class="form-row"><label>Hue Rotate:</label><div class="input-wrap"><input type="range" min="0" max="360" value="${fx.hueRotate}" oninput="updateFx('hueRotate', +this.value); document.getElementById('hr-v').textContent = this.value+'°'"></div><span id="hr-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${fx.hueRotate}°</span></div>
+    <div class="form-row"><label>Blur کل:</label><div class="input-wrap"><input type="range" min="0" max="10" step="0.1" value="${fx.blur}" oninput="updateFx('blur', +this.value); document.getElementById('fxblur-v').textContent = this.value+'px'"></div><span id="fxblur-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${fx.blur}px</span></div>
+    <div class="form-row"><label>اینورت:</label><div class="input-wrap"><div class="toggle ${fx.invert ? 'on' : ''}" onclick="updateFx('invert', !project.effects.invert); renderEffectsPanel()"></div></div></div>
+  </div>`;
+
+  document.getElementById('fx-content').innerHTML = html;
+}
+
+function updateFx(prop, value) {
+  project.effects[prop === 'fxLightLeakColor' ? 'lightLeakColor' : prop] = value;
+}
+
+// ---------- Audio Panel ----------
+function renderAudioPanel() {
+  const au = project.audio;
+  let html = `<div class="panel-section">
+    <div class="panel-section-title"><span><span class="ico">🔊</span> موسیقی و صدا</span><div class="toggle ${au.enabled ? 'on' : ''}" onclick="toggleAudio()"></div></div>
+    <div class="upload-area ${au.src ? 'has-file' : ''}" onclick="document.getElementById('audio-upload').click()">
+      ${au.src ? '✓ موسیقی بارگذاری شد — برای تغییر کلیک کنید' : '📁 انتخاب فایل صوتی (MP3, WAV)'}
+    </div>
+    <input type="file" id="audio-upload" accept="audio/*" style="display:none" onchange="uploadAudio(event)">
+    <div class="form-row" style="margin-top:10px"><label>صدا:</label><div class="input-wrap"><input type="range" min="0" max="1" step="0.05" value="${au.volume}" oninput="updateAudio('volume', +this.value); document.getElementById('vol-v').textContent = Math.round(this.value*100)+'%'"></div><span id="vol-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${Math.round(au.volume*100)}%</span></div>
+    <div class="form-row"><label>فید صدا:</label><div class="input-wrap"><div class="toggle ${au.fade ? 'on' : ''}" onclick="updateAudio('fade', !project.audio.fade)"></div></div></div>
+    <div class="help-text">💡 موسیقی در حین خروجی ویدیو هم ضبط می‌شود. در حالت پیش‌نمایش با پخش انیمیشن پخش می‌شود.</div>
+  </div>`;
+  document.getElementById('audio-content').innerHTML = html;
+}
+
+function toggleAudio() {
+  project.audio.enabled = !project.audio.enabled;
+  renderAudioPanel();
+  if (!project.audio.enabled && audioElement) {
+    audioElement.pause();
+  }
+}
+
+function uploadAudio(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    project.audio.src = e.target.result;
+    project.audio.enabled = true;
+    if (audioElement) audioElement.src = e.target.result;
+    else {
+      audioElement = new Audio(e.target.result);
+      audioElement.volume = project.audio.volume;
+    }
+    renderAudioPanel();
+    toast('موسیقی بارگذاری شد', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateAudio(prop, value) {
+  project.audio[prop] = value;
+  if (prop === 'volume' && audioElement) audioElement.volume = value;
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  const btn = document.getElementById('mute-btn');
+  btn.textContent = isMuted ? '🔇 بی‌صدا' : '🔊 صدا';
+  btn.style.background = isMuted ? 'var(--danger)' : '';
+  btn.style.color = isMuted ? 'white' : '';
+  if (audioElement) audioElement.muted = isMuted;
+}
+
+// ---------- Timeline ----------
+function renderTimeline() {
+  const tracks = document.getElementById('timeline-tracks');
+  const rulerMarks = document.getElementById('ruler-marks');
+  const dur = project.canvas.duration;
+  const stepCount = 10;
+  let marksHtml = '';
+  for (let i = 0; i < stepCount; i++) {
+    const t = (i / stepCount) * dur;
+    marksHtml += `<div class="timeline-ruler-mark">${t.toFixed(1)}s</div>`;
+  }
+  rulerMarks.innerHTML = marksHtml;
+
+  if (project.elements.length === 0) {
+    tracks.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-2);font-size:11px">عنصری وجود ندارد</div>';
+    return;
+  }
+
+  const typeIcons = { logo: '🖼️', text: '📝', brand: '⭐', tagline: '💬', phone: '📞', website: '🌐', email: '✉️', address: '📍', shape: '⬜', icon: '✦', divider: '─', social: '◍' };
+  tracks.innerHTML = project.elements.map(el => {
+    const entStart = el.entrance.enabled ? el.entrance.delay : 0;
+    const entEnd = el.entrance.enabled ? entStart + el.entrance.duration : 0;
+    const exitEnd = dur;
+    const exitStart = el.exit.enabled ? exitEnd - el.exit.duration : exitEnd;
+    const holdEnd = exitStart;
+    const holdStart = entEnd;
+    const entW = (entEnd - entStart) / dur * 100;
+    const holdW = Math.max(0, (holdEnd - holdStart)) / dur * 100;
+    const exitW = (exitEnd - exitStart) / dur * 100;
+    const preW = entStart / dur * 100;
+    return `<div class="timeline-track ${el.id === selectedElementId ? 'selected' : ''}" onclick="selectElement('${el.id}')">
+      <div class="track-label">${typeIcons[el.type] || '◦'} ${escapeHtml(el.name || el.type)}</div>
+      <div class="track-bar-container">
+        ${preW > 0 ? `<div style="position:absolute;left:0;width:${preW}%;height:100%"></div>` : ''}
+        ${el.entrance.enabled && entW > 0 ? `<div class="track-bar entrance" style="left:${preW}%;width:${entW}%" title="ورود: ${entStart.toFixed(1)}s - ${entEnd.toFixed(1)}s"><div class="track-bar-segment">ورود</div></div>` : ''}
+        ${holdW > 0 ? `<div class="track-bar hold" style="left:${preW + entW}%;width:${holdW}%" title="نگه‌داشتن"><div class="track-bar-segment">${el.hold.enabled ? 'حلقه' : 'ثابت'}</div></div>` : ''}
+        ${el.exit.enabled && exitW > 0 ? `<div class="track-bar exit" style="left:${preW + entW + holdW}%;width:${exitW}%" title="خروج: ${exitStart.toFixed(1)}s - ${exitEnd.toFixed(1)}s"><div class="track-bar-segment">خروج</div></div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  updatePlayhead();
+}
+
+function updatePlayhead() {
+  const dur = project.canvas.duration;
+  const pct = (currentTime / dur) * 100;
+  document.getElementById('playhead').style.left = pct + '%';
+}
+
+// ---------- Canvas Rendering ----------
+const canvas = document.getElementById('preview-canvas');
+const ctx = canvas.getContext('2d');
+
+function updateCanvasSize() {
+  canvas.width = project.canvas.width;
+  canvas.height = project.canvas.height;
+  updateZoom();
+}
+
+function updateZoom() {
+  const area = document.querySelector('.preview-area');
+  const sel = document.getElementById('zoom-level').value;
+  if (sel === 'fit') {
+    const aw = area.clientWidth - 48;
+    const ah = area.clientHeight - 48;
+    const s = Math.min(aw / canvas.width, ah / canvas.height);
+    canvas.style.width = (canvas.width * s) + 'px';
+    canvas.style.height = (canvas.height * s) + 'px';
+  } else {
+    const z = parseFloat(sel);
+    canvas.style.width = (canvas.width * z) + 'px';
+    canvas.style.height = (canvas.height * z) + 'px';
+  }
+}
+
+function computeElementState(el, t) {
+  const dur = project.canvas.duration;
+  const state = { visible: true, opacity: el.opacity, scale: 1, scaleX: 1, scaleY: 1, offsetX: 0, offsetY: 0, rotation: el.rotation, blur: 0, glowMult: 1, textProgress: 1, skewX: el.skewX, skewY: el.skewY };
+
+  if (el.entrance.enabled) {
+    const start = el.entrance.delay;
+    const end = start + el.entrance.duration;
+    if (t < start) { state.visible = false; return state; }
+    if (t < end) {
+      const p = (t - start) / el.entrance.duration;
+      const eased = Easings[el.entrance.easing] ? Easings[el.entrance.easing](p) : p;
+      applyEntrance(state, el.entrance.type, eased, el);
+    }
+  }
+  if (el.exit.enabled) {
+    const exitEnd = dur;
+    const exitStart = exitEnd - el.exit.duration;
+    if (t > exitStart) {
+      const p = (t - exitStart) / el.exit.duration;
+      const eased = Easings[el.exit.easing] ? Easings[el.exit.easing](p) : p;
+      applyExit(state, el.exit.type, eased, el);
+    }
+  }
+  const holdStart = el.entrance.enabled ? el.entrance.delay + el.entrance.duration : 0;
+  const holdEnd = el.exit.enabled ? dur - el.exit.duration : dur;
+  if (el.hold.enabled && el.hold.type !== 'none' && t >= holdStart && t <= holdEnd) {
+    applyHold(state, el.hold.type, t - holdStart, el.hold.intensity, el.hold.speed);
+  }
+  return state;
+}
+
+function applyEntrance(state, type, p, el) {
+  switch (type) {
+    case 'none': case 'fadeIn': state.opacity *= p; break;
+    case 'fade': state.opacity *= Math.min(1, p * 1.5); break;
+    case 'scaleUp': state.scale *= p; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'scaleOvershoot': {
+      const c1 = 1.70158, c3 = c1 + 1;
+      const v = p < 1 ? 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2) : 1;
+      state.scale *= Math.max(0, v);
+      state.opacity *= Math.min(1, p * 2);
+      break;
+    }
+    case 'pop': state.scale *= Easings.easeOutBack(p); state.opacity *= Math.min(1, p * 2); break;
+    case 'slideRight': state.offsetX += (1 - p) * project.canvas.width; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'slideLeft': state.offsetX -= (1 - p) * project.canvas.width; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'slideUp': state.offsetY += (1 - p) * 400; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'slideDown': state.offsetY -= (1 - p) * 400; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'slideDiagonal': state.offsetX += (1 - p) * 400; state.offsetY += (1 - p) * 400; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'zoomIn': state.scale *= 0.3 + 0.7 * p; state.opacity *= p; break;
+    case 'zoomOut': state.scale *= 1.5 - 0.5 * p; state.opacity *= p; break;
+    case 'rotateIn': state.rotation += (1 - p) * 180; state.scale *= 0.5 + 0.5 * p; state.opacity *= p; break;
+    case 'rotateScale': state.rotation += (1 - p) * 360; state.scale *= 0.3 + 0.7 * p; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'rotateLeft': state.rotation -= (1 - p) * 360; state.scale *= 0.3 + 0.7 * p; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'flipX': state.scaleX *= p; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'flipY': state.scaleY *= p; state.opacity *= Math.min(1, p * 1.5); break;
+    case 'flip3D': state.scaleY *= p; state.rotation += (1 - p) * 90; state.opacity *= p; break;
+    case 'blurIn': state.blur = (1 - p) * 30; state.opacity *= p; break;
+    case 'typewriter': state.textProgress = p; state.opacity = 1; break;
+    case 'letterDrop': state.offsetY += (1 - p) * 60; state.opacity *= p; break;
+    case 'letterFly': state.offsetX += Math.sin(p * 20) * (1 - p) * 50; state.offsetY += Math.cos(p * 17) * (1 - p) * 50; state.opacity *= p; break;
+    case 'bounce': { const b = Easings.easeOutBounce(p); state.scale *= b; state.offsetY -= (1 - b) * 100; state.opacity *= Math.min(1, p * 2); break; }
+    case 'elastic': { const e = Easings.easeOutElastic(p); state.scale *= e; state.opacity *= Math.min(1, p * 1.5); break; }
+    case 'converge': state.scale *= 0.5 + 0.5 * p; state.offsetX += Math.sin(p * 17) * (1 - p) * 80; state.offsetY += Math.cos(p * 13) * (1 - p) * 80; state.opacity *= p; break;
+    case 'roll': state.rotation += (1 - p) * 720; state.offsetX += (1 - p) * 300; state.opacity *= p; break;
+    case 'wipeRight': state.scaleX *= p; state.opacity *= Math.min(1, p * 2); break;
+    case 'wipeLeft': state.scaleX *= p; state.opacity *= Math.min(1, p * 2); break;
+    case 'scanline': state.scaleY *= 0.1 + 0.9 * p; state.opacity *= p; break;
+    case 'glitch': {
+      if (p < 0.8) {
+        state.offsetX += (Math.random() - 0.5) * 30 * (1 - p);
+        state.offsetY += (Math.random() - 0.5) * 30 * (1 - p);
+        state.scaleX *= 0.9 + Math.random() * 0.2;
+      }
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'draw': state.scaleX *= p; state.opacity *= Math.min(1, p * 1.5); break;
+  }
+}
+
+function applyExit(state, type, p, el) {
+  switch (type) {
+    case 'none': break;
+    case 'fade': case 'fadeOut': state.opacity *= (1 - p); break;
+    case 'scaleDown': state.scale *= (1 - p * 0.8); state.opacity *= (1 - p); break;
+    case 'slideRight': state.offsetX += p * project.canvas.width; state.opacity *= (1 - p * 0.5); break;
+    case 'slideLeft': state.offsetX -= p * project.canvas.width; state.opacity *= (1 - p * 0.5); break;
+    case 'slideUp': state.offsetY -= p * 400; state.opacity *= (1 - p * 0.5); break;
+    case 'slideDown': state.offsetY += p * 400; state.opacity *= (1 - p * 0.5); break;
+    case 'zoomIn': state.scale *= 1 + p; state.opacity *= (1 - p); break;
+    case 'zoomOut': state.scale *= 1 - p * 0.7; state.opacity *= (1 - p); break;
+    case 'rotateOut': state.rotation += p * 180; state.scale *= 1 - p * 0.5; state.opacity *= (1 - p); break;
+    case 'blurOut': state.blur = p * 30; state.opacity *= (1 - p); break;
+    case 'dissolve': state.opacity *= (1 - p); state.offsetX += Math.sin(p * 50) * p * 5; state.offsetY += Math.cos(p * 47) * p * 5; break;
+    case 'shrink': state.scale *= (1 - p); state.opacity *= (1 - p); break;
+    case 'implode': state.scale *= (1 - p); state.rotation += p * 360; state.opacity *= (1 - p); break;
+    case 'fly': state.offsetX += p * 400; state.offsetY -= p * 400; state.rotation += p * 90; state.opacity *= (1 - p); break;
+    case 'glitchOut': state.offsetX += (Math.random() - 0.5) * 30 * p; state.offsetY += (Math.random() - 0.5) * 30 * p; state.opacity *= (1 - p); break;
+  }
+}
+
+function applyHold(state, type, t, intensity, speed) {
+  const tt = t * speed;
+  switch (type) {
+    case 'none': break;
+    case 'pulse': state.scale *= 1 + Math.sin(tt * 2 * Math.PI) * 0.05 * intensity; break;
+    case 'float': state.offsetY += Math.sin(tt * 1.5 * Math.PI) * 15 * intensity; break;
+    case 'rotate': state.rotation += tt * 30 * intensity; break;
+    case 'glow': state.glowMult = 1 + Math.sin(tt * 2 * Math.PI) * 0.5 * intensity; break;
+    case 'breathe': state.scale *= 1 + Math.sin(tt * Math.PI) * 0.04 * intensity; state.glowMult = 1 + Math.sin(tt * Math.PI) * 0.5 * intensity; break;
+    case 'swing': state.rotation += Math.sin(tt * 1.5 * Math.PI) * 10 * intensity; break;
+    case 'shake': state.offsetX += Math.sin(tt * 20 * Math.PI) * 4 * intensity; state.offsetY += Math.cos(tt * 18 * Math.PI) * 4 * intensity; break;
+    case 'bounce': state.offsetY -= Math.abs(Math.sin(tt * 2 * Math.PI)) * 20 * intensity; break;
+    case 'wobble': state.rotation += Math.sin(tt * 3 * Math.PI) * 8 * intensity; state.scaleX *= 1 + Math.cos(tt * 3 * Math.PI) * 0.05 * intensity; break;
+    case 'heartbeat': { const b = Math.sin(tt * 4 * Math.PI); state.scale *= 1 + Math.pow(Math.max(0, b), 4) * 0.1 * intensity; break; }
+    case 'wave': state.offsetY += Math.sin(tt * 2 * Math.PI) * 8 * intensity; state.rotation += Math.sin(tt * 2 * Math.PI) * 3 * intensity; break;
+    case 'orbit': state.offsetX += Math.cos(tt * 2 * Math.PI) * 30 * intensity; state.offsetY += Math.sin(tt * 2 * Math.PI) * 30 * intensity; break;
+    case 'flicker': state.opacity *= 0.7 + Math.random() * 0.3 * intensity + (1 - intensity); break;
+  }
+}
+
+// ---------- Background rendering ----------
+function renderBackground(t, c = ctx) {
+  const bg = project.background;
+  const W = canvas.width, H = canvas.height;
+
+  // Apply CSS filter for global adjustments
+  let filterStr = '';
+  if (bg.blur > 0) filterStr += `blur(${bg.blur}px) `;
+  if (bg.brightness !== 1) filterStr += `brightness(${bg.brightness}) `;
+  if (bg.contrast !== 1) filterStr += `contrast(${bg.contrast}) `;
+  if (bg.saturate !== 1) filterStr += `saturate(${bg.saturate}) `;
+  c.filter = filterStr || 'none';
+
+  if (bg.type === 'solid') {
+    c.fillStyle = bg.color1; c.fillRect(0, 0, W, H);
+  } else if (bg.type === 'linearGradient' || bg.type === 'animatedGradient') {
+    let angle = bg.angle;
+    if (bg.type === 'animatedGradient') angle += t * 30;
+    const rad = (angle - 90) * Math.PI / 180;
+    const x = Math.cos(rad), y = Math.sin(rad);
+    const len = Math.abs(x * W) + Math.abs(y * H);
+    const cx = W / 2, cy = H / 2;
+    const grad = c.createLinearGradient(cx - x * len / 2, cy - y * len / 2, cx + x * len / 2, cy + y * len / 2);
+    grad.addColorStop(0, bg.color1); grad.addColorStop(1, bg.color2);
+    c.fillStyle = grad; c.fillRect(0, 0, W, H);
+  } else if (bg.type === 'radialGradient') {
+    const grad = c.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.7);
+    grad.addColorStop(0, bg.color1); grad.addColorStop(1, bg.color2);
+    c.fillStyle = grad; c.fillRect(0, 0, W, H);
+  } else if (bg.type === 'conicGradient') {
+    // Simulated conic gradient with wedges
+    c.fillStyle = bg.color1; c.fillRect(0, 0, W, H);
+    c.save();
+    c.translate(W / 2, H / 2);
+    c.rotate(t * 0.3);
+    const wedges = 60;
+    for (let i = 0; i < wedges; i++) {
+      const a1 = (i / wedges) * Math.PI * 2;
+      const a2 = ((i + 1) / wedges) * Math.PI * 2;
+      const t1 = i / wedges;
+      const r = parseInt(bg.color1.slice(1, 3), 16), g = parseInt(bg.color1.slice(3, 5), 16), b = parseInt(bg.color1.slice(5, 7), 16);
+      const r2 = parseInt(bg.color2.slice(1, 3), 16), g2 = parseInt(bg.color2.slice(3, 5), 16), b2 = parseInt(bg.color2.slice(5, 7), 16);
+      const rr = Math.round(r + (r2 - r) * t1), gg = Math.round(g + (g2 - g) * t1), bb = Math.round(b + (b2 - b) * t1);
+      c.fillStyle = `rgb(${rr},${gg},${bb})`;
+      c.beginPath();
+      c.moveTo(0, 0);
+      c.arc(0, 0, Math.max(W, H), a1, a2);
+      c.closePath(); c.fill();
+    }
+    c.restore();
+  } else if (bg.type === 'meshGradient') {
+    // Mesh gradient with multiple radial gradients
+    c.fillStyle = bg.color1; c.fillRect(0, 0, W, H);
+    const points = [
+      { x: W * 0.2, y: H * 0.3, color: bg.color2 },
+      { x: W * 0.8, y: H * 0.2, color: bg.color3 },
+      { x: W * 0.5, y: H * 0.8, color: bg.color2 },
+      { x: W * 0.15, y: H * 0.85, color: bg.color3 },
+    ];
+    points.forEach((p, i) => {
+      const off = Math.sin(t * 0.5 + i) * 50;
+      const grad = c.createRadialGradient(p.x + off, p.y, 0, p.x + off, p.y, Math.max(W, H) * 0.5);
+      grad.addColorStop(0, p.color + 'CC');
+      grad.addColorStop(1, p.color + '00');
+      c.fillStyle = grad; c.fillRect(0, 0, W, H);
+    });
+  } else {
+    c.fillStyle = bg.color1; c.fillRect(0, 0, W, H);
+  }
+
+  c.filter = 'none';
+
+  // Particle/background-element effects
+  if (bg.type === 'particles' || bg.type === 'stars' || bg.type === 'bokeh' || bg.type === 'dots') {
+    if (lastBgType !== bg.type) { initParticles(); lastBgType = bg.type; }
+    drawParticlesTo(c, t);
+  }
+  if (bg.type === 'grid' || bg.type === 'matrix') {
+    c.strokeStyle = bg.gridColor; c.lineWidth = 1;
+    const size = bg.gridSize;
+    for (let x = 0; x <= W; x += size) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke(); }
+    for (let y = 0; y <= H; y += size) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+    if (bg.type === 'matrix') {
+      // Glowing dots at intersections
+      c.fillStyle = bg.particleColor || '#22c55e';
+      for (let x = 0; x <= W; x += size) {
+        for (let y = 0; y <= H; y += size) {
+          const flicker = 0.5 + 0.5 * Math.sin(t * 2 + x * 0.01 + y * 0.01);
+          c.globalAlpha = flicker;
+          c.beginPath(); c.arc(x, y, 2, 0, Math.PI * 2); c.fill();
+        }
+      }
+      c.globalAlpha = 1;
+    }
+  }
+  if (bg.type === 'hexagon') {
+    drawHexagons(c, t, bg);
+  }
+  if (bg.type === 'waves' || bg.type === 'gradientWaves') {
+    drawWaves(c, t, bg);
+  }
+  if (bg.type === 'aurora') {
+    drawAurora(c, t, bg);
+  }
+  if (bg.type === 'rays') {
+    drawRays(c, t, bg);
+  }
+  if (bg.type === 'noise' || bg.type === 'plasma' || bg.type === 'topology') {
+    drawNoise(c, t, bg);
+  }
+
+  // Vignette
+  if (bg.vignette > 0) {
+    const grad = c.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.max(W, H) * 0.75);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, `rgba(0,0,0,${bg.vignette})`);
+    c.fillStyle = grad; c.fillRect(0, 0, W, H);
+  }
+  if (bg.grain > 0) drawGrainTo(c, bg.grain);
+}
+
+function initParticles() {
+  const bg = project.background;
+  const W = canvas.width, H = canvas.height;
+  const count = bg.type === 'particles' ? bg.particleCount : bg.type === 'stars' ? bg.starCount : bg.type === 'bokeh' ? bg.bokehCount : bg.type === 'dots' ? bg.particleCount : 80;
+  particleState = [];
+  for (let i = 0; i < count; i++) {
+    particleState.push({
+      x: Math.random() * W, y: Math.random() * H,
+      r: bg.type === 'bokeh' ? Math.random() * 30 + 10 : bg.type === 'stars' ? Math.random() * 1.5 + 0.5 : bg.type === 'dots' ? Math.random() * 3 + 1 : Math.random() * (bg.particleSize || 2.5) + 0.5,
+      vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+      phase: Math.random() * Math.PI * 2,
+      twinkleSpeed: Math.random() * 2 + 0.5,
+    });
+  }
+}
+
+function drawParticlesTo(c, t) {
+  const bg = project.background;
+  const W = canvas.width, H = canvas.height;
+  const color = bg.type === 'particles' ? bg.particleColor : bg.type === 'bokeh' ? bg.bokehColor : bg.type === 'dots' ? bg.particleColor : '#ffffff';
+  const speed = bg.particleSpeed || 1;
+  c.save();
+  for (const p of particleState) {
+    let x = p.x + p.vx * speed * t * 30;
+    let y = p.y + p.vy * speed * t * 30;
+    x = ((x % W) + W) % W; y = ((y % H) + H) % H;
+    const twinkle = 0.5 + 0.5 * Math.sin(t * p.twinkleSpeed + p.phase);
+    if (bg.type === 'bokeh') {
+      const grad = c.createRadialGradient(x, y, 0, x, y, p.r);
+      grad.addColorStop(0, color + 'AA'); grad.addColorStop(0.5, color + '40'); grad.addColorStop(1, color + '00');
+      c.fillStyle = grad; c.beginPath(); c.arc(x, y, p.r, 0, Math.PI * 2); c.fill();
+    } else if (bg.type === 'stars') {
+      c.fillStyle = `rgba(255,255,255,${twinkle})`;
+      c.beginPath(); c.arc(x, y, p.r, 0, Math.PI * 2); c.fill();
+      if (p.r > 1.2 && twinkle > 0.7) {
+        c.strokeStyle = `rgba(255,255,255,${(twinkle - 0.7) * 2})`; c.lineWidth = 0.5;
+        c.beginPath();
+        c.moveTo(x - p.r * 3, y); c.lineTo(x + p.r * 3, y);
+        c.moveTo(x, y - p.r * 3); c.lineTo(x, y + p.r * 3);
+        c.stroke();
+      }
+    } else if (bg.type === 'dots') {
+      c.fillStyle = color;
+      c.globalAlpha = 0.4 + twinkle * 0.6;
+      c.beginPath(); c.arc(x, y, p.r, 0, Math.PI * 2); c.fill();
+      c.globalAlpha = 1;
+    } else {
+      const grad = c.createRadialGradient(x, y, 0, x, y, p.r * 3);
+      grad.addColorStop(0, color + 'CC'); grad.addColorStop(1, color + '00');
+      c.fillStyle = grad; c.beginPath(); c.arc(x, y, p.r * 3, 0, Math.PI * 2); c.fill();
+      c.fillStyle = color; c.globalAlpha = twinkle;
+      c.beginPath(); c.arc(x, y, p.r, 0, Math.PI * 2); c.fill(); c.globalAlpha = 1;
+    }
+  }
+  c.restore();
+}
+
+function drawHexagons(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const size = bg.gridSize || 60;
+  const h = size * Math.sqrt(3) / 2;
+  c.strokeStyle = bg.gridColor; c.lineWidth = 1;
+  for (let row = -1; row * h < H + size; row++) {
+    for (let col = -1; col * size * 1.5 < W + size; col++) {
+      const x = col * size * 1.5;
+      const y = row * h * 2 + (col % 2 ? h : 0);
+      const flicker = 0.3 + 0.3 * Math.sin(t + col * 0.3 + row * 0.4);
+      c.globalAlpha = flicker;
+      c.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        const px = x + Math.cos(a) * size;
+        const py = y + Math.sin(a) * size;
+        if (i === 0) c.moveTo(px, py); else c.lineTo(px, py);
+      }
+      c.closePath(); c.stroke();
+    }
+  }
+  c.globalAlpha = 1;
+}
+
+function drawWaves(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const amp = bg.waveAmplitude || 50;
+  const freq = bg.waveFrequency || 1;
+  const colors = [bg.color2, bg.color3 || bg.color2, bg.particleColor || bg.color2];
+  for (let layer = 0; layer < 3; layer++) {
+    c.fillStyle = colors[layer] + '40';
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 10) {
+      const y = H * 0.5 + Math.sin(x * 0.005 * freq + t * 2 + layer * 1.5) * amp + layer * 60;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H); c.closePath(); c.fill();
+  }
+}
+
+function drawAurora(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = bg.auroraColors || [bg.color1, bg.color2, bg.color3];
+  for (let i = 0; i < 3; i++) {
+    const color = colors[i] || '#6366f1';
+    const grad = c.createLinearGradient(0, H * 0.3, 0, H);
+    grad.addColorStop(0, color + '00');
+    grad.addColorStop(0.5, color + '60');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad;
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 8) {
+      const y = H * 0.4 + Math.sin(x * 0.003 + t * 0.5 + i * 2) * 80 + Math.sin(x * 0.008 + t + i) * 40 + i * 50;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H); c.closePath(); c.fill();
+  }
+}
+
+function drawRays(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  c.save();
+  c.translate(cx, cy);
+  c.rotate(t * 0.1);
+  const rayCount = 12;
+  for (let i = 0; i < rayCount; i++) {
+    const angle = (i / rayCount) * Math.PI * 2;
+    const grad = c.createLinearGradient(0, 0, Math.cos(angle) * W, Math.sin(angle) * W);
+    grad.addColorStop(0, bg.color2 + '60');
+    grad.addColorStop(1, bg.color2 + '00');
+    c.fillStyle = grad;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.arc(0, 0, W, angle - 0.1, angle + 0.1);
+    c.closePath(); c.fill();
+  }
+  c.restore();
+}
+
+let noiseCanvas = null;
+function drawNoise(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  if (!noiseCanvas || noiseCanvas.width !== 256) {
+    noiseCanvas = document.createElement('canvas');
+    noiseCanvas.width = 256; noiseCanvas.height = 256;
+  }
+  const nctx = noiseCanvas.getContext('2d');
+  const img = nctx.createImageData(256, 256);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    img.data[i + 3] = 60;
+  }
+  nctx.putImageData(img, 0, 0);
+  c.globalAlpha = 0.5;
+  for (let x = 0; x < W; x += 256) {
+    for (let y = 0; y < H; y += 256) {
+      c.drawImage(noiseCanvas, x, y);
+    }
+  }
+  c.globalAlpha = 1;
+}
+
+let grainCanvas = null;
+function drawGrainTo(c, intensity) {
+  if (!grainCanvas || grainCanvas.width !== 200) {
+    grainCanvas = document.createElement('canvas');
+    grainCanvas.width = 200; grainCanvas.height = 200;
+  }
+  const gctx = grainCanvas.getContext('2d');
+  const img = gctx.createImageData(200, 200);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255;
+    img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+    img.data[i + 3] = Math.random() * intensity * 255;
+  }
+  gctx.putImageData(img, 0, 0);
+  c.globalAlpha = 0.5;
+  for (let x = 0; x < canvas.width; x += 200) {
+    for (let y = 0; y < canvas.height; y += 200) {
+      c.drawImage(grainCanvas, x, y);
+    }
+  }
+  c.globalAlpha = 1;
+}
+
+// ---------- Element drawing ----------
+async function loadImage(src) {
+  if (loadedImages[src]) return loadedImages[src];
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => { loadedImages[src] = img; resolve(img); };
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+async function drawElement(el, t) {
+  const state = computeElementState(el, t);
+  if (!state.visible || state.opacity <= 0.001) return;
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, Math.min(1, state.opacity));
+  const cx = el.x + state.offsetX, cy = el.y + state.offsetY;
+  ctx.translate(cx, cy);
+  ctx.rotate(state.rotation * Math.PI / 180);
+  ctx.transform(1, state.skewY * Math.PI / 180, state.skewX * Math.PI / 180, 1, 0, 0);
+  ctx.scale(state.scale * state.scaleX, state.scale * state.scaleY);
+
+  let filterStr = '';
+  if (state.blur > 0) filterStr += `blur(${state.blur}px) `;
+  const glowAmt = el.glow * state.glowMult;
+  if (glowAmt > 0) {
+    const gc = el.glowColor;
+    const r = parseInt(gc.slice(1, 3), 16), g = parseInt(gc.slice(3, 5), 16), b = parseInt(gc.slice(5, 7), 16);
+    filterStr += `drop-shadow(0 0 ${glowAmt}px rgba(${r},${g},${b},0.8)) `;
+  }
+  if (filterStr) ctx.filter = filterStr;
+  if (el.shadowBlur > 0) {
+    ctx.shadowOffsetX = el.shadowX; ctx.shadowOffsetY = el.shadowY;
+    ctx.shadowBlur = el.shadowBlur; ctx.shadowColor = el.shadowColor;
+  }
+
+  const halfW = el.width / 2, halfH = el.height / 2;
+
+  if ((el.type === 'logo' || el.src) && el.src) {
+    const img = await loadImage(el.src);
+    if (img) ctx.drawImage(img, -halfW, -halfH, el.width, el.height);
+  } else if (el.type === 'logo' && !el.src) {
+    ctx.strokeStyle = '#555'; ctx.lineWidth = 2; ctx.setLineDash([10, 8]);
+    ctx.strokeRect(-halfW, -halfH, el.width, el.height); ctx.setLineDash([]);
+    ctx.fillStyle = '#888'; ctx.font = `400 ${Math.min(24, el.width / 10)}px "Vazirmatn", sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🖼️ لوگو', 0, -10);
+    ctx.font = `400 ${Math.min(14, el.width / 16)}px "Vazirmatn", sans-serif`;
+    ctx.fillStyle = '#666';
+    ctx.fillText('از پنل ویژگی‌ها تصویر بارگذاری کنید', 0, 18);
+  } else if (el.type === 'shape' || el.type === 'divider') {
+    drawShape(el, halfW, halfH);
+  } else {
+    drawText(el, halfW, halfH, state);
+  }
+  ctx.restore();
+}
+
+function drawShape(el, halfW, halfH) {
+  ctx.fillStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor;
+  if (el.borderColor !== 'transparent' && el.borderWidth > 0) { ctx.strokeStyle = el.borderColor; ctx.lineWidth = el.borderWidth; }
+  switch (el.shape) {
+    case 'rectangle':
+      if (el.borderRadius > 0) { roundRect(ctx, -halfW, -halfH, el.width, el.height, el.borderRadius); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); }
+      else { ctx.fillRect(-halfW, -halfH, el.width, el.height); if (el.borderWidth > 0) ctx.strokeRect(-halfW, -halfH, el.width, el.height); }
+      break;
+    case 'circle': ctx.beginPath(); ctx.ellipse(0, 0, halfW, halfH, 0, 0, Math.PI * 2); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'triangle': ctx.beginPath(); ctx.moveTo(0, -halfH); ctx.lineTo(halfW, halfH); ctx.lineTo(-halfW, halfH); ctx.closePath(); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'star': drawStar(ctx, 0, 0, 5, halfW, halfW * 0.4); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'hexagon': drawPolygon(ctx, 0, 0, 6, halfW); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'heart': drawHeart(ctx, 0, 0, halfW, halfH); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'arrow': drawArrow(ctx, -halfW, 0, halfW * 2, el.height); ctx.fill(); if (el.borderWidth > 0) ctx.stroke(); break;
+    case 'line': ctx.strokeStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor; ctx.lineWidth = Math.max(1, el.height); ctx.beginPath(); ctx.moveTo(-halfW, 0); ctx.lineTo(halfW, 0); ctx.stroke(); break;
+  }
+}
+
+function roundRect(c, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  c.beginPath(); c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+
+function drawStar(c, cx, cy, spikes, outerR, innerR) {
+  let rot = Math.PI / 2 * 3; const step = Math.PI / spikes;
+  c.beginPath(); c.moveTo(cx, cy - outerR);
+  for (let i = 0; i < spikes; i++) {
+    let x = cx + Math.cos(rot) * outerR, y = cy + Math.sin(rot) * outerR; c.lineTo(x, y); rot += step;
+    x = cx + Math.cos(rot) * innerR; y = cy + Math.sin(rot) * innerR; c.lineTo(x, y); rot += step;
+  }
+  c.lineTo(cx, cy - outerR); c.closePath();
+}
+
+function drawPolygon(c, cx, cy, sides, r) {
+  c.beginPath();
+  for (let i = 0; i < sides; i++) {
+    const a = (i / sides) * Math.PI * 2 - Math.PI / 2;
+    const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r;
+    if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
+  }
+  c.closePath();
+}
+
+function drawHeart(c, cx, cy, w, h) {
+  c.beginPath();
+  c.moveTo(cx, cy + h * 0.3);
+  c.bezierCurveTo(cx, cy + h * 0.1, cx - w * 0.5, cy - h * 0.4, cx - w * 0.5, cy - h * 0.1);
+  c.bezierCurveTo(cx - w * 0.5, cy + h * 0.3, cx, cy + h * 0.5, cx, cy + h * 0.7);
+  c.bezierCurveTo(cx, cy + h * 0.5, cx + w * 0.5, cy + h * 0.3, cx + w * 0.5, cy - h * 0.1);
+  c.bezierCurveTo(cx + w * 0.5, cy - h * 0.4, cx, cy + h * 0.1, cx, cy + h * 0.3);
+  c.closePath();
+}
+
+function drawArrow(c, x, y, w, h) {
+  const headW = h * 1.2;
+  c.beginPath();
+  c.moveTo(x, y - h / 4);
+  c.lineTo(x + w - headW, y - h / 4);
+  c.lineTo(x + w - headW, y - h / 2);
+  c.lineTo(x + w, y);
+  c.lineTo(x + w - headW, y + h / 2);
+  c.lineTo(x + w - headW, y + h / 4);
+  c.lineTo(x, y + h / 4);
+  c.closePath();
+}
+
+function drawText(el, halfW, halfH, state) {
+  const fontWeight = el.fontWeight || 400;
+  ctx.font = `${fontWeight} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = el.color;
+  if (el.letterSpacing && ctx.letterSpacing !== undefined) ctx.letterSpacing = el.letterSpacing + 'px';
+  let text = el.text || '';
+  if (state.textProgress < 1) {
+    const charCount = Math.floor(text.length * state.textProgress);
+    text = text.substring(0, charCount);
+  }
+  const lines = text.split('\n');
+  const lineHeight = el.fontSize * el.lineHeight;
+  const totalHeight = lines.length * lineHeight;
+  let align = el.textAlign;
+  if (align === 'center') ctx.textAlign = 'center';
+  else if (align === 'left') ctx.textAlign = 'left';
+  else ctx.textAlign = 'right';
+  const baseX = align === 'center' ? 0 : align === 'left' ? -halfW : halfW;
+  lines.forEach((line, i) => {
+    const y = -totalHeight / 2 + lineHeight / 2 + i * lineHeight;
+    ctx.fillText(line, baseX, y);
+  });
+  if (el.letterSpacing && ctx.letterSpacing !== undefined) ctx.letterSpacing = '0px';
+}
+
+// ---------- Post-FX ----------
+function applyPostFX(c, t) {
+  const fx = project.effects;
+  const W = canvas.width, H = canvas.height;
+
+  // Bloom (approximation: bright pass + blur + add)
+  if (fx.bloom > 0) {
+    // Simplified bloom using filter
+    c.save();
+    c.globalCompositeOperation = 'screen';
+    c.globalAlpha = fx.bloom * 0.4;
+    c.filter = `blur(8px) brightness(1.5)`;
+    c.drawImage(canvas, 0, 0);
+    c.restore();
+  }
+
+  // Chromatic aberration
+  if (fx.chromaticAberration > 0) {
+    const off = fx.chromaticAberration;
+    c.save();
+    c.globalCompositeOperation = 'screen';
+    c.globalAlpha = 0.5;
+    // Red channel offset
+    c.filter = 'url(#redShift)';
+    // Fallback: draw image with offset tinted
+    c.globalAlpha = 0.3;
+    c.drawImage(canvas, off, 0);
+    c.drawImage(canvas, -off, 0);
+    c.restore();
+  }
+
+  // Light leak
+  if (fx.lightLeak > 0) {
+    c.save();
+    const grad = c.createRadialGradient(W * 0.7, H * 0.3, 0, W * 0.7, H * 0.3, Math.max(W, H) * 0.7);
+    const col = fx.lightLeakColor;
+    const r = parseInt(col.slice(1, 3), 16), g = parseInt(col.slice(3, 5), 16), b = parseInt(col.slice(5, 7), 16);
+    grad.addColorStop(0, `rgba(${r},${g},${b},${fx.lightLeak * 0.6})`);
+    grad.addColorStop(0.5, `rgba(${r},${g},${b},${fx.lightLeak * 0.2})`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    c.fillStyle = grad;
+    c.globalCompositeOperation = 'screen';
+    c.fillRect(0, 0, W, H);
+    c.restore();
+  }
+
+  // Scanlines
+  if (fx.scanlines > 0) {
+    c.save();
+    c.fillStyle = `rgba(0,0,0,${fx.scanlines * 0.3})`;
+    for (let y = 0; y < H; y += 3) c.fillRect(0, y, W, 1);
+    c.restore();
+  }
+
+  // Vignette
+  if (fx.vignette > 0) {
+    const grad = c.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.max(W, H) * 0.75);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, `rgba(0,0,0,${fx.vignette})`);
+    c.fillStyle = grad; c.fillRect(0, 0, W, H);
+  }
+
+  // RGB Shift
+  if (fx.rgbShift > 0) {
+    c.save();
+    c.globalCompositeOperation = 'screen';
+    c.globalAlpha = 0.5;
+    c.drawImage(canvas, fx.rgbShift, 0);
+    c.drawImage(canvas, -fx.rgbShift, 0);
+    c.restore();
+  }
+
+  // Glitch (random offset)
+  if (fx.glitch > 0) {
+    c.save();
+    const bands = 8;
+    const bandH = H / bands;
+    for (let i = 0; i < bands; i++) {
+      if (Math.random() < fx.glitch * 0.5) {
+        const off = (Math.random() - 0.5) * 80 * fx.glitch;
+        c.drawImage(canvas, 0, i * bandH, W, bandH, off, i * bandH, W, bandH);
+      }
+    }
+    c.restore();
+  }
+
+  // Flicker
+  if (fx.flicker > 0) {
+    const f = 1 - Math.random() * fx.flicker * 0.3;
+    c.save();
+    c.fillStyle = `rgba(0,0,0,${(1 - f) * 0.5})`;
+    c.fillRect(0, 0, W, H);
+    c.restore();
+  }
+
+  // Color adjustments via filter
+  let colorFilter = '';
+  if (fx.sepia > 0) colorFilter += `sepia(${fx.sepia}) `;
+  if (fx.hueRotate > 0) colorFilter += `hue-rotate(${fx.hueRotate}deg) `;
+  if (fx.blur > 0) colorFilter += `blur(${fx.blur}px) `;
+  if (fx.invert) colorFilter += `invert(1) `;
+  if (colorFilter) {
+    c.save();
+    c.filter = colorFilter;
+    c.drawImage(canvas, 0, 0);
+    c.restore();
+  }
+}
+
+// ---------- Main render ----------
+async function renderFrame(t) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  renderBackground(t);
+  for (const el of project.elements) {
+    if (!el.visible) continue;
+    await drawElement(el, t);
+  }
+  applyPostFX(ctx, t);
+}
+
+// ---------- Playback ----------
+function togglePlay() { if (isPlaying) pause(); else play(); }
+
+function play() {
+  if (isPlaying) return;
+  isPlaying = true;
+  playStartTime = performance.now();
+  playStartOffset = currentTime;
+  if (currentTime >= project.canvas.duration - 0.01) { currentTime = 0; playStartOffset = 0; }
+  document.getElementById('play-btn').textContent = '⏸';
+  if (project.audio.enabled && audioElement) {
+    audioElement.currentTime = currentTime;
+    audioElement.play();
+  }
+  loop();
+}
+
+function pause() {
+  isPlaying = false;
+  document.getElementById('play-btn').textContent = '▶';
+  if (animationFrame) cancelAnimationFrame(animationFrame);
+  if (audioElement) audioElement.pause();
+}
+
+function loop() {
+  if (!isPlaying) return;
+  const elapsed = (performance.now() - playStartTime) / 1000;
+  currentTime = playStartOffset + elapsed;
+  if (currentTime >= project.canvas.duration) {
+    if (isLooping) { currentTime = 0; playStartTime = performance.now(); playStartOffset = 0;
+      if (audioElement) { audioElement.currentTime = 0; audioElement.play(); }
+    } else { currentTime = project.canvas.duration; pause(); return; }
+  }
+  renderFrame(currentTime);
+  updateTimeDisplay();
+  updatePlayhead();
+  animationFrame = requestAnimationFrame(loop);
+}
+
+function seekTo(t) {
+  currentTime = Math.max(0, Math.min(project.canvas.duration, t));
+  renderFrame(currentTime);
+  updateTimeDisplay();
+  updatePlayhead();
+  if (audioElement) audioElement.currentTime = currentTime;
+}
+function seekToEnd() { seekTo(project.canvas.duration); }
+
+function updateTimeDisplay() {
+  const fmt = (s) => { const m = Math.floor(s / 60); const sec = (s % 60).toFixed(2); return `${m.toString().padStart(2, '0')}:${sec.padStart(5, '0')}`; };
+  document.getElementById('time-display').textContent = `${fmt(currentTime)} / ${fmt(project.canvas.duration)}`;
+}
+
+function toggleLoop() {
+  isLooping = !isLooping;
+  const btn = document.getElementById('loop-btn');
+  btn.style.background = isLooping ? 'var(--accent)' : '';
+  btn.style.color = isLooping ? 'white' : '';
+}
+
+// ---------- Tab switching ----------
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    const tabs = ['properties', 'animation', 'background', 'effects', 'audio'];
+    t.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'background') renderBackgroundPanel();
+  if (name === 'effects') renderEffectsPanel();
+  if (name === 'audio') renderAudioPanel();
+}
+
+// ---------- Canvas interaction ----------
+let isDragging = false;
+let dragOffset = { x: 0, y: 0 };
+canvas.addEventListener('mousedown', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const scale = canvas.width / rect.width;
+  const mx = (e.clientX - rect.left) * scale, my = (e.clientY - rect.top) * scale;
+  for (let i = project.elements.length - 1; i >= 0; i--) {
+    const el = project.elements[i];
+    if (el.locked) continue;
+    if (mx >= el.x - el.width / 2 && mx <= el.x + el.width / 2 && my >= el.y - el.height / 2 && my <= el.y + el.height / 2) {
+      selectElement(el.id);
+      isDragging = true;
+      dragOffset.x = mx - el.x; dragOffset.y = my - el.y;
+      canvas.classList.add('dragging');
+      return;
+    }
+  }
+});
+canvas.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const el = getSelectedElement();
+  if (!el) return;
+  const rect = canvas.getBoundingClientRect();
+  const scale = canvas.width / rect.width;
+  el.x = (e.clientX - rect.left) * scale - dragOffset.x;
+  el.y = (e.clientY - rect.top) * scale - dragOffset.y;
+  renderProperties();
+  renderFrame(currentTime);
+});
+window.addEventListener('mouseup', () => { isDragging = false; canvas.classList.remove('dragging'); });
+
+document.getElementById('timeline-ruler').addEventListener('click', (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const p = (e.clientX - rect.left) / rect.width;
+  seekTo(p * project.canvas.duration);
+});
+
+// ---------- Header controls ----------
+document.getElementById('project-name').addEventListener('input', (e) => { project.name = e.target.value; });
+document.getElementById('canvas-preset').addEventListener('change', (e) => {
+  if (e.target.value === 'custom') {
+    const w = parseInt(prompt('عرض (پیکسل):', '1920'));
+    const h = parseInt(prompt('ارتفاع (پیکسل):', '1080'));
+    if (w && h) { project.canvas.width = w; project.canvas.height = h; }
+  } else {
+    const [w, h] = e.target.value.split('x').map(Number);
+    project.canvas.width = w; project.canvas.height = h;
+  }
+  updateCanvasSize();
+});
+document.getElementById('project-fps').addEventListener('change', (e) => { project.canvas.fps = parseInt(e.target.value); });
+document.getElementById('project-duration').addEventListener('input', (e) => {
+  project.canvas.duration = Math.max(1, parseFloat(e.target.value) || 7);
+  renderTimeline(); updateTimeDisplay();
+  if (currentTime > project.canvas.duration) seekTo(project.canvas.duration);
+});
+
+// ---------- Modals ----------
+function openExportModal() { document.getElementById('export-modal').classList.add('show'); }
+function openPresetModal() { document.getElementById('preset-modal').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// ---------- Export ----------
+async function renderToContext(targetCtx, w, h, t) {
+  if (w !== canvas.width || h !== canvas.height) {
+    const off = document.createElement('canvas');
+    off.width = canvas.width; off.height = canvas.height;
+    const offCtx = off.getContext('2d');
+    await _renderFrameInternal(t, offCtx);
+    targetCtx.clearRect(0, 0, w, h);
+    targetCtx.drawImage(off, 0, 0, w, h);
+  } else {
+    await _renderFrameInternal(t, targetCtx);
+  }
+}
+
+async function _renderFrameInternal(t, c) {
+  const W = canvas.width, H = canvas.height;
+  const realCtx = window.ctx;
+  window.ctx = c;
+  // Use the same rendering functions but with target context
+  // Background
+  const bg = project.background;
+  let filterStr = '';
+  if (bg.blur > 0) filterStr += `blur(${bg.blur}px) `;
+  if (bg.brightness !== 1) filterStr += `brightness(${bg.brightness}) `;
+  if (bg.contrast !== 1) filterStr += `contrast(${bg.contrast}) `;
+  if (bg.saturate !== 1) filterStr += `saturate(${bg.saturate}) `;
+  c.filter = filterStr || 'none';
+
+  if (bg.type === 'solid') { c.fillStyle = bg.color1; c.fillRect(0, 0, W, H); }
+  else if (bg.type === 'linearGradient' || bg.type === 'animatedGradient') {
+    let angle = bg.angle; if (bg.type === 'animatedGradient') angle += t * 30;
+    const rad = (angle - 90) * Math.PI / 180;
+    const x = Math.cos(rad), y = Math.sin(rad);
+    const len = Math.abs(x * W) + Math.abs(y * H);
+    const cx = W / 2, cy = H / 2;
+    const grad = c.createLinearGradient(cx - x * len / 2, cy - y * len / 2, cx + x * len / 2, cy + y * len / 2);
+    grad.addColorStop(0, bg.color1); grad.addColorStop(1, bg.color2);
+    c.fillStyle = grad; c.fillRect(0, 0, W, H);
+  } else if (bg.type === 'radialGradient') {
+    const grad = c.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.7);
+    grad.addColorStop(0, bg.color1); grad.addColorStop(1, bg.color2);
+    c.fillStyle = grad; c.fillRect(0, 0, W, H);
+  } else { c.fillStyle = bg.color1; c.fillRect(0, 0, W, H); }
+  c.filter = 'none';
+
+  if (bg.type === 'particles' || bg.type === 'stars' || bg.type === 'bokeh' || bg.type === 'dots') {
+    if (lastBgType !== bg.type) { initParticles(); lastBgType = bg.type; }
+    drawParticlesTo(c, t);
+  }
+  if (bg.type === 'grid' || bg.type === 'matrix') {
+    c.strokeStyle = bg.gridColor; c.lineWidth = 1;
+    for (let x = 0; x <= W; x += bg.gridSize) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, H); c.stroke(); }
+    for (let y = 0; y <= H; y += bg.gridSize) { c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+  }
+  if (bg.type === 'hexagon') drawHexagons(c, t, bg);
+  if (bg.type === 'waves' || bg.type === 'gradientWaves') drawWaves(c, t, bg);
+  if (bg.type === 'aurora') drawAurora(c, t, bg);
+  if (bg.type === 'rays') drawRays(c, t, bg);
+  if (bg.type === 'noise' || bg.type === 'plasma' || bg.type === 'topology') drawNoise(c, t, bg);
+
+  if (bg.vignette > 0) {
+    const grad = c.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.max(W, H) * 0.75);
+    grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(1, `rgba(0,0,0,${bg.vignette})`);
+    c.fillStyle = grad; c.fillRect(0, 0, W, H);
+  }
+  if (bg.grain > 0) drawGrainTo(c, bg.grain);
+
+  // Elements
+  for (const el of project.elements) {
+    if (!el.visible) continue;
+    await drawElementTo(c, el, t);
+  }
+
+  // Post-FX
+  applyPostFX(c, t);
+
+  window.ctx = realCtx;
+}
+
+async function drawElementTo(c, el, t) {
+  const state = computeElementState(el, t);
+  if (!state.visible || state.opacity <= 0.001) return;
+  c.save();
+  c.globalAlpha = Math.max(0, Math.min(1, state.opacity));
+  const cx = el.x + state.offsetX, cy = el.y + state.offsetY;
+  c.translate(cx, cy);
+  c.rotate(state.rotation * Math.PI / 180);
+  c.transform(1, state.skewY * Math.PI / 180, state.skewX * Math.PI / 180, 1, 0, 0);
+  c.scale(state.scale * state.scaleX, state.scale * state.scaleY);
+  let filterStr = '';
+  if (state.blur > 0) filterStr += `blur(${state.blur}px) `;
+  const glowAmt = el.glow * state.glowMult;
+  if (glowAmt > 0) {
+    const gc = el.glowColor;
+    const r = parseInt(gc.slice(1, 3), 16), g = parseInt(gc.slice(3, 5), 16), b = parseInt(gc.slice(5, 7), 16);
+    filterStr += `drop-shadow(0 0 ${glowAmt}px rgba(${r},${g},${b},0.8)) `;
+  }
+  if (filterStr) c.filter = filterStr;
+  if (el.shadowBlur > 0) { c.shadowOffsetX = el.shadowX; c.shadowOffsetY = el.shadowY; c.shadowBlur = el.shadowBlur; c.shadowColor = el.shadowColor; }
+  const halfW = el.width / 2, halfH = el.height / 2;
+  if ((el.type === 'logo' || el.src) && el.src) {
+    const img = await loadImage(el.src);
+    if (img) c.drawImage(img, -halfW, -halfH, el.width, el.height);
+  } else if (el.type === 'logo' && !el.src) {
+    c.strokeStyle = '#555'; c.lineWidth = 2; c.setLineDash([10, 8]);
+    c.strokeRect(-halfW, -halfH, el.width, el.height); c.setLineDash([]);
+    c.fillStyle = '#888'; c.font = `400 ${Math.min(24, el.width / 10)}px "Vazirmatn", sans-serif`;
+    c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillText('🖼️ لوگو', 0, -10);
+    c.font = `400 ${Math.min(14, el.width / 16)}px "Vazirmatn", sans-serif`;
+    c.fillStyle = '#666'; c.fillText('از پنل ویژگی‌ها تصویر بارگذاری کنید', 0, 18);
+  } else if (el.type === 'shape' || el.type === 'divider') {
+    c.fillStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor;
+    if (el.borderColor !== 'transparent' && el.borderWidth > 0) { c.strokeStyle = el.borderColor; c.lineWidth = el.borderWidth; }
+    switch (el.shape) {
+      case 'rectangle':
+        if (el.borderRadius > 0) { roundRect(c, -halfW, -halfH, el.width, el.height, el.borderRadius); c.fill(); if (el.borderWidth > 0) c.stroke(); }
+        else { c.fillRect(-halfW, -halfH, el.width, el.height); if (el.borderWidth > 0) c.strokeRect(-halfW, -halfH, el.width, el.height); }
+        break;
+      case 'circle': c.beginPath(); c.ellipse(0, 0, halfW, halfH, 0, 0, Math.PI * 2); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'triangle': c.beginPath(); c.moveTo(0, -halfH); c.lineTo(halfW, halfH); c.lineTo(-halfW, halfH); c.closePath(); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'star': drawStar(c, 0, 0, 5, halfW, halfW * 0.4); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'hexagon': drawPolygon(c, 0, 0, 6, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'heart': drawHeart(c, 0, 0, halfW, halfH); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'arrow': drawArrow(c, -halfW, 0, halfW * 2, el.height); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
+      case 'line': c.strokeStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor; c.lineWidth = Math.max(1, el.height); c.beginPath(); c.moveTo(-halfW, 0); c.lineTo(halfW, 0); c.stroke(); break;
+    }
+  } else {
+    const fontWeight = el.fontWeight || 400;
+    c.font = `${fontWeight} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+    c.textBaseline = 'middle'; c.fillStyle = el.color;
+    if (el.letterSpacing && c.letterSpacing !== undefined) c.letterSpacing = el.letterSpacing + 'px';
+    let text = el.text || '';
+    if (state.textProgress < 1) { const charCount = Math.floor(text.length * state.textProgress); text = text.substring(0, charCount); }
+    const lines = text.split('\n');
+    const lineHeight = el.fontSize * el.lineHeight;
+    const totalHeight = lines.length * lineHeight;
+    let align = el.textAlign;
+    if (align === 'center') c.textAlign = 'center';
+    else if (align === 'left') c.textAlign = 'left';
+    else c.textAlign = 'right';
+    const baseX = align === 'center' ? 0 : align === 'left' ? -halfW : halfW;
+    lines.forEach((line, i) => { const y = -totalHeight / 2 + lineHeight / 2 + i * lineHeight; c.fillText(line, baseX, y); });
+    if (el.letterSpacing && c.letterSpacing !== undefined) c.letterSpacing = '0px';
+  }
+  c.restore();
+}
+
+async function exportVideo(format) {
+  closeModal('export-modal');
+  const overlay = document.getElementById('progress-overlay');
+  const fill = document.getElementById('progress-fill');
+  const text = document.getElementById('progress-text');
+  const title = document.getElementById('progress-title');
+  overlay.classList.add('show');
+  title.textContent = 'در حال آماده‌سازی خروجی...';
+  fill.style.width = '0%'; text.textContent = '0%';
+  pause();
+  const fps = parseInt(document.getElementById('export-fps').value);
+  const totalFrames = Math.ceil(project.canvas.duration * fps);
+  const scale = parseFloat(document.getElementById('export-scale').value);
+  const quality = document.getElementById('export-quality').value;
+  const bitrate = quality === 'ultra' ? 12000000 : quality === 'high' ? 8000000 : quality === 'medium' ? 4000000 : 2000000;
+  const exportW = Math.round(canvas.width * scale), exportH = Math.round(canvas.height * scale);
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = exportW; exportCanvas.height = exportH;
+  const exportCtx = exportCanvas.getContext('2d');
+
+  const stream = exportCanvas.captureStream(0);
+  const track = stream.getVideoTracks()[0];
+  const includeAudio = document.getElementById('export-audio-toggle').classList.contains('on') && project.audio.enabled && audioElement;
+  let audioStream = null;
+  if (includeAudio) {
+    try {
+      audioStream = audioElement.captureStream ? audioElement.captureStream() : null;
+    } catch(e) {}
+  }
+  const combinedStream = new MediaStream();
+  stream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
+  if (audioStream) audioStream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
+  const recorder = new MediaRecorder(combinedStream, {
+    mimeType: 'video/webm;codecs=vp9',
+    videoBitsPerSecond: bitrate,
+  });
+  const chunks = [];
+  recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${project.name || 'logo-motion'}.webm`; a.click();
+    URL.revokeObjectURL(url);
+    overlay.classList.remove('show');
+    toast('خروجی WebM با موفقیت ساخته شد!', 'success');
+  };
+  recorder.start();
+  if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
+  for (let i = 0; i < totalFrames; i++) {
+    const t = i / fps;
+    await renderToContext(exportCtx, exportW, exportH, t);
+    if (track.requestFrame) track.requestFrame();
+    else stream.requestFrame();
+    const pct = Math.round(((i + 1) / totalFrames) * 100);
+    fill.style.width = pct + '%';
+    text.textContent = `${pct}% — فریم ${i + 1}/${totalFrames}`;
+    title.textContent = 'در حال رندر فریم‌ها...';
+    await new Promise(r => setTimeout(r, 1000 / fps));
+  }
+  if (audioElement) audioElement.pause();
+  setTimeout(() => recorder.stop(), 300);
+}
+
+async function exportPNGSequence() {
+  closeModal('export-modal');
+  const overlay = document.getElementById('progress-overlay');
+  const fill = document.getElementById('progress-fill');
+  const text = document.getElementById('progress-text');
+  const title = document.getElementById('progress-title');
+  overlay.classList.add('show');
+  title.textContent = 'در حال رندر فریم‌ها...';
+  fill.style.width = '0%'; text.textContent = '0%';
+  pause();
+  const fps = project.canvas.fps;
+  const totalFrames = Math.ceil(project.canvas.duration * fps);
+  const zip = new JSZip();
+  const folder = zip.folder('frames');
+  for (let i = 0; i < totalFrames; i++) {
+    const t = i / fps;
+    await renderToContext(ctx, canvas.width, canvas.height, t);
+    const dataUrl = canvas.toDataURL('image/png');
+    const base64 = dataUrl.split(',')[1];
+    folder.file(`frame_${i.toString().padStart(5, '0')}.png`, base64, { base64: true });
+    const pct = Math.round(((i + 1) / totalFrames) * 90);
+    fill.style.width = pct + '%';
+    text.textContent = `${pct}% — فریم ${i + 1}/${totalFrames}`;
+    await new Promise(r => setTimeout(r, 10));
+  }
+  title.textContent = 'در حال ساخت ZIP...';
+  fill.style.width = '95%';
+  const blob = await zip.generateAsync({ type: 'blob' }, (meta) => {
+    text.textContent = `${Math.round(meta.percent)}%`;
+    fill.style.width = (90 + meta.percent * 0.1) + '%';
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${project.name || 'logo-motion'}_frames.zip`; a.click();
+  URL.revokeObjectURL(url);
+  overlay.classList.remove('show');
+  toast('دنباله PNG با موفقیت خروجی گرفته شد!', 'success');
+  renderFrame(currentTime);
+}
+
+function exportCurrentFrame() {
+  closeModal('export-modal');
+  const dataUrl = canvas.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = dataUrl; a.download = `${project.name || 'logo-motion'}_frame_${currentTime.toFixed(2)}s.png`; a.click();
+  toast('فریم فعلی ذخیره شد', 'success');
+}
+
+async function exportGIF() {
+  closeModal('export-modal');
+  toast('برای ساخت GIF، دنباله PNG را خروجی بگیرید و با ابزار آنلاین به GIF تبدیل کنید', 'info');
+  // Could implement gif.js but for now redirect to PNG sequence
+  setTimeout(() => exportPNGSequence(), 500);
+}
+
+function exportJSON() {
+  closeModal('export-modal');
+  const data = JSON.stringify(project, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${project.name || 'logo-motion'}.json`; a.click();
+  URL.revokeObjectURL(url);
+  toast('فایل پروژه ذخیره شد', 'success');
+}
+
+function exportHTML() {
+  closeModal('export-modal');
+  // Generate standalone HTML player
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${project.name}</title></head><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh"><video src="${project.name}.webm" autoplay loop controls style="max-width:100%;max-height:100%"></video></body></html>`;
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${project.name || 'logo-motion'}_player.html`; a.click();
+  URL.revokeObjectURL(url);
+  toast('فایل HTML ساخته شد', 'success');
+}
+
+function saveProject() { exportJSON(); }
+
+function loadProject(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      Object.assign(project, data);
+      document.getElementById('project-name').value = project.name;
+      document.getElementById('project-fps').value = project.canvas.fps;
+      document.getElementById('project-duration').value = project.canvas.duration;
+      const sizeStr = `${project.canvas.width}x${project.canvas.height}`;
+      const sel = document.getElementById('canvas-preset');
+      const exists = Array.from(sel.options).some(o => o.value === sizeStr);
+      sel.value = exists ? sizeStr : 'custom';
+      updateCanvasSize();
+      selectedElementId = null;
+      renderElementList(); renderTimeline(); renderProperties(); renderAnimationPanel(); renderBackgroundPanel();
+      seekTo(0);
+      toast('پروژه بارگذاری شد', 'success');
+    } catch (err) { toast('خطا در بارگذاری پروژه: ' + err.message, 'error'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ---------- Presets ----------
+function loadPreset(name) {
+  closeModal('preset-modal');
+  const presets = {
+    cinematic: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'particles', color1: '#0a0a0f', color2: '#1a1a2e', color3: '#6366f1', angle: 135, particleCount: 100, particleColor: '#ff4444', particleSpeed: 0.8, particleSize: 2.5, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.08, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.3, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 480, width: 500, height: 500, glow: 30, glowColor: '#ff4444', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'breathe', intensity: 0.5, speed: 1 } }),
+        createElement('brand', { name: 'نام برند', text: 'BRAND NAME', x: 960, y: 850, fontSize: 90, fontWeight: 800, color: '#ffffff', glow: 15, glowColor: '#ff4444', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.4, easing: 'easeOutCubic' } }),
+      ],
+    },
+    minimal: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 5 },
+      background: { type: 'solid', color1: '#fafafa', color2: '#ffffff', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#6366f1', particleSpeed: 1, particleSize: 2, gridColor: '#e5e5e5', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0, grain: 0, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0, vignette: 0, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 480, width: 400, height: 400, entrance: { enabled: true, type: 'scaleUp', duration: 1, delay: 0, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'Brand Name', x: 960, y: 780, fontSize: 80, fontWeight: 300, color: '#1a1a1a', entrance: { enabled: true, type: 'fade', duration: 1, delay: 0.5, easing: 'easeOutQuad' } }),
+        createElement('tagline', { name: 'شعار', text: 'tagline here', x: 960, y: 870, fontSize: 24, fontWeight: 400, color: '#888', entrance: { enabled: true, type: 'fade', duration: 1, delay: 0.8, easing: 'easeOutQuad' } }),
+      ],
+    },
+    energetic: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'animatedGradient', color1: '#6366f1', color2: '#a855f7', color3: '#ec4899', angle: 135, particleCount: 80, particleColor: '#ffffff', particleSpeed: 2, particleSize: 3, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 80, waveFrequency: 2, vignette: 0.3, grain: 0, blur: 0, brightness: 1, contrast: 1, saturate: 1.2 },
+      effects: { bloom: 0.2, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0, vignette: 0.2, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 480, width: 450, height: 450, glow: 25, glowColor: '#ffffff', entrance: { enabled: true, type: 'rotateScale', duration: 0.8, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'pulse', intensity: 0.3, speed: 2 } }),
+        createElement('brand', { name: 'نام برند', text: 'ENERGY!', x: 960, y: 830, fontSize: 100, fontWeight: 900, color: '#ffffff', entrance: { enabled: true, type: 'slideLeft', duration: 0.5, delay: 0.6, easing: 'easeOutQuart' }, hold: { enabled: true, type: 'shake', intensity: 0.2, speed: 3 } }),
+      ],
+    },
+    corporate: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'linearGradient', color1: '#0f172a', color2: '#1e3a8a', color3: '#6366f1', angle: 180, particleCount: 50, particleColor: '#6366f1', particleSpeed: 0.5, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.3, grain: 0.03, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.1, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0, vignette: 0.2, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 420, width: 400, height: 400, entrance: { enabled: true, type: 'fade', duration: 1, delay: 0, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'شرکت شما', x: 960, y: 720, fontSize: 72, fontWeight: 700, color: '#ffffff', entrance: { enabled: true, type: 'fade', duration: 1, delay: 0.5, easing: 'easeOutCubic' } }),
+        createElement('tagline', { name: 'شعار', text: 'حرفه‌ای • قابل اعتماد • نوآور', x: 960, y: 810, fontSize: 28, fontWeight: 400, color: '#94a3b8', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1, easing: 'easeOutCubic' } }),
+        createElement('phone', { name: 'تلفن', text: '۰۲۱-۱۲۳۴۵۶۷۸', x: 960, y: 900, fontSize: 24, fontWeight: 400, color: '#64748b', entrance: { enabled: true, type: 'fade', duration: 0.8, delay: 1.5 } }),
+      ],
+    },
+    gradient: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'animatedGradient', color1: '#ec4899', color2: '#8b5cf6', color3: '#6366f1', angle: 45, particleCount: 80, particleColor: '#ffffff', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.2, grain: 0, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.2, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0, vignette: 0.2, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 440, width: 420, height: 420, glow: 20, glowColor: '#ffffff', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1, delay: 0, easing: 'easeOutBack' } }),
+        createElement('brand', { name: 'نام برند', text: 'برند من', x: 960, y: 760, fontSize: 88, fontWeight: 800, color: '#ffffff', entrance: { enabled: true, type: 'slideUp', duration: 0.8, delay: 0.5, easing: 'easeOutCubic' } }),
+        createElement('tagline', { name: 'شعار', text: 'خلاقیت در حرکت', x: 960, y: 860, fontSize: 30, fontWeight: 400, color: '#ffffff', entrance: { enabled: true, type: 'slideUp', duration: 0.8, delay: 0.8 } }),
+      ],
+    },
+    'dark-glow': {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'stars', color1: '#000010', color2: '#0a0a1a', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#00ffff', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 200, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.6, grain: 0.05, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.4, bloomThreshold: 0.6, chromaticAberration: 2, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 450, height: 450, glow: 40, glowColor: '#00ffff', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'glow', intensity: 0.6, speed: 1.5 } }),
+        createElement('brand', { name: 'نام برند', text: 'NEON', x: 960, y: 800, fontSize: 100, fontWeight: 900, color: '#00ffff', glow: 30, glowColor: '#00ffff', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1, easing: 'easeOutCubic' }, hold: { enabled: true, type: 'glow', intensity: 0.5, speed: 1 } }),
+        createElement('tagline', { name: 'شعار', text: 'آینده روشن', x: 960, y: 900, fontSize: 28, fontWeight: 400, color: '#ff00ff', glow: 15, glowColor: '#ff00ff', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    aurora: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'aurora', color1: '#0a0a2e', color2: '#6366f1', color3: '#ec4899', angle: 135, particleCount: 80, particleColor: '#ffffff', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 100, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#22c55e','#06b6d4','#a855f7'], waveAmplitude: 60, waveFrequency: 1.5, vignette: 0.4, grain: 0.04, blur: 0, brightness: 1, contrast: 1, saturate: 1.1 },
+      effects: { bloom: 0.3, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0.1, lightLeakColor: '#a855f7', filmGrain: 0, scanlines: 0, vignette: 0.2, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 430, height: 430, glow: 25, glowColor: '#22c55e', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'float', intensity: 0.5, speed: 0.8 } }),
+        createElement('brand', { name: 'نام برند', text: 'AURORA', x: 960, y: 800, fontSize: 90, fontWeight: 700, color: '#ffffff', glow: 20, glowColor: '#06b6d4', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1, easing: 'easeOutCubic' } }),
+        createElement('tagline', { name: 'شعار', text: 'رویایی و جادویی', x: 960, y: 900, fontSize: 28, fontWeight: 400, color: '#a855f7', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    retro: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'grid', color1: '#1a0033', color2: '#ff00ff', color3: '#00ffff', angle: 135, particleCount: 80, particleColor: '#ff00ff', particleSpeed: 1, particleSize: 2, gridColor: '#ff00ff', gridSize: 50, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.1, blur: 0, brightness: 1, contrast: 1.1, saturate: 1.3 },
+      effects: { bloom: 0.3, bloomThreshold: 0.6, chromaticAberration: 5, lightLeak: 0.2, lightLeakColor: '#ff00ff', filmGrain: 0.2, scanlines: 0.3, vignette: 0.4, sharpen: 0, glitch: 0.1, rgbShift: 3, chroma: 0, grain: 0.1, flicker: 0.1, posterize: 0, invert: false, sepia: 0.2, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 440, width: 400, height: 400, glow: 30, glowColor: '#ff00ff', entrance: { enabled: true, type: 'rotateScale', duration: 1, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'pulse', intensity: 0.4, speed: 2 } }),
+        createElement('brand', { name: 'نام برند', text: 'RETRO 88', x: 960, y: 780, fontSize: 100, fontWeight: 900, color: '#00ffff', glow: 25, glowColor: '#ff00ff', entrance: { enabled: true, type: 'slideLeft', duration: 0.8, delay: 0.6, easing: 'easeOutQuart' } }),
+        createElement('tagline', { name: 'شعار', text: 'NEON DREAMS', x: 960, y: 880, fontSize: 30, fontWeight: 600, color: '#ff00ff', glow: 15, glowColor: '#ff00ff', entrance: { enabled: true, type: 'slideRight', duration: 0.8, delay: 1 } }),
+      ],
+    },
+    elegant: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'radialGradient', color1: '#1a1a1a', color2: '#000000', color3: '#d4af37', angle: 135, particleCount: 30, particleColor: '#d4af37', particleSpeed: 0.3, particleSize: 1.5, gridColor: '#1a1a24', gridSize: 60, starCount: 80, bokehCount: 15, bokehColor: '#d4af37', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.04, blur: 0, brightness: 1, contrast: 1.05, saturate: 1 },
+      effects: { bloom: 0.2, bloomThreshold: 0.7, chromaticAberration: 0, lightLeak: 0.15, lightLeakColor: '#d4af37', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0.1, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 380, height: 380, glow: 15, glowColor: '#d4af37', entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 0, easing: 'easeOutCubic' }, hold: { enabled: true, type: 'breathe', intensity: 0.3, speed: 0.5 } }),
+        createElement('divider', { name: 'خط جدا', x: 960, y: 690, width: 200, height: 2, color: '#d4af37', backgroundColor: '#d4af37', entrance: { enabled: true, type: 'draw', duration: 1, delay: 1, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'LUXURY', x: 960, y: 770, fontSize: 80, fontWeight: 300, color: '#d4af37', letterSpacing: 8, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 1.5, easing: 'easeOutCubic' } }),
+        createElement('tagline', { name: 'شعار', text: 'فاخر • منحصر • بی‌نظیر', x: 960, y: 870, fontSize: 24, fontWeight: 400, color: '#a0a0a0', letterSpacing: 4, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 2 } }),
+      ],
+    },
+    tech: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'hexagon', color1: '#050510', color2: '#0ea5e9', color3: '#6366f1', angle: 135, particleCount: 60, particleColor: '#0ea5e9', particleSpeed: 1, particleSize: 2, gridColor: '#0a2540', gridSize: 50, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.4, grain: 0.03, blur: 0, brightness: 1, contrast: 1.1, saturate: 1.1 },
+      effects: { bloom: 0.3, bloomThreshold: 0.5, chromaticAberration: 1, lightLeak: 0, lightLeakColor: '#0ea5e9', filmGrain: 0, scanlines: 0.1, vignette: 0.3, sharpen: 0.1, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 430, height: 430, glow: 25, glowColor: '#0ea5e9', entrance: { enabled: true, type: 'rotateScale', duration: 1, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'glow', intensity: 0.4, speed: 1 } }),
+        createElement('brand', { name: 'نام برند', text: 'TECH CO', x: 960, y: 790, fontSize: 80, fontWeight: 700, color: '#ffffff', glow: 15, glowColor: '#0ea5e9', entrance: { enabled: true, type: 'slideUp', duration: 0.8, delay: 0.6 } }),
+        createElement('tagline', { name: 'شعار', text: 'INNOVATION • FUTURE • AI', x: 960, y: 880, fontSize: 22, fontWeight: 500, color: '#0ea5e9', letterSpacing: 3, entrance: { enabled: true, type: 'fade', duration: 1, delay: 1 } }),
+      ],
+    },
+    paper: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 5 },
+      background: { type: 'solid', color1: '#f5f1e8', color2: '#e8e0d0', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#6366f1', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.15, grain: 0.05, blur: 0, brightness: 1, contrast: 1, saturate: 0.9 },
+      effects: { bloom: 0, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0, lightLeakColor: '#ff6b6b', filmGrain: 0.05, scanlines: 0, vignette: 0.1, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0.05, flicker: 0, posterize: 0, invert: false, sepia: 0.15, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 380, height: 380, entrance: { enabled: true, type: 'scaleUp', duration: 1, delay: 0, easing: 'easeOutBack' } }),
+        createElement('brand', { name: 'نام برند', text: 'CRAFT', x: 960, y: 760, fontSize: 84, fontWeight: 800, color: '#3a2a1a', entrance: { enabled: true, type: 'slideUp', duration: 0.8, delay: 0.5 } }),
+        createElement('tagline', { name: 'شعار', text: 'سادگی • طبیعت • اصالت', x: 960, y: 860, fontSize: 26, fontWeight: 400, color: '#6b5544', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1 } }),
+      ],
+    },
+    ocean: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'waves', color1: '#001e3c', color2: '#0277bd', color3: '#4fc3f7', angle: 135, particleCount: 80, particleColor: '#4fc3f7', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 30, bokehColor: '#4fc3f7', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 80, waveFrequency: 1.5, vignette: 0.4, grain: 0.03, blur: 0, brightness: 1, contrast: 1.05, saturate: 1.1 },
+      effects: { bloom: 0.25, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0.1, lightLeakColor: '#4fc3f7', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 0, chroma: 0, grain: 0, flicker: 0, posterize: 0, invert: false, sepia: 0, hueRotate: 0, blur: 0 },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 420, height: 420, glow: 20, glowColor: '#4fc3f7', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'float', intensity: 0.4, speed: 0.6 } }),
+        createElement('brand', { name: 'نام برند', text: 'OCEAN', x: 960, y: 800, fontSize: 90, fontWeight: 700, color: '#ffffff', glow: 15, glowColor: '#4fc3f7', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1 } }),
+        createElement('tagline', { name: 'شعار', text: 'آرامش در اعماق', x: 960, y: 900, fontSize: 28, fontWeight: 400, color: '#81d4fa', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+  };
+
+  const preset = presets[name];
+  if (!preset) return;
+  Object.assign(project, JSON.parse(JSON.stringify(preset)));
+  document.getElementById('project-name').value = project.name || name;
+  document.getElementById('project-fps').value = project.canvas.fps;
+  document.getElementById('project-duration').value = project.canvas.duration;
+  const sizeStr = `${project.canvas.width}x${project.canvas.height}`;
+  const sel = document.getElementById('canvas-preset');
+  const exists = Array.from(sel.options).some(o => o.value === sizeStr);
+  sel.value = exists ? sizeStr : 'custom';
+  lastBgType = null;
+  updateCanvasSize();
+  selectedElementId = null;
+  renderElementList(); renderTimeline(); renderProperties(); renderAnimationPanel(); renderBackgroundPanel();
+  seekTo(0);
+  toast(`قالب "${name}" بارگذاری شد`, 'success');
+}
+
+// ---------- Toast ----------
+function toast(msg, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  t.innerHTML = `<span style="font-size:14px">${icons[type] || ''}</span><span>${msg}</span>`;
+  container.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0'; t.style.transform = 'translateY(20px)';
+    setTimeout(() => t.remove(), 300);
+  }, 2800);
+}
+
+// ---------- Helpers ----------
+function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function escapeAttr(s) { return escapeHtml(s); }
+
+// ---------- Init ----------
+function init() {
+  updateCanvasSize();
+  renderElementList(); renderTimeline(); renderProperties(); renderAnimationPanel(); renderBackgroundPanel();
+  toggleLoop();
+  seekTo(0);
+  window.addEventListener('resize', () => { if (document.getElementById('zoom-level').value === 'fit') updateZoom(); });
+  if (project.elements.length === 0) loadPreset('cinematic');
+}
+
+document.fonts.ready.then(() => init());
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+  if (e.code === 'ArrowLeft') seekTo(currentTime - 0.1);
+  if (e.code === 'ArrowRight') seekTo(currentTime + 0.1);
+  if (e.code === 'Delete' && selectedElementId) deleteElement(selectedElementId);
+});
+
+</script>
+</body>
+</html>
