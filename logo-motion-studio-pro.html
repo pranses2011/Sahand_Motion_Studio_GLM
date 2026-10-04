@@ -1635,6 +1635,17 @@ const HoldAnims = {
   spiral: { name: 'مارپیچ', icon: '◉' },
   morph: { name: 'تغییر شکل', icon: '◯' },
   electric: { name: 'الکتریکی', icon: '⚡' },
+  // v8 new hold animations
+  tilt: { name: 'گرایش', icon: '⌒' },
+  bobble: { name: 'بابل', icon: '∼' },
+  breathe2: { name: 'نفس عمیق', icon: '◉' },
+  wave2: { name: 'موج نرم', icon: '〜' },
+  pulse2: { name: 'نبض نرم', icon: '○' },
+  rotateSlow: { name: 'چرخش آهسته', icon: '↻' },
+  float2: { name: 'شناور نرم', icon: '〰' },
+  glow2: { name: 'درخشش نرم', icon: '✦' },
+  swing2: { name: 'تاب نرم', icon: '⌒' },
+  wobble2: { name: 'لرزش نرم', icon: '∽' },
 };
 
 // ---------- Exit Animations ----------
@@ -3232,6 +3243,34 @@ function applyHold(state, type, t, intensity, speed) {
       state.offsetX += (Math.random() - 0.5) * 3 * intensity;
       state.offsetY += (Math.random() - 0.5) * 3 * intensity;
       state.glowMult *= 1 + Math.random() * 0.5 * intensity;
+      break;
+    }
+    // v8 new hold animations (softer versions)
+    case 'tilt': state.rotation += Math.sin(tt * 0.8 * Math.PI) * 5 * intensity; break;
+    case 'bobble': {
+      state.offsetY += Math.sin(tt * 2 * Math.PI) * 6 * intensity;
+      state.rotation += Math.sin(tt * 2 * Math.PI) * 2 * intensity;
+      break;
+    }
+    case 'breathe2': {
+      const p = 1 + Math.sin(tt * 0.8 * Math.PI) * 0.03 * intensity;
+      state.scale *= p;
+      state.glowMult = 1 + Math.sin(tt * 0.8 * Math.PI) * 0.3 * intensity;
+      break;
+    }
+    case 'wave2': {
+      state.offsetY += Math.sin(tt * 1.2 * Math.PI) * 5 * intensity;
+      state.offsetX += Math.cos(tt * 0.8 * Math.PI) * 3 * intensity;
+      break;
+    }
+    case 'pulse2': state.scale *= 1 + Math.sin(tt * 1.5 * Math.PI) * 0.03 * intensity; break;
+    case 'rotateSlow': state.rotation += tt * 10 * intensity; break;
+    case 'float2': state.offsetY += Math.sin(tt * Math.PI) * 8 * intensity; break;
+    case 'glow2': state.glowMult = 1 + Math.sin(tt * 1.5 * Math.PI) * 0.3 * intensity; break;
+    case 'swing2': state.rotation += Math.sin(tt * 1 * Math.PI) * 6 * intensity; break;
+    case 'wobble2': {
+      state.rotation += Math.sin(tt * 2 * Math.PI) * 5 * intensity;
+      state.scaleX *= 1 + Math.cos(tt * 2 * Math.PI) * 0.03 * intensity;
       break;
     }
   }
@@ -5347,20 +5386,24 @@ async function exportVideo(format) {
   title.textContent = 'در حال آماده‌سازی خروجی...';
   fill.style.width = '0%'; text.textContent = '0%';
   pause();
+
   const fps = parseInt(document.getElementById('export-fps').value);
-  const totalFrames = Math.ceil(project.canvas.duration * fps);
   const scale = parseFloat(document.getElementById('export-scale').value);
   const quality = document.getElementById('export-quality').value;
   const bitrate = quality === 'lossless' ? 50000000 : quality === 'ultra' ? 20000000 : quality === 'high' ? 12000000 : quality === 'medium' ? 6000000 : 3000000;
   const exportW = Math.round(canvas.width * scale), exportH = Math.round(canvas.height * scale);
   const exportCanvas = document.createElement('canvas');
   exportCanvas.width = exportW; exportCanvas.height = exportH;
-  const exportCtx = exportCanvas.getContext('2d', { alpha: false, desynchronized: false });
+  const exportCtx = exportCanvas.getContext('2d', { alpha: false });
   exportCtx.imageSmoothingEnabled = true;
   exportCtx.imageSmoothingQuality = 'high';
 
-  const stream = exportCanvas.captureStream(0);
-  const track = stream.getVideoTracks()[0];
+  const duration = project.canvas.duration;
+
+  // v8: Use real-time recording with auto-capture stream
+  // This ensures video duration matches animation duration exactly
+  const stream = exportCanvas.captureStream(fps);
+
   const includeAudio = document.getElementById('export-audio-toggle').classList.contains('on') && project.audio.enabled && audioElement;
   let audioStream = null;
   if (includeAudio) {
@@ -5371,8 +5414,18 @@ async function exportVideo(format) {
   const combinedStream = new MediaStream();
   stream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
   if (audioStream) audioStream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
+
+  // Try VP9 first, fall back to VP8
+  let mimeType = 'video/webm;codecs=vp9';
+  if (!MediaRecorder.isTypeSupported(mimeType)) {
+    mimeType = 'video/webm;codecs=vp8';
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      mimeType = 'video/webm';
+    }
+  }
+
   const recorder = new MediaRecorder(combinedStream, {
-    mimeType: 'video/webm;codecs=vp9',
+    mimeType: mimeType,
     videoBitsPerSecond: bitrate,
   });
   const chunks = [];
@@ -5386,21 +5439,42 @@ async function exportVideo(format) {
     overlay.classList.remove('show');
     toast('خروجی WebM با موفقیت ساخته شد!', 'success');
   };
+
+  // Start recording
   recorder.start();
   if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
-  for (let i = 0; i < totalFrames; i++) {
-    const t = i / fps;
-    await renderToContext(exportCtx, exportW, exportH, t);
-    if (track.requestFrame) track.requestFrame();
-    else stream.requestFrame();
-    const pct = Math.round(((i + 1) / totalFrames) * 100);
-    fill.style.width = pct + '%';
-    text.textContent = `${pct}% — فریم ${i + 1}/${totalFrames}`;
-    title.textContent = 'در حال رندر فریم‌ها...';
-    await new Promise(r => setTimeout(r, 1000 / fps));
-  }
-  if (audioElement) audioElement.pause();
-  setTimeout(() => recorder.stop(), 300);
+
+  // v8: Real-time playback recording
+  // Render frames in real-time using requestAnimationFrame
+  // The captureStream(fps) auto-captures at the target framerate
+  const startTime = performance.now();
+
+  return new Promise((resolve) => {
+    function recordLoop() {
+      const elapsed = (performance.now() - startTime) / 1000;
+      const t = Math.min(elapsed, duration);
+
+      // Render the current frame
+      renderToContext(exportCtx, exportW, exportH, t).then(() => {
+        const pct = Math.round((t / duration) * 100);
+        fill.style.width = pct + '%';
+        text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
+        title.textContent = 'در حال ضبط ویدیو...';
+
+        if (elapsed >= duration) {
+          // Stop recording
+          if (audioElement) audioElement.pause();
+          setTimeout(() => {
+            recorder.stop();
+            resolve();
+          }, 200);
+        } else {
+          requestAnimationFrame(recordLoop);
+        }
+      });
+    }
+    requestAnimationFrame(recordLoop);
+  });
 }
 
 async function exportPNGSequence() {
