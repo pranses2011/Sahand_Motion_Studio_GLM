@@ -767,6 +767,313 @@ select {
   .anim-grid { grid-template-columns: 1fr 1fr; }
   .preset-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* === v5 RESPONSIVE & RTL FIXES === */
+
+/* Header scroll on small screens */
+@media (max-width: 1400px) {
+  header {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    padding: 0 12px;
+    gap: 10px;
+  }
+  header::-webkit-scrollbar { height: 4px; }
+  .header-group { flex-shrink: 0; }
+  .logo-brand { flex-shrink: 0; }
+}
+
+/* Preview toolbar scroll */
+.preview-toolbar {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.preview-toolbar::-webkit-scrollbar { height: 4px; }
+.preview-toolbar > * { flex-shrink: 0; }
+.preview-toolbar .header-group { flex-shrink: 0; }
+
+/* Timeline horizontal scroll fix */
+.timeline-ruler {
+  overflow: hidden;
+}
+.timeline-tracks {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Panel body vertical scroll */
+.panel-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Form rows wrap on small screens */
+@media (max-width: 1100px) {
+  #app {
+    grid-template-columns: 220px 1fr 260px;
+    grid-template-rows: 52px 1fr 180px;
+  }
+  .form-row {
+    flex-wrap: wrap;
+  }
+  .form-row label {
+    min-width: 60px;
+    font-size: 10px;
+  }
+}
+
+/* Mobile / tablet layout */
+@media (max-width: 900px) {
+  #app {
+    grid-template-columns: 1fr;
+    grid-template-rows: 52px auto 1fr auto auto;
+    grid-template-areas:
+      "header"
+      "left"
+      "center"
+      "timeline"
+      "right";
+    height: 100vh;
+    overflow-y: auto;
+  }
+  #left-panel, #right-panel {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  #center-panel { min-height: 300px; }
+  #timeline-panel { max-height: 180px; }
+  .preview-area { padding: 10px; }
+  .add-element-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  header { padding: 0 8px; gap: 6px; }
+  .logo-brand .logo-text-wrap .sub { display: none; }
+  .header-label { display: none; }
+  .preview-toolbar { padding: 0 6px; gap: 6px; }
+  .transport-btn { width: 28px; height: 28px; font-size: 11px; }
+  .transport-btn.play { width: 34px; height: 34px; }
+  .btn-sm { padding: 4px 7px; font-size: 10px; }
+  .anim-grid { grid-template-columns: 1fr 1fr; }
+  .preset-grid { grid-template-columns: 1fr 1fr; }
+  .add-element-grid { grid-template-columns: 1fr 1fr; }
+  .tab { font-size: 9px; padding: 8px 4px; }
+  .tab .ico { font-size: 12px; }
+  .panel-body { padding: 10px; }
+  .form-row label { min-width: 50px; }
+  .modal { width: 95%; max-width: 95%; }
+  .modal-body { padding: 14px; }
+}
+
+/* RTL improvements */
+[dir="rtl"] .preview-toolbar,
+[dir="rtl"] header {
+  direction: rtl;
+}
+
+/* Fix color input wrap in RTL */
+[dir="rtl"] .color-input-wrap {
+  flex-direction: row;
+}
+
+/* Fix select dropdown arrow position in RTL */
+[dir="rtl"] select {
+  background-position: right 8px center;
+  padding-right: 26px;
+  padding-left: 10px;
+}
+
+/* Fix toggle direction in RTL */
+[dir="rtl"] .toggle::after {
+  left: 2px;
+  right: auto;
+  transition: all 0.2s;
+}
+[dir="rtl"] .toggle.on::after {
+  left: auto;
+  right: 18px;
+}
+
+/* Fix timeline track bar in RTL */
+[dir="rtl"] .track-bar {
+  direction: ltr;
+}
+
+/* Better overflow handling */
+#app {
+  overflow: hidden;
+}
+
+#center-panel {
+  overflow: hidden;
+  min-width: 0;
+}
+
+#left-panel, #right-panel {
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Form row input wrap min-width */
+.form-row .input-wrap {
+  min-width: 0;
+}
+
+/* Anim card text overflow */
+.anim-card {
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* Help text wrap */
+.help-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Modal responsive */
+@media (max-width: 700px) {
+  .modal-overlay { padding: 10px; }
+  .modal { max-height: 95vh; }
+  .preset-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .preset-card { padding: 10px 6px; }
+  .preset-card .ico { font-size: 22px; }
+  .preset-card .name { font-size: 11px; }
+  .preset-card .desc { font-size: 9px; }
+}
+
+/* Progress overlay mobile */
+@media (max-width: 500px) {
+  .progress-box { min-width: 280px; padding: 24px; }
+}
+
+/* Add element button responsive */
+.add-element-btn {
+  word-break: break-word;
+  text-align: center;
+}
+.add-element-btn .ico {
+  display: block;
+}
+
+/* Element item responsive */
+@media (max-width: 600px) {
+  .element-item {
+    padding: 8px;
+  }
+  .element-actions {
+    opacity: 1;
+  }
+}
+
+/* Tab content scroll fix */
+.tab-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for panel-body */
+.panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+.panel-body::-webkit-scrollbar-thumb {
+  background: var(--bg-4);
+  border-radius: 3px;
+}
+
+/* Fix for textarea in RTL */
+[dir="rtl"] textarea {
+  direction: rtl;
+  text-align: right;
+}
+
+/* Fix for number input in RTL */
+[dir="rtl"] input[type="number"] {
+  text-align: right;
+}
+
+/* Fix canvas wrap max dimensions */
+.canvas-wrap {
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#preview-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* v5: New UI Polish */
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Glow effect for primary buttons */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+/* Smoother tab transitions */
+.tab {
+  position: relative;
+}
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 20%; right: 20%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+
+/* Better focus states */
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.2);
+}
+
+/* v5: Loading shimmer for export */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, var(--bg-3) 25%, var(--bg-4) 50%, var(--bg-3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* v5: Pulse animation for play button */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 12px rgba(99,102,241,0.4); }
+  50% { box-shadow: 0 0 24px rgba(99,102,241,0.7); }
+}
+.transport-btn.play {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
 </style>
 </head>
 <body>
@@ -841,6 +1148,11 @@ select {
           <button class="add-element-btn" onclick="addElement('icon')"><span class="ico">✦</span>آیکون</button>
           <button class="add-element-btn" onclick="addElement('divider')"><span class="ico">─</span>خط جدا</button>
           <button class="add-element-btn" onclick="addElement('social')"><span class="ico">◍</span>شبکه اجتماعی</button>
+          <button class="add-element-btn" onclick="addElement('counter')"><span class="ico">#</span>شمارنده</button>
+          <button class="add-element-btn" onclick="addElement('marquee')"><span class="ico">→</span>متن متحرک</button>
+          <button class="add-element-btn" onclick="addElement('progress')"><span class="ico">▬</span>نوار پیشرفت</button>
+          <button class="add-element-btn" onclick="addElement('badge')"><span class="ico">●</span>نشان</button>
+          <button class="add-element-btn" onclick="addElement('quote')"><span class="ico">❝</span>نقل قول</button>
         </div>
       </div>
       <div class="panel-section">
@@ -1670,6 +1982,12 @@ function createElement(type, custom = {}) {
     icon: { name: 'آیکون', text: '★', fontSize: 120, width: 200, height: 200, entrance: { type: 'rotateScale', duration: 1, delay: 0.2, easing: 'easeOutBack' } },
     divider: { name: 'خط جداکننده', shape: 'line', width: 400, height: 2, color: '#6366f1', backgroundColor: '#6366f1', y: project.canvas.height * 0.7, entrance: { type: 'draw', duration: 0.8, delay: 1 } },
     social: { name: 'شبکه اجتماعی', text: '◍ Instagram  ◍ Telegram', fontSize: 24, fontWeight: 500, color: '#a0a0b0', width: 600, height: 40, y: project.canvas.height * 0.95, entrance: { type: 'fade', duration: 0.8, delay: 2.3 } },
+    // v5 new element types
+    counter: { name: 'شمارنده', text: '0', fontSize: 80, fontWeight: 900, color: '#ffffff', width: 400, height: 100, y: project.canvas.height * 0.55, counterFrom: 0, counterTo: 100, counterDuration: 2, entrance: { type: 'fade', duration: 0.5, delay: 1 } },
+    marquee: { name: 'متن متحرک', text: 'متن متحرک شما اینجا', fontSize: 32, fontWeight: 500, color: '#ffffff', width: 800, height: 50, y: project.canvas.height * 0.6, marqueeSpeed: 100, entrance: { type: 'fade', duration: 0.5, delay: 0.5 } },
+    progress: { name: 'نوار پیشرفت', shape: 'rectangle', width: 600, height: 20, color: '#6366f1', backgroundColor: '#6366f1', borderRadius: 10, y: project.canvas.height * 0.65, progressValue: 75, entrance: { type: 'scaleUp', duration: 1, delay: 1 } },
+    badge: { name: 'نشان', shape: 'circle', width: 120, height: 120, color: '#ef4444', backgroundColor: '#ef4444', text: 'NEW', fontSize: 28, fontWeight: 800, y: project.canvas.height * 0.3, entrance: { type: 'pop', duration: 0.5, delay: 0.3, easing: 'easeOutBack' }, hold: { enabled: true, type: 'pulse', intensity: 0.5, speed: 2 } },
+    quote: { name: 'نقل قول', text: 'نقل قول شما', fontSize: 36, fontWeight: 400, color: '#c0c0cc', width: 800, height: 80, y: project.canvas.height * 0.5, fontStyle: 'italic', entrance: { type: 'fade', duration: 1, delay: 1.2 } },
   };
 
   return { ...base, ...presets[type], ...custom };
@@ -1897,8 +2215,8 @@ function renderElementList() {
     list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-2);font-size:11px;line-height:1.6">عنصری اضافه نشده.<br>از دکمه‌های بالا اضافه کنید.</div>';
     return;
   }
-  const typeIcons = { logo: '🖼️', text: '📝', brand: '⭐', tagline: '💬', phone: '📞', website: '🌐', email: '✉️', address: '📍', shape: '⬜', icon: '✦', divider: '─', social: '◍' };
-  const typeNames = { logo: 'لوگو', text: 'متن', brand: 'نام برند', tagline: 'شعار', phone: 'تلفن', website: 'وب‌سایت', email: 'ایمیل', address: 'آدرس', shape: 'شکل', icon: 'آیکون', divider: 'خط جدا', social: 'شبکه' };
+  const typeIcons = { logo: '🖼️', text: '📝', brand: '⭐', tagline: '💬', phone: '📞', website: '🌐', email: '✉️', address: '📍', shape: '⬜', icon: '✦', divider: '─', social: '◍', counter: '#', marquee: '→', progress: '▬', badge: '●', quote: '❝' };
+  const typeNames = { logo: 'لوگو', text: 'متن', brand: 'نام برند', tagline: 'شعار', phone: 'تلفن', website: 'وب‌سایت', email: 'ایمیل', address: 'آدرس', shape: 'شکل', icon: 'آیکون', divider: 'خط جدا', social: 'شبکه', counter: 'شمارنده', marquee: 'متن متحرک', progress: 'نوار پیشرفت', badge: 'نشان', quote: 'نقل قول' };
   list.innerHTML = project.elements.map((el, idx) => `
     <div class="element-item ${el.id === selectedElementId ? 'selected' : ''}" onclick="selectElement('${el.id}')">
       <div class="element-icon">${typeIcons[el.type] || '◦'}</div>
@@ -1954,7 +2272,7 @@ function renderProperties() {
     </div>`;
   }
 
-  if (['text', 'brand', 'tagline', 'phone', 'website', 'email', 'address', 'icon', 'social'].includes(el.type)) {
+  if (['text', 'brand', 'tagline', 'phone', 'website', 'email', 'address', 'icon', 'social', 'counter', 'marquee', 'badge', 'quote'].includes(el.type)) {
     html += `<div class="panel-section">
       <div class="panel-section-title"><span><span class="ico">📝</span> متن</span></div>
       <div class="form-row-stack"><label>محتوای متن:</label><textarea rows="2" oninput="updateProp('text', this.value)">${escapeHtml(el.text)}</textarea></div>
@@ -1977,10 +2295,10 @@ function renderProperties() {
 
   html += `<div class="panel-section">
     <div class="panel-section-title"><span><span class="ico">🎨</span> رنگ و استایل</span></div>`;
-  if (['text', 'brand', 'tagline', 'phone', 'website', 'email', 'address', 'icon', 'social'].includes(el.type)) {
+  if (['text', 'brand', 'tagline', 'phone', 'website', 'email', 'address', 'icon', 'social', 'counter', 'marquee', 'badge', 'quote'].includes(el.type)) {
     html += colorRow('رنگ متن', 'color', el.color);
   }
-  if (el.type === 'shape' || el.type === 'divider') {
+  if (el.type === 'shape' || el.type === 'divider' || el.type === 'progress' || el.type === 'badge') {
     html += colorRow('رنگ پر کردن', 'backgroundColor', el.backgroundColor);
     html += colorRow('رنگ حاشیه', 'borderColor', el.borderColor);
     html += `<div class="form-row"><label>ضخامت حاشیه:</label><div class="input-wrap"><input type="number" value="${el.borderWidth}" oninput="updateProp('borderWidth', +this.value)"></div><span class="input-suffix">px</span></div>`;
@@ -2020,6 +2338,28 @@ function renderProperties() {
   html += colorRow('رنگ سایه', 'shadowColor', el.shadowColor);
   html += `</div>`;
 
+  // v5: Element-specific properties
+  if (el.type === 'counter') {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">#</span> تنظیمات شمارنده</span></div>
+      <div class="form-row"><label>از:</label><div class="input-wrap"><input type="number" value="${el.counterFrom||0}" oninput="updateProp('counterFrom', +this.value)"></div></div>
+      <div class="form-row"><label>تا:</label><div class="input-wrap"><input type="number" value="${el.counterTo||100}" oninput="updateProp('counterTo', +this.value)"></div></div>
+      <div class="form-row"><label>مدت:</label><div class="input-wrap"><input type="number" step="0.1" value="${el.counterDuration||2}" oninput="updateProp('counterDuration', +this.value)"></div><span class="input-suffix">ثانیه</span></div>
+    </div>`;
+  }
+  if (el.type === 'marquee') {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">→</span> تنظیمات متن متحرک</span></div>
+      <div class="form-row"><label>سرعت:</label><div class="input-wrap"><input type="range" min="10" max="500" value="${el.marqueeSpeed||100}" oninput="updateProp('marqueeSpeed', +this.value); document.getElementById('ms-v').textContent = this.value"></div><span id="ms-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${el.marqueeSpeed||100}</span></div>
+    </div>`;
+  }
+  if (el.type === 'progress') {
+    html += `<div class="panel-section">
+      <div class="panel-section-title"><span><span class="ico">▬</span> تنظیمات نوار پیشرفت</span></div>
+      <div class="form-row"><label>مقدار:</label><div class="input-wrap"><input type="range" min="0" max="100" value="${el.progressValue||75}" oninput="updateProp('progressValue', +this.value); document.getElementById('pv-v').textContent = this.value+'%'"></div><span id="pv-v" style="font-size:10px;min-width:34px;color:var(--text-2)">${el.progressValue||75}%</span></div>
+    </div>`;
+  }
+
   // v3: Blend Mode
   html += `<div class="panel-section">
     <div class="panel-section-title"><span><span class="ico">🔀</span> حالت ترکیب (Blend Mode)</span></div>
@@ -2029,7 +2369,7 @@ function renderProperties() {
   </div>`;
 
   // v3: Text Gradient & Stroke (only for text elements)
-  if (['text','brand','tagline','phone','website','email','address','icon','social'].includes(el.type)) {
+  if (['text','brand','tagline','phone','website','email','address','icon','social','counter','marquee','badge','quote'].includes(el.type)) {
     html += `<div class="panel-section">
       <div class="panel-section-title"><span><span class="ico">🌈</span> گرادیان متن</span><div class="toggle ${el.textGradient ? 'on' : ''}" onclick="updateProp('textGradient', !getSelectedElement().textGradient); renderProperties()"></div></div>
       ${el.textGradient ? `
@@ -2378,7 +2718,7 @@ function renderTimeline() {
     return;
   }
 
-  const typeIcons = { logo: '🖼️', text: '📝', brand: '⭐', tagline: '💬', phone: '📞', website: '🌐', email: '✉️', address: '📍', shape: '⬜', icon: '✦', divider: '─', social: '◍' };
+  const typeIcons = { logo: '🖼️', text: '📝', brand: '⭐', tagline: '💬', phone: '📞', website: '🌐', email: '✉️', address: '📍', shape: '⬜', icon: '✦', divider: '─', social: '◍', counter: '#', marquee: '→', progress: '▬', badge: '●', quote: '❝' };
   tracks.innerHTML = project.elements.map(el => {
     const entStart = el.entrance.enabled ? el.entrance.delay : 0;
     const entEnd = el.entrance.enabled ? entStart + el.entrance.duration : 0;
@@ -3438,8 +3778,79 @@ async function drawElement(el, t) {
     ctx.font = `400 ${Math.min(14, el.width / 16)}px "Vazirmatn", sans-serif`;
     ctx.fillStyle = '#666';
     ctx.fillText('از پنل ویژگی‌ها تصویر بارگذاری کنید', 0, 18);
-  } else if (el.type === 'shape' || el.type === 'divider') {
+  } else if (el.type === 'shape' || el.type === 'divider' || el.type === 'progress' || el.type === 'badge') {
     drawShape(el, halfW, halfH);
+    // v5: For badge, draw text inside
+    if (el.type === 'badge' && el.text) {
+      ctx.fillStyle = el.color === '#ef4444' ? '#ffffff' : el.color;
+      ctx.font = `${el.fontWeight || 800} ${el.fontSize || 28}px "${el.fontFamily || 'Vazirmatn'}", sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(el.text, 0, 0);
+    }
+    // v5: For progress, draw fill bar
+    if (el.type === 'progress') {
+      const pct = (el.progressValue || 75) / 100;
+      ctx.fillStyle = el.color === '#6366f1' ? '#22c55e' : el.color;
+      const fillW = el.width * pct;
+      if (el.borderRadius > 0) {
+        roundRect(ctx, -halfW, -el.height/2, fillW, el.height, el.borderRadius);
+        ctx.fill();
+      } else {
+        ctx.fillRect(-halfW, -el.height/2, fillW, el.height);
+      }
+    }
+  } else if (el.type === 'counter') {
+    // v5: Counter animation
+    const counterState = computeElementState(el, currentTime);
+    const counterProgress = Math.min(1, Math.max(0, (currentTime - el.entrance.delay) / (el.counterDuration || 2)));
+    const value = Math.round((el.counterFrom || 0) + ((el.counterTo || 100) - (el.counterFrom || 0)) * counterProgress);
+    el.text = String(value);
+    drawText(el, halfW, halfH, state);
+  } else if (el.type === 'marquee') {
+    // v5: Marquee scrolling text
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(-halfW, -halfH, el.width, el.height);
+    ctx.clip();
+    const speed = el.marqueeSpeed || 100;
+    const textWidth = ctx.measureText(el.text || '').width;
+    const offset = ((currentTime * speed) % (textWidth + el.width)) - textWidth;
+    ctx.fillStyle = el.color;
+    ctx.font = `${el.fontWeight || 500} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillText(el.text, -halfW + offset, 0);
+    ctx.fillText(el.text, -halfW + offset + textWidth + 50, 0);
+    ctx.restore();
+  } else if (el.type === 'quote') {
+    // v5: Quote with quotation marks
+    ctx.font = `${el.fontWeight || 400} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+    ctx.fillStyle = el.color;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    if (el.textGradient) {
+      const rad = (el.textGradientAngle - 90) * Math.PI / 180;
+      const x = Math.cos(rad), y = Math.sin(rad);
+      const len = Math.abs(x * el.width) + Math.abs(y * el.fontSize * 2);
+      const grad = ctx.createLinearGradient(-len/2, 0, len/2, 0);
+      grad.addColorStop(0, el.textGradientColor1);
+      grad.addColorStop(1, el.textGradientColor2);
+      ctx.fillStyle = grad;
+    }
+    // Draw quote marks
+    ctx.font = `${el.fontSize * 1.5}px serif`;
+    ctx.fillStyle = el.color + '60';
+    ctx.fillText('"', -halfW + 20, -halfH + 20);
+    ctx.fillText('"', halfW - 20, halfH - 20);
+    // Draw text
+    ctx.font = `italic ${el.fontWeight || 400} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+    ctx.fillStyle = el.color;
+    const lines = (el.text || '').split('\n');
+    const lineHeight = el.fontSize * el.lineHeight;
+    const totalHeight = lines.length * lineHeight;
+    lines.forEach((line, i) => {
+      ctx.fillText(line, 0, -totalHeight / 2 + lineHeight / 2 + i * lineHeight);
+    });
   } else {
     drawText(el, halfW, halfH, state);
   }
@@ -4229,6 +4640,56 @@ async function drawElementTo(c, el, t) {
       case 'ring': c.beginPath(); c.arc(0, 0, halfW * 0.8, 0, Math.PI * 2); c.arc(0, 0, halfW * 0.5, 0, Math.PI * 2, true); c.fill('evenodd'); if (el.borderWidth > 0) c.stroke(); break;
       case 'gear': drawGear(c, halfW); c.fill(); if (el.borderWidth > 0) c.stroke(); break;
     }
+  } else if (el.type === 'progress' || el.type === 'badge') {
+    c.fillStyle = el.backgroundColor === 'transparent' ? el.color : el.backgroundColor;
+    if (el.shape === 'circle') { c.beginPath(); c.ellipse(0, 0, halfW, halfH, 0, 0, Math.PI * 2); c.fill(); }
+    else if (el.borderRadius > 0) { roundRect(c, -halfW, -halfH, el.width, el.height, el.borderRadius); c.fill(); }
+    else { c.fillRect(-halfW, -halfH, el.width, el.height); }
+    if (el.type === 'badge' && el.text) {
+      c.fillStyle = '#ffffff';
+      c.font = `${el.fontWeight || 800} ${el.fontSize || 28}px "${el.fontFamily || 'Vazirmatn'}", sans-serif`;
+      c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.fillText(el.text, 0, 0);
+    }
+    if (el.type === 'progress') {
+      const pct = (el.progressValue || 75) / 100;
+      c.fillStyle = '#22c55e';
+      const fillW = el.width * pct;
+      if (el.borderRadius > 0) { roundRect(c, -halfW, -el.height/2, fillW, el.height, el.borderRadius); c.fill(); }
+      else { c.fillRect(-halfW, -el.height/2, fillW, el.height); }
+    }
+  } else if (el.type === 'counter') {
+    const counterProgress = Math.min(1, Math.max(0, (t - el.entrance.delay) / (el.counterDuration || 2)));
+    const value = Math.round((el.counterFrom || 0) + ((el.counterTo || 100) - (el.counterFrom || 0)) * counterProgress);
+    const displayText = String(value);
+    c.font = `${el.fontWeight || 900} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+    c.textBaseline = 'middle'; c.textAlign = 'center';
+    c.fillStyle = el.color;
+    c.fillText(displayText, 0, 0);
+  } else if (el.type === 'marquee') {
+    c.save();
+    c.beginPath(); c.rect(-halfW, -halfH, el.width, el.height); c.clip();
+    const speed = el.marqueeSpeed || 100;
+    c.font = `${el.fontWeight || 500} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+    const textWidth = c.measureText(el.text || '').width;
+    const offset = ((t * speed) % (textWidth + el.width)) - textWidth;
+    c.fillStyle = el.color;
+    c.textBaseline = 'middle'; c.textAlign = 'left';
+    c.fillText(el.text, -halfW + offset, 0);
+    c.fillText(el.text, -halfW + offset + textWidth + 50, 0);
+    c.restore();
+  } else if (el.type === 'quote') {
+    c.font = `${el.fontSize * 1.5}px serif`;
+    c.fillStyle = el.color + '60';
+    c.textBaseline = 'middle'; c.textAlign = 'center';
+    c.fillText('"', -halfW + 20, -halfH + 20);
+    c.fillText('"', halfW - 20, halfH - 20);
+    c.font = `italic ${el.fontWeight || 400} ${el.fontSize}px "${el.fontFamily}", sans-serif`;
+    c.fillStyle = el.color;
+    const lines = (el.text || '').split('\n');
+    const lineHeight = el.fontSize * el.lineHeight;
+    const totalHeight = lines.length * lineHeight;
+    lines.forEach((line, i) => { c.fillText(line, 0, -totalHeight / 2 + lineHeight / 2 + i * lineHeight); });
   } else {
     const fontWeight = el.fontWeight || 400;
     c.font = `${fontWeight} ${el.fontSize}px "${el.fontFamily}", sans-serif`;

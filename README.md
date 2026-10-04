@@ -1,8 +1,8 @@
-# 🎬 Sahand Motion Studio GLM (Logo Motion Studio Pro v4.0)
+# 🎬 Sahand Motion Studio GLM (Logo Motion Studio Pro v5.0)
 
 > استودیو حرفه‌ای ساخت لوگوموشن — نسخه پیشرفته با امکانات سینمایی
 
-![Version](https://img.shields.io/badge/version-4.0-blue)
+![Version](https://img.shields.io/badge/version-5.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platform](https://img.shields.io/badge/platform-Web-orange)
 
@@ -15,9 +15,25 @@
 | `guide.html` | نسخه HTML راهنما (قابل ویرایش) |
 | `examples/` | پوشه با پروژه‌های نمونه |
 
-## ✨ امکانات نسخه 4.0
+## ✨ امکانات نسخه 5.0
 
-### 🆕 قابلیت‌های جدید v4
+### 🆕 قابلیت‌های جدید v5
+
+#### 📱 ریسپانسیو کامل و RTL
+- ✅ اصلاح overflow و اسکرول افقی
+- ✅ layout تطبیقی برای دسکتاپ، تبلت و موبایل
+- ✅ نوار ابزار با اسکرول افقی روی صفحات کوچک
+- ✅ بهبود کامل RTL برای فارسی
+- ✅ مودال‌ها و فرم‌ها ریسپانسیو
+
+#### 🆕 ۵ عنصر جدید
+- # **شمارنده** (Counter) - انیمیشن شمارش از X تا Y
+- → **متن متحرک** (Marquee) - متن متحرک افقی
+- ▬ **نوار پیشرفت** (Progress Bar) - نوار درصد پیشرفت
+- ● **نشان** (Badge) - نشان دایره‌ای با متن
+- ❝ **نقل قول** (Quote) - متن با علامت نقل قول
+
+### قابلیت‌های نسخه 4.0
 
 #### 🎨 ۱۵ پس‌زمینه جدید حرفه‌ای
 - ☁️ **دود** (Smoke) - ذرات دود صعودی
