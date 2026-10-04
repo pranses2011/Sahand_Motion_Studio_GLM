@@ -1077,7 +1077,7 @@ input:focus, select:focus, textarea:focus {
       <div class="logo-mark">🎬</div>
       <div class="logo-text-wrap">
         <span>Logo Motion Studio</span>
-        <span class="sub">Pro Edition v12.0</span>
+        <span class="sub">Pro Edition v13.0</span>
       </div>
     </div>
     <div class="header-sep"></div>
@@ -1798,6 +1798,15 @@ const BgTypes = {
   plasma5: { name: 'پلاسما پلاس', icon: '◉' },
   geoPattern: { name: 'الگوی هندسی', icon: '◆' },
   vapor: { name: 'بخار', icon: '☁' },
+  // v13 new backgrounds
+  blackhole: { name: 'سیاه‌چاله', icon: '◉' },
+  fireflies: { name: 'کرم‌های شب‌تاب', icon: '✦' },
+  fallingLeaves: { name: 'برگ‌های پاییزی', icon: '🍂' },
+  bubbles2: { name: 'حباب‌های رنگی', icon: '○' },
+  solar: { name: 'خورشیدی', icon: '☀' },
+  quantum: { name: 'کوانتومی', icon: '◉' },
+  silk: { name: 'ابریشم', icon: '〜' },
+  rain2: { name: 'باران ملایم', icon: '☂' },
 };
 
 // ---------- Project State ----------
@@ -1955,6 +1964,15 @@ const NewBgTypes = {
   plasma5: { name: 'پلاسما پلاس', icon: '◉' },
   geoPattern: { name: 'الگوی هندسی', icon: '◆' },
   vapor: { name: 'بخار', icon: '☁' },
+  // v13 new backgrounds
+  blackhole: { name: 'سیاه‌چاله', icon: '◉' },
+  fireflies: { name: 'کرم‌های شب‌تاب', icon: '✦' },
+  fallingLeaves: { name: 'برگ‌های پاییزی', icon: '🍂' },
+  bubbles2: { name: 'حباب‌های رنگی', icon: '○' },
+  solar: { name: 'خورشیدی', icon: '☀' },
+  quantum: { name: 'کوانتومی', icon: '◉' },
+  silk: { name: 'ابریشم', icon: '〜' },
+  rain2: { name: 'باران ملایم', icon: '☂' },
 };
 
 // v4: New Post-FX
@@ -3535,6 +3553,15 @@ function renderBackground(t, c = ctx) {
   if (bg.type === 'plasma5') drawPlasma5(c, t, bg);
   if (bg.type === 'geoPattern') drawGeoPattern(c, t, bg);
   if (bg.type === 'vapor') drawVapor(c, t, bg);
+  // v13 new backgrounds
+  if (bg.type === 'blackhole') drawBlackhole(c, t, bg);
+  if (bg.type === 'fireflies') drawFireflies(c, t, bg);
+  if (bg.type === 'fallingLeaves') drawFallingLeaves(c, t, bg);
+  if (bg.type === 'bubbles2') drawBubbles2(c, t, bg);
+  if (bg.type === 'solar') drawSolar(c, t, bg);
+  if (bg.type === 'quantum') drawQuantum(c, t, bg);
+  if (bg.type === 'silk') drawSilk(c, t, bg);
+  if (bg.type === 'rain2') drawRain2(c, t, bg);
 
   // Vignette
   if (bg.vignette > 0) {
@@ -4439,6 +4466,212 @@ function drawVapor(c, t, bg) {
     c.fillStyle = grad;
     c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
   }
+}
+
+// ===== v13 NEW BACKGROUND FUNCTIONS =====
+function drawBlackhole(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const color = bg.particleColor || bg.color2 || '#a855f7';
+  // Accretion disk
+  c.save();
+  c.translate(cx, cy);
+  c.rotate(t * 0.5);
+  for (let i = 0; i < 300; i++) {
+    const angle = i * 0.1;
+    const r = 100 + i * 3;
+    const x = Math.cos(angle) * r;
+    const y = Math.sin(angle) * r * 0.3;
+    const alpha = Math.max(0, 1 - i / 300);
+    const hue = (i * 2 + t * 50) % 360;
+    c.fillStyle = `hsla(${hue}, 80%, 60%, ${alpha * 0.8})`;
+    c.beginPath(); c.arc(x, y, 2, 0, Math.PI * 2); c.fill();
+  }
+  c.restore();
+  // Event horizon (black center)
+  const grad = c.createRadialGradient(cx, cy, 0, cx, cy, 120);
+  grad.addColorStop(0, '#000000');
+  grad.addColorStop(0.7, '#000000');
+  grad.addColorStop(1, '#00000000');
+  c.fillStyle = grad;
+  c.beginPath(); c.arc(cx, cy, 120, 0, Math.PI * 2); c.fill();
+  // Glow ring
+  c.strokeStyle = color + '80';
+  c.lineWidth = 3;
+  c.beginPath(); c.arc(cx, cy, 125, 0, Math.PI * 2); c.stroke();
+}
+
+function drawFireflies(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#ffeb3b';
+  for (let i = 0; i < 60; i++) {
+    const seed = i * 17.3;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.3 + i) * 80;
+    const y = (Math.cos(seed * 1.7) * 0.5 + 0.5) * H + Math.cos(t * 0.2 + i * 1.3) * 60;
+    const tw = 0.3 + 0.7 * Math.sin(t * 3 + i * 2);
+    const r = 3 + tw * 2;
+    const grad = c.createRadialGradient(x, y, 0, x, y, r * 4);
+    grad.addColorStop(0, color + 'FF');
+    grad.addColorStop(0.3, color + '80');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(x, y, r * 4, 0, Math.PI * 2); c.fill();
+    c.fillStyle = color;
+    c.beginPath(); c.arc(x, y, r * 0.5, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawFallingLeaves(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = ['#FF6F00', '#F57C00', '#E65100', '#FFA726', '#BF360C'];
+  for (let i = 0; i < 40; i++) {
+    const seed = i * 23.1;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.5 + i * 2) * 100;
+    const y = ((t * 80 + seed * 60) % (H + 50)) - 25;
+    const rot = t * 2 + i;
+    const size = 15 + (i % 3) * 5;
+    c.save();
+    c.translate(x, y);
+    c.rotate(rot);
+    c.fillStyle = colors[i % colors.length];
+    c.beginPath();
+    c.ellipse(0, 0, size, size * 0.5, 0, 0, Math.PI * 2);
+    c.fill();
+    c.strokeStyle = colors[(i + 2) % colors.length];
+    c.lineWidth = 1;
+    c.beginPath(); c.moveTo(-size, 0); c.lineTo(size, 0); c.stroke();
+    c.restore();
+  }
+}
+
+function drawBubbles2(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = ['#FF6B9D', '#C44569', '#F8B500', '#3BCEAC', '#1B9AAA', '#5D5FEF'];
+  for (let i = 0; i < 40; i++) {
+    const seed = i * 19.7;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.5 + i) * 40;
+    const y = H - ((t * 40 + seed * 70) % (H + 80));
+    const r = 20 + (i % 5) * 8;
+    const color = colors[i % colors.length];
+    c.strokeStyle = color + '80';
+    c.lineWidth = 2;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.stroke();
+    const grad = c.createRadialGradient(x - r * 0.3, y - r * 0.3, 0, x, y, r);
+    grad.addColorStop(0, color + '40');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawSolar(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  // Sun corona
+  for (let i = 5; i > 0; i--) {
+    const r = 200 + i * 60;
+    const grad = c.createRadialGradient(cx, cy, 0, cx, cy, r);
+    grad.addColorStop(0, `rgba(255,200,50,${0.3 / i})`);
+    grad.addColorStop(1, 'rgba(255,100,0,0)');
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(cx, cy, r, 0, Math.PI * 2); c.fill();
+  }
+  // Sun
+  const sunGrad = c.createRadialGradient(cx, cy, 0, cx, cy, 150);
+  sunGrad.addColorStop(0, '#FFEB3B');
+  sunGrad.addColorStop(0.7, '#FF9800');
+  sunGrad.addColorStop(1, '#FF5722');
+  c.fillStyle = sunGrad;
+  c.beginPath(); c.arc(cx, cy, 150, 0, Math.PI * 2); c.fill();
+  // Solar flares
+  for (let i = 0; i < 20; i++) {
+    const angle = (i / 20) * Math.PI * 2 + t * 0.3;
+    const len = 160 + Math.sin(t * 2 + i) * 40;
+    c.strokeStyle = `rgba(255,150,0,${0.3 + Math.sin(t + i) * 0.2})`;
+    c.lineWidth = 3;
+    c.beginPath();
+    c.moveTo(cx + Math.cos(angle) * 150, cy + Math.sin(angle) * 150);
+    c.lineTo(cx + Math.cos(angle) * len, cy + Math.sin(angle) * len);
+    c.stroke();
+  }
+}
+
+function drawQuantum(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const color = bg.particleColor || bg.color2 || '#00ffff';
+  // Quantum particles with probability clouds
+  for (let i = 0; i < 100; i++) {
+    const seed = i * 13.7;
+    const baseAngle = (Math.sin(seed) * 0.5 + 0.5) * Math.PI * 2;
+    const r = 50 + (i % 8) * 80;
+    const wobble = Math.sin(t * 5 + i * 3) * 30;
+    const x = cx + Math.cos(baseAngle + t * 0.2) * (r + wobble);
+    const y = cy + Math.sin(baseAngle + t * 0.2) * (r + wobble);
+    const size = 2 + Math.sin(t * 10 + i) * 1;
+    const alpha = 0.3 + 0.7 * Math.abs(Math.sin(t * 3 + i));
+    c.fillStyle = color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+    c.beginPath(); c.arc(x, y, Math.max(0.5, size), 0, Math.PI * 2); c.fill();
+    // Connection lines
+    if (i % 10 === 0) {
+      c.strokeStyle = color + '20';
+      c.lineWidth = 0.5;
+      c.beginPath();
+      c.moveTo(cx, cy);
+      c.lineTo(x, y);
+      c.stroke();
+    }
+  }
+}
+
+function drawSilk(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = [bg.color2 || '#ec4899', bg.color3 || '#a855f7', bg.particleColor || '#6366f1'];
+  for (let layer = 0; layer < 3; layer++) {
+    const color = colors[layer];
+    c.save();
+    c.globalAlpha = 0.4;
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 3) {
+      const y = H * 0.3 + Math.sin(x * 0.003 + t * 0.5 + layer * 2) * 100 +
+                Math.sin(x * 0.01 + t + layer) * 60 + layer * 80;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H); c.closePath();
+    const grad = c.createLinearGradient(0, H * 0.3, 0, H);
+    grad.addColorStop(0, color + 'CC');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad; c.fill();
+    c.restore();
+  }
+}
+
+function drawRain2(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#4FC3F7';
+  c.strokeStyle = color + '60';
+  c.lineWidth = 1;
+  for (let i = 0; i < 300; i++) {
+    const seed = i * 31.7;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W;
+    const y = ((t * 600 + seed * 80) % (H + 50));
+    const len = 15;
+    c.beginPath();
+    c.moveTo(x, y);
+    c.lineTo(x - 2, y + len);
+    c.stroke();
+  }
+  // Ripples at bottom
+  c.strokeStyle = color + '40';
+  for (let i = 0; i < 10; i++) {
+    const x = (Math.sin(i * 13.7) * 0.5 + 0.5) * W;
+    const phase = (t * 2 + i * 0.5) % 1;
+    const r = phase * 30;
+    c.globalAlpha = 1 - phase;
+    c.beginPath(); c.arc(x, H - 20, r, 0, Math.PI * 2); c.stroke();
+  }
+  c.globalAlpha = 1;
 }
 
 let grainCanvas = null;
@@ -5515,14 +5748,28 @@ async function exportVideo(format) {
   exportCtx.imageSmoothingQuality = 'high';
 
   const duration = project.canvas.duration;
-  const totalFrames = Math.ceil(duration * fps);
-  const frameInterval = 1000 / fps;
 
-  // v12: Pre-render first frame to load all images into cache
+  // v13: Pre-load ALL images before recording starts
+  // This makes rendering effectively synchronous during capture
   title.textContent = 'آماده‌سازی تصاویر...';
-  await renderToContext(exportCtx, exportW, exportH, 0);
+  const imagePromises = [];
+  for (const el of project.elements) {
+    if ((el.type === 'logo' || el.src) && el.src) {
+      if (!loadedImages[el.src]) {
+        imagePromises.push(loadImage(el.src));
+      }
+    }
+  }
+  if (logoBug && logoBug.src && !loadedImages[logoBug.src]) {
+    imagePromises.push(loadImage(logoBug.src));
+  }
+  if (imagePromises.length > 0) {
+    await Promise.all(imagePromises);
+  }
+  // Pre-render first frame to warm up
+  await _renderFrameInternal(0, exportCtx);
 
-  // v12: Use manual capture mode - we explicitly capture each frame
+  // v13: Use manual capture mode - we explicitly capture each frame
   const stream = exportCanvas.captureStream(0);
   const track = stream.getVideoTracks()[0];
 
@@ -5566,45 +5813,58 @@ async function exportVideo(format) {
   recorder.start();
   if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
 
-  // v12: Clean async/await loop - render each frame, then capture it
-  // Key fix: AWAIT the render BEFORE calling requestFrame()
-  // This ensures the canvas is fully painted before capture
+  // v13: Real-time recording using requestAnimationFrame
+  // - rAF syncs to display refresh (usually 60Hz), giving smooth timing
+  // - We render the frame at the CURRENT real-time position
+  // - We capture with requestFrame() AFTER render completes
+  // - Images are pre-loaded, so render is synchronous
+  // - NO setTimeout(0) - that was causing 4ms+ per frame = 4 min video
+  // - NO offscreen canvas - render directly to exportCtx
+  // - Background animation IS included because we render at real-time t
   const startTime = performance.now();
+  let lastFrame = -1;
 
-  for (let i = 0; i < totalFrames; i++) {
-    const t = i / fps;
+  return new Promise((resolve) => {
+    function recordLoop() {
+      const elapsed = (performance.now() - startTime) / 1000;
+      const t = Math.min(elapsed, duration);
+      const currentFrame = Math.floor(t * fps);
 
-    // 1. Render the frame at time t (await ensures it's complete)
-    await renderToContext(exportCtx, exportW, exportH, t);
+      // Only render+capture if frame changed (avoid duplicate captures)
+      if (currentFrame > lastFrame) {
+        lastFrame = currentFrame;
 
-    // 2. NOW capture the frame (canvas is fully painted)
-    if (track.requestFrame) track.requestFrame();
+        // Render directly to exportCtx (synchronous since images cached)
+        // Use _renderFrameInternal which renders background + elements + FX
+        _renderFrameInternal(t, exportCtx).then(() => {
+          // Capture the rendered frame
+          if (track.requestFrame) track.requestFrame();
+        });
 
-    // 3. Update progress
-    const pct = Math.round(((i + 1) / totalFrames) * 100);
-    fill.style.width = pct + '%';
-    text.textContent = `${pct}% — فریم ${i + 1}/${totalFrames} — ${t.toFixed(1)}s`;
-    title.textContent = 'در حال ضبط ویدیو...';
+        // Update progress
+        const pct = Math.round((t / duration) * 100);
+        fill.style.width = pct + '%';
+        text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
+        title.textContent = 'در حال ضبط ویدیو...';
+      }
 
-    // 4. Real-time pacing: wait until it's time for the next frame
-    // This ensures video duration matches animation duration
-    const targetTime = startTime + (i + 1) * frameInterval;
-    const now = performance.now();
-    const wait = Math.max(0, targetTime - now);
-    if (wait > 0) {
-      await new Promise(r => setTimeout(r, wait));
+      if (elapsed >= duration) {
+        // Render final frame and wait for encoder
+        _renderFrameInternal(duration, exportCtx).then(() => {
+          if (track.requestFrame) track.requestFrame();
+          setTimeout(() => {
+            if (audioElement) audioElement.pause();
+            recorder.stop();
+            resolve();
+          }, 500);
+        });
+      } else {
+        // Next animation frame (real-time pacing, NO setTimeout)
+        requestAnimationFrame(recordLoop);
+      }
     }
-
-    // Yield to the event loop so the browser can process the captured frame
-    // This is critical - without this, requestFrame() calls pile up
-    await new Promise(r => setTimeout(r, 0));
-  }
-
-  // Wait for the encoder to process the last frame
-  await new Promise(r => setTimeout(r, 500));
-
-  if (audioElement) audioElement.pause();
-  recorder.stop();
+    requestAnimationFrame(recordLoop);
+  });
 }
 
 async function exportPNGSequence() {
