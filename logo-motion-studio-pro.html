@@ -1489,6 +1489,26 @@ input:focus, select:focus, textarea:focus {
           <span class="ico">💎</span><div class="name">کریستال</div>
           <div class="desc">شفاف، درخشان، خالص</div>
         </div>
+        <div class="preset-card" onclick="loadPreset('electricStorm')">
+          <span class="ico">⚡</span><div class="name">طوفان الکتریکی</div>
+          <div class="desc">صاعقه، نئون، قدرت</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('forest')">
+          <span class="ico">🌲</span><div class="name">جنگل</div>
+          <div class="desc">طبیعت، کرم شب‌تاب، آرام</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('desert')">
+          <span class="ico">🏜️</span><div class="name">بیابان</div>
+          <div class="desc">غروب، تپه شنی، گرم</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('northernLights')">
+          <span class="ico">🌌</span><div class="name">شمالگان</div>
+          <div class="desc">شفق قطبی، جادویی</div>
+        </div>
+        <div class="preset-card" onclick="loadPreset('plasma5')">
+          <span class="ico">🌈</span><div class="name">پلاسما</div>
+          <div class="desc">رنگارنگ، چرخان، زنده</div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -5423,12 +5443,11 @@ async function exportVideo(format) {
   exportCtx.imageSmoothingQuality = 'high';
 
   const duration = project.canvas.duration;
-  const totalFrames = Math.ceil(duration * fps);
 
-  // v9: Use manual frame capture with requestFrame()
-  // captureStream(0) = manual mode, we control exactly when each frame is captured
-  const stream = exportCanvas.captureStream(0);
-  const track = stream.getVideoTracks()[0];
+  // v10: Use auto-capture stream at target fps
+  // The browser automatically captures frames at the specified rate
+  // This produces smooth, real-time video without manual frame pushing
+  const stream = exportCanvas.captureStream(fps);
 
   const includeAudio = document.getElementById('export-audio-toggle').classList.contains('on') && project.audio.enabled && audioElement;
   let audioStream = null;
@@ -5441,7 +5460,7 @@ async function exportVideo(format) {
   stream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
   if (audioStream) audioStream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
 
-  // Try VP9 first, fall back to VP8
+  // Try VP9 first, fall back to VP8, then plain webm
   let mimeType = 'video/webm;codecs=vp9';
   if (!MediaRecorder.isTypeSupported(mimeType)) {
     mimeType = 'video/webm;codecs=vp8';
@@ -5470,45 +5489,48 @@ async function exportVideo(format) {
   recorder.start();
   if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
 
-  // v9: Frame-by-frame recording with real-time pacing
-  // Render each frame, push it to the stream with requestFrame(),
-  // then pace in real-time so the video duration matches the animation duration.
-  const frameInterval = 1000 / fps;
+  // v10: Real-time rendering using requestAnimationFrame
+  // The animation plays in real-time, and captureStream(fps) auto-captures
+  // frames at the target fps. This produces smooth video without lag.
   const startTime = performance.now();
 
-  for (let i = 0; i < totalFrames; i++) {
-    const t = i / fps;
+  return new Promise((resolve) => {
+    let rendering = false;
+    async function recordLoop(timestamp) {
+      if (rendering) {
+        requestAnimationFrame(recordLoop);
+        return;
+      }
+      rendering = true;
 
-    // Render the frame at time t
-    await renderToContext(exportCtx, exportW, exportH, t);
+      const elapsed = (performance.now() - startTime) / 1000;
+      const t = Math.min(elapsed, duration);
 
-    // Push the rendered frame to the stream
-    if (track.requestFrame) track.requestFrame();
-    else if (stream.requestFrame) stream.requestFrame();
+      // Update progress
+      const pct = Math.round((t / duration) * 100);
+      fill.style.width = pct + '%';
+      text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
+      title.textContent = 'در حال ضبط ویدیو...';
 
-    // Update progress
-    const pct = Math.round(((i + 1) / totalFrames) * 100);
-    fill.style.width = pct + '%';
-    text.textContent = `${pct}% — فریم ${i + 1}/${totalFrames} — ${t.toFixed(1)}s`;
-    title.textContent = 'در حال ضبط ویدیو...';
+      if (elapsed >= duration) {
+        // Render the final frame
+        await renderToContext(exportCtx, exportW, exportH, duration);
 
-    // Real-time pacing: wait until it's time for the next frame
-    // This ensures the recorder captures each frame at the right time
-    const targetTime = startTime + (i + 1) * frameInterval;
-    const now = performance.now();
-    const wait = Math.max(0, targetTime - now);
-    if (wait > 0) {
-      await new Promise(r => setTimeout(r, wait));
+        // Wait a bit for the encoder to process the last captured frames
+        setTimeout(() => {
+          if (audioElement) audioElement.pause();
+          recorder.stop();
+          resolve();
+        }, 500);
+      } else {
+        // Render the current frame in real-time
+        await renderToContext(exportCtx, exportW, exportH, t);
+        rendering = false;
+        requestAnimationFrame(recordLoop);
+      }
     }
-    // If wait is 0 (rendering took too long), we continue immediately
-    // The recorder will still capture all frames, just slightly faster than real-time
-  }
-
-  // Wait a bit for the last frame to be processed by the encoder
-  await new Promise(r => setTimeout(r, 300));
-
-  if (audioElement) audioElement.pause();
-  recorder.stop();
+    requestAnimationFrame(recordLoop);
+  });
 }
 
 async function exportPNGSequence() {
@@ -5959,6 +5981,62 @@ function loadPreset(name) {
         createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 30, glowColor: '#a855f7', entrance: { enabled: true, type: 'rotateScale', duration: 1, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'rotateSlow', intensity: 0.3, speed: 0.5 } }),
         createElement('brand', { name: 'نام برند', text: 'CRYSTAL', x: 960, y: 800, fontSize: 90, fontWeight: 700, color: '#ffffff', textGradient: true, textGradientColor1: '#a855f7', textGradientColor2: '#06b6d4', glow: 20, glowColor: '#a855f7', entrance: { enabled: true, type: 'fade', duration: 1, delay: 0.8 } }),
         createElement('tagline', { name: 'شعار', text: 'Pure • Brilliant • Eternal', x: 960, y: 900, fontSize: 26, fontWeight: 300, color: '#c4b5fd', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.3 } }),
+      ],
+    },
+    // v10 new presets
+    electricStorm: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 6 },
+      background: { type: 'electricStorm', color1: '#000022', color2: '#001144', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#00ffff', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.6, grain: 0.04, blur: 0, brightness: 1, contrast: 1.2, saturate: 1.2 },
+      effects: { bloom: 0.5, bloomThreshold: 0.4, chromaticAberration: 4, lightLeak: 0.1, lightLeakColor: '#00ffff', filmGrain: 0, scanlines: 0.1, vignette: 0.5, sharpen: 0, glitch: 0.1, rgbShift: 3, flicker: 0.2, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 40, glowColor: '#00ffff', entrance: { enabled: true, type: 'glitch', duration: 0.6, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'electric', intensity: 0.5, speed: 5 } }),
+        createElement('brand', { name: 'نام برند', text: 'STORM', x: 960, y: 800, fontSize: 110, fontWeight: 900, color: '#00ffff', textGradient: true, textGradientColor1: '#00ffff', textGradientColor2: '#0088ff', glow: 35, glowColor: '#00ffff', entrance: { enabled: true, type: 'slideLeft', duration: 0.5, delay: 0.5, easing: 'easeOutQuart' }, hold: { enabled: true, type: 'flicker', intensity: 0.3, speed: 4 } }),
+        createElement('tagline', { name: 'شعار', text: 'Power • Electric • Storm', x: 960, y: 920, fontSize: 24, fontWeight: 600, color: '#0088ff', letterSpacing: 4, entrance: { enabled: true, type: 'typewriter', duration: 1.5, delay: 1 } }),
+      ],
+    },
+    forest: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'forestBg', color1: '#0a3d0a', color2: '#000000', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#FFD150', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.04, blur: 0, brightness: 1, contrast: 1, saturate: 1 },
+      effects: { bloom: 0.25, bloomThreshold: 0.6, chromaticAberration: 0, lightLeak: 0.15, lightLeakColor: '#90caf9', filmGrain: 0, scanlines: 0, vignette: 0.4, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0, sepia: 0.1, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 25, glowColor: '#90caf9', entrance: { enabled: true, type: 'scaleOvershoot', duration: 1.2, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'float2', intensity: 0.3, speed: 0.4 } }),
+        createElement('brand', { name: 'نام برند', text: 'FOREST', x: 960, y: 800, fontSize: 90, fontWeight: 700, color: '#ffffff', glow: 15, glowColor: '#90caf9', entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 1 } }),
+        createElement('tagline', { name: 'شعار', text: 'طبیعت • آرامش • زندگی', x: 960, y: 900, fontSize: 26, fontWeight: 300, color: '#a5d6a7', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.5 } }),
+      ],
+    },
+    desert: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'desert', color1: '#FF6F00', color2: '#FFC400', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#FFE082', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.4, grain: 0.05, blur: 0, brightness: 1, contrast: 1, saturate: 1.1 },
+      effects: { bloom: 0.2, bloomThreshold: 0.7, chromaticAberration: 0, lightLeak: 0.25, lightLeakColor: '#FF9800', filmGrain: 0.15, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0, sepia: 0.2, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 380, height: 380, glow: 15, glowColor: '#FFEB3B', entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 0, easing: 'easeOutCubic' } }),
+        createElement('brand', { name: 'نام برند', text: 'DESERT', x: 960, y: 800, fontSize: 90, fontWeight: 700, color: '#3E2723', letterSpacing: 6, entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 0.8 } }),
+        createElement('tagline', { name: 'شعار', text: 'گرم • خالص • بی‌نهایت', x: 960, y: 900, fontSize: 26, fontWeight: 400, color: '#5D4037', entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 1.3 } }),
+      ],
+    },
+    northernLights: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 8 },
+      background: { type: 'northernLights', color1: '#000511', color2: '#001133', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#22c55e', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#22c55e','#06b6d4','#a855f7'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.5, grain: 0.03, blur: 0, brightness: 1, contrast: 1, saturate: 1.1 },
+      effects: { bloom: 0.4, bloomThreshold: 0.5, chromaticAberration: 1, lightLeak: 0.15, lightLeakColor: '#22c55e', filmGrain: 0, scanlines: 0, vignette: 0.4, sharpen: 0, glitch: 0, rgbShift: 0, flicker: 0.05, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 420, height: 420, glow: 30, glowColor: '#22c55e', entrance: { enabled: true, type: 'materialize', duration: 2, delay: 0, easing: 'easeOutCubic' }, hold: { enabled: true, type: 'breathe2', intensity: 0.3, speed: 0.4 } }),
+        createElement('brand', { name: 'نام برند', text: 'AURORA', x: 960, y: 800, fontSize: 90, fontWeight: 300, color: '#ffffff', letterSpacing: 8, entrance: { enabled: true, type: 'fade', duration: 2, delay: 1 } }),
+        createElement('tagline', { name: 'شعار', text: 'شمالگان • جادویی • رویایی', x: 960, y: 900, fontSize: 26, fontWeight: 300, color: '#86efac', entrance: { enabled: true, type: 'fade', duration: 1.5, delay: 1.5 } }),
+      ],
+    },
+    plasma5: {
+      canvas: { width: 1920, height: 1080, fps: 30, duration: 7 },
+      background: { type: 'plasma5', color1: '#000011', color2: '#110022', color3: '#6366f1', angle: 135, particleCount: 80, particleColor: '#ec4899', particleSpeed: 1, particleSize: 2, gridColor: '#1a1a24', gridSize: 60, starCount: 150, bokehCount: 25, bokehColor: '#6366f1', auroraColors: ['#6366f1','#a855f7','#ec4899'], waveAmplitude: 50, waveFrequency: 1, vignette: 0.4, grain: 0.03, blur: 0, brightness: 1, contrast: 1, saturate: 1.2 },
+      effects: { bloom: 0.4, bloomThreshold: 0.5, chromaticAberration: 2, lightLeak: 0.15, lightLeakColor: '#ec4899', filmGrain: 0, scanlines: 0, vignette: 0.3, sharpen: 0, glitch: 0, rgbShift: 1, flicker: 0.1, sepia: 0, hueRotate: 0, blur: 0, invert: false },
+      audio: { enabled: false, src: null, volume: 0.5, fade: true },
+      elements: [
+        createElement('logo', { name: 'لوگو', x: 960, y: 460, width: 400, height: 400, glow: 35, glowColor: '#ec4899', entrance: { enabled: true, type: 'rotateScale', duration: 1, delay: 0, easing: 'easeOutBack' }, hold: { enabled: true, type: 'rotateSlow', intensity: 0.4, speed: 0.8 } }),
+        createElement('brand', { name: 'نام برند', text: 'PLASMA', x: 960, y: 800, fontSize: 95, fontWeight: 800, color: '#ffffff', textGradient: true, textGradientColor1: '#ec4899', textGradientColor2: '#a855f7', glow: 25, glowColor: '#ec4899', entrance: { enabled: true, type: 'fade', duration: 1, delay: 0.8 } }),
+        createElement('tagline', { name: 'شعار', text: 'Energy • Color • Flow', x: 960, y: 900, fontSize: 26, fontWeight: 500, color: '#f9a8d4', entrance: { enabled: true, type: 'fade', duration: 1, delay: 1.3 } }),
       ],
     },
   };
