@@ -1077,7 +1077,7 @@ input:focus, select:focus, textarea:focus {
       <div class="logo-mark">🎬</div>
       <div class="logo-text-wrap">
         <span>Logo Motion Studio</span>
-        <span class="sub">Pro Edition v2.0</span>
+        <span class="sub">Pro Edition v12.0</span>
       </div>
     </div>
     <div class="header-sep"></div>
@@ -1736,6 +1736,12 @@ const ExitAnims = {
   collapse: { name: 'فروریختن', icon: '◉' },
   scatter: { name: 'پراکندگی', icon: '✦' },
   vaporize: { name: 'تبخیر', icon: '◌' },
+  // v12 new exit animations
+  blurOut2: { name: 'بلر خارج نرم', icon: '◌' },
+  fadeOutFast: { name: 'فید سریع', icon: '◑' },
+  scaleOutUp: { name: 'کوچک بالا', icon: '↑' },
+  rotateOutFast: { name: 'چرخش سریع', icon: '↺' },
+  slideOutDiagonal: { name: 'قطری خارج', icon: '⤴' },
 };
 
 // ---------- Background Types ----------
@@ -3263,6 +3269,36 @@ function applyExit(state, type, p, el) {
       state.blur = p * 12;
       state.scale *= 1 + p * 0.15;
       state.offsetY -= p * 30;
+      break;
+    }
+    // v12 new exit animations
+    case 'blurOut2': {
+      state.blur = p * 18;
+      state.opacity *= (1 - p);
+      state.scale *= 1 + p * 0.1;
+      break;
+    }
+    case 'fadeOutFast': {
+      state.opacity *= Math.pow(1 - p, 2);
+      break;
+    }
+    case 'scaleOutUp': {
+      state.scale *= Math.max(0.01, 1 - p);
+      state.offsetY -= p * 200;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'rotateOutFast': {
+      state.rotation += p * 540;
+      state.scale *= 1 - p * 0.5;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'slideOutDiagonal': {
+      state.offsetX += p * 300;
+      state.offsetY -= p * 300;
+      state.rotation += p * 45;
+      state.opacity *= (1 - p * 0.7);
       break;
     }
   }
@@ -5479,15 +5515,14 @@ async function exportVideo(format) {
   exportCtx.imageSmoothingQuality = 'high';
 
   const duration = project.canvas.duration;
+  const totalFrames = Math.ceil(duration * fps);
+  const frameInterval = 1000 / fps;
 
-  // v11: Pre-render the first frame to load all images into cache
-  // This ensures all subsequent renders are synchronous
+  // v12: Pre-render first frame to load all images into cache
   title.textContent = 'آماده‌سازی تصاویر...';
   await renderToContext(exportCtx, exportW, exportH, 0);
-  // Also pre-render at mid-point to catch any delayed loads
-  await renderToContext(exportCtx, exportW, exportH, duration / 2);
 
-  // v11: Use manual capture mode - we control exactly when each frame is captured
+  // v12: Use manual capture mode - we explicitly capture each frame
   const stream = exportCanvas.captureStream(0);
   const track = stream.getVideoTracks()[0];
 
@@ -5531,55 +5566,45 @@ async function exportVideo(format) {
   recorder.start();
   if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
 
-  // v11: Real-time recording with requestAnimationFrame + requestFrame
-  // - requestAnimationFrame provides smooth real-time pacing (synced to display refresh)
-  // - track.requestFrame() explicitly captures each rendered frame
-  // - Images are pre-loaded, so rendering is effectively synchronous
-  // - The video duration will exactly match the animation duration
+  // v12: Clean async/await loop - render each frame, then capture it
+  // Key fix: AWAIT the render BEFORE calling requestFrame()
+  // This ensures the canvas is fully painted before capture
   const startTime = performance.now();
-  const frameInterval = 1000 / fps;
-  let lastCapturedFrame = -1;
 
-  return new Promise((resolve) => {
-    function recordLoop() {
-      const elapsed = (performance.now() - startTime) / 1000;
-      const t = Math.min(elapsed, duration);
+  for (let i = 0; i < totalFrames; i++) {
+    const t = i / fps;
 
-      // Calculate which frame we should be on
-      const currentFrame = Math.floor(t * fps);
+    // 1. Render the frame at time t (await ensures it's complete)
+    await renderToContext(exportCtx, exportW, exportH, t);
 
-      // Only render and capture if we've advanced to a new frame
-      // This prevents duplicate captures and ensures proper frame timing
-      if (currentFrame > lastCapturedFrame || elapsed >= duration) {
-        lastCapturedFrame = currentFrame;
+    // 2. NOW capture the frame (canvas is fully painted)
+    if (track.requestFrame) track.requestFrame();
 
-        // Render the frame at time t (synchronous since images are cached)
-        _renderFrameInternal(t, exportCtx).then(() => {
-          // Explicitly capture this frame
-          if (track.requestFrame) track.requestFrame();
+    // 3. Update progress
+    const pct = Math.round(((i + 1) / totalFrames) * 100);
+    fill.style.width = pct + '%';
+    text.textContent = `${pct}% — فریم ${i + 1}/${totalFrames} — ${t.toFixed(1)}s`;
+    title.textContent = 'در حال ضبط ویدیو...';
 
-          // Update progress
-          const pct = Math.round((t / duration) * 100);
-          fill.style.width = pct + '%';
-          text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
-          title.textContent = 'در حال ضبط ویدیو...';
-        });
-      }
-
-      if (elapsed >= duration) {
-        // Wait for the last frame to be processed, then stop
-        setTimeout(() => {
-          if (audioElement) audioElement.pause();
-          recorder.stop();
-          resolve();
-        }, 500);
-      } else {
-        // Schedule next check on next animation frame
-        requestAnimationFrame(recordLoop);
-      }
+    // 4. Real-time pacing: wait until it's time for the next frame
+    // This ensures video duration matches animation duration
+    const targetTime = startTime + (i + 1) * frameInterval;
+    const now = performance.now();
+    const wait = Math.max(0, targetTime - now);
+    if (wait > 0) {
+      await new Promise(r => setTimeout(r, wait));
     }
-    requestAnimationFrame(recordLoop);
-  });
+
+    // Yield to the event loop so the browser can process the captured frame
+    // This is critical - without this, requestFrame() calls pile up
+    await new Promise(r => setTimeout(r, 0));
+  }
+
+  // Wait for the encoder to process the last frame
+  await new Promise(r => setTimeout(r, 500));
+
+  if (audioElement) audioElement.pause();
+  recorder.stop();
 }
 
 async function exportPNGSequence() {
