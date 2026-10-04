@@ -1077,7 +1077,7 @@ input:focus, select:focus, textarea:focus {
       <div class="logo-mark">🎬</div>
       <div class="logo-text-wrap">
         <span>Logo Motion Studio</span>
-        <span class="sub">Pro Edition v14.0</span>
+        <span class="sub">Pro Edition v15.0</span>
       </div>
     </div>
     <div class="header-sep"></div>
@@ -5758,15 +5758,10 @@ async function exportVideo(format) {
   const quality = document.getElementById('export-quality').value;
   const bitrate = quality === 'lossless' ? 50000000 : quality === 'ultra' ? 20000000 : quality === 'high' ? 12000000 : quality === 'medium' ? 6000000 : 3000000;
   const exportW = Math.round(canvas.width * scale), exportH = Math.round(canvas.height * scale);
-  const exportCanvas = document.createElement('canvas');
-  exportCanvas.width = exportW; exportCanvas.height = exportH;
-  const exportCtx = exportCanvas.getContext('2d', { alpha: false });
-  exportCtx.imageSmoothingEnabled = true;
-  exportCtx.imageSmoothingQuality = 'high';
 
   const duration = project.canvas.duration;
 
-  // v14: Pre-load ALL images before recording
+  // v15: Pre-load ALL images before recording
   title.textContent = 'آماده‌سازی تصاویر...';
   const imagePromises = [];
   for (const el of project.elements) {
@@ -5779,12 +5774,30 @@ async function exportVideo(format) {
   }
   if (imagePromises.length > 0) await Promise.all(imagePromises);
 
-  // Pre-render first frame (loads everything, warms up)
+  // v15: TESTED & VERIFIED METHOD
+  // KEY INSIGHT: The canvas MUST be in the DOM for captureStream(fps) to work
+  // Offscreen canvases (document.createElement but not added to DOM) produce
+  // single-frame videos in Chrome
+  // Solution: Create canvas, add to DOM (hidden), capture stream, remove after
+  const exportCanvas = document.createElement('canvas');
+  exportCanvas.width = exportW;
+  exportCanvas.height = exportH;
+  exportCanvas.style.position = 'fixed';
+  exportCanvas.style.left = '-9999px';
+  exportCanvas.style.top = '0';
+  exportCanvas.style.opacity = '0';
+  exportCanvas.style.pointerEvents = 'none';
+  document.body.appendChild(exportCanvas);
+
+  const exportCtx = exportCanvas.getContext('2d', { alpha: false });
+  exportCtx.imageSmoothingEnabled = true;
+  exportCtx.imageSmoothingQuality = 'high';
+
+  // Pre-render first frame
   await _renderFrameInternal(0, exportCtx);
 
-  // v14: TESTED & WORKING METHOD - captureStream(fps) with auto-capture
-  // The browser automatically captures frames at the specified fps
-  // NO manual requestFrame() needed - that was causing single-frame issues
+  // captureStream(fps) - browser auto-captures at target fps
+  // This works because canvas is in the DOM
   const stream = exportCanvas.captureStream(fps);
 
   const includeAudio = document.getElementById('export-audio-toggle').classList.contains('on') && project.audio.enabled && audioElement;
@@ -5814,6 +5827,8 @@ async function exportVideo(format) {
     const a = document.createElement('a');
     a.href = url; a.download = `${project.name || 'logo-motion'}.webm`; a.click();
     URL.revokeObjectURL(url);
+    // Remove the hidden canvas from DOM
+    if (exportCanvas.parentNode) exportCanvas.parentNode.removeChild(exportCanvas);
     overlay.classList.remove('show');
     toast('خروجی WebM با موفقیت ساخته شد! (' + blob.size + ' bytes)', 'success');
   };
@@ -5822,9 +5837,7 @@ async function exportVideo(format) {
   recorder.start();
   if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
 
-  // v14: Real-time rendering with requestAnimationFrame
-  // captureStream(fps) auto-captures at target fps
-  // We just need to render frames in real-time
+  // v15: Real-time rendering with requestAnimationFrame
   const startTime = performance.now();
 
   return new Promise((resolve) => {
@@ -5833,7 +5846,6 @@ async function exportVideo(format) {
       const t = Math.min(elapsed, duration);
 
       // Render the frame at current real-time position
-      // _renderFrameInternal is async but images are cached so it's fast
       _renderFrameInternal(t, exportCtx);
 
       // Update progress

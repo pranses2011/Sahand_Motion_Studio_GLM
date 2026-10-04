@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Video Export Test Suite</title>
+<style>
+body { background:#111; color:#fff; font-family:sans-serif; padding:20px; }
+canvas, video { border:1px solid #444; display:block; margin:10px 0; }
+button { background:#6366f1; color:#fff; border:none; padding:10px 20px; margin:5px; cursor:pointer; border-radius:4px; }
+.log { background:#000; padding:10px; font-family:monospace; font-size:12px; white-space:pre-wrap; max-height:200px; overflow:auto; }
+</style></head>
+<body>
+<h2>Video Export Test Suite</h2>
+<p>Testing different methods to find one that works</p>
+
+<h3>Preview Canvas (visible, in DOM)</h3>
+<canvas id="preview" width="640" height="360"></canvas>
+
+<h3>Method Results</h3>
+<button onclick="testMethod1()">Method 1: captureStream(fps) + visible canvas</button>
+<button onclick="testMethod2()">Method 2: captureStream(0) + requestFrame</button>
+<button onclick="testMethod3()">Method 3: captureStream(fps) + offscreen</button>
+<button onclick="testMethod4()">Method 4: captureStream(0) + requestFrame + rAF</button>
+
+<h3>Output Video</h3>
+<video id="output" controls width="640"></video>
+<div id="info">No output yet</div>
+
+<h3>Log</h3>
+<div class="log" id="log"></div>
+
+<script>
+const preview = document.getElementById('preview');
+const pctx = preview.getContext('2d');
+const logEl = document.getElementById('log');
+const output = document.getElementById('output');
+const info = document.getElementById('info');
+
+function log(msg) {
+  logEl.textContent += new Date().toLocaleTimeString() + ': ' + msg + '\n';
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// Simple animation: circle moving + counter + time
+function renderFrame(ctx, t) {
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, 640, 360);
+  // Moving circle
+  const x = 50 + (t / 3) * 540;
+  // Color changes over time
+  const hue = (t * 120) % 360;
+  ctx.fillStyle = `hsl(${hue}, 70%, 50%)`;
+  ctx.beginPath();
+  ctx.arc(x, 180, 40, 0, Math.PI * 2);
+  ctx.fill();
+  // Time text (big)
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 48px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(t.toFixed(2) + 's', 320, 60);
+  // Frame number
+  ctx.font = '24px Arial';
+  ctx.fillText('Frame ' + Math.floor(t * 30), 320, 320);
+  // Moving rectangle
+  ctx.fillStyle = `hsl(${(hue+180)%360}, 70%, 50%)`;
+  ctx.fillRect(x - 80, 280, 30, 30);
+}
+
+// Live preview animation
+let previewT = 0;
+function previewLoop() {
+  previewT = (previewT + 0.016) % 3;
+  renderFrame(pctx, previewT);
+  requestAnimationFrame(previewLoop);
+}
+previewLoop();
+
+// Download blob
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // Also set as video source
+  output.src = url;
+  output.play();
+}
+
+// Check video has different frames
+async function checkVideo(url) {
+  return new Promise(resolve => {
+    const v = document.createElement('video');
+    v.src = url;
+    v.muted = true;
+    v.addEventListener('loadeddata', () => {
+      const c = document.createElement('canvas');
+      c.width = 640; c.height = 360;
+      const cx = c.getContext('2d');
+      const results = [];
+
+      const checkTime = (time, cb) => {
+        v.currentTime = time;
+        v.addEventListener('seeked', function handler() {
+          v.removeEventListener('seeked', handler);
+          cx.drawImage(v, 0, 0);
+          const data = cx.getImageData(320, 60, 1, 1).data;
+          cb(data);
+        });
+      };
+
+      checkTime(0.5, (d1) => {
+        checkTime(1.5, (d2) => {
+          checkTime(2.5, (d3) => {
+            const same12 = d1[0] === d2[0] && d1[1] === d2[1];
+            const same23 = d2[0] === d3[0] && d2[1] === d3[1];
+            resolve({
+              t05: [d1[0], d1[1], d1[2]],
+              t15: [d2[0], d2[1], d2[2]],
+              t25: [d3[0], d3[1], d3[2]],
+              framesDifferent: !same12 && !same23,
+              duration: v.duration
+            });
+          });
+        });
+      });
+    });
+  });
+}
+
+// METHOD 1: captureStream(fps) with visible in-DOM canvas
+async function testMethod1() {
+  log('=== METHOD 1: captureStream(30) + visible canvas ===');
+  const fps = 30, duration = 3;
+  // Use the visible preview canvas
+  const stream = preview.captureStream(fps);
+  let mimeType = 'video/webm;codecs=vp9';
+  if (!MediaRecorder.isTypeSupported(mimeType)) {
+    mimeType = 'video/webm;codecs=vp8';
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+  }
+  log('MIME: ' + mimeType);
+
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8000000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = async () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    log('Method 1 DONE - size: ' + blob.size + ' bytes, chunks: ' + chunks.length);
+    downloadBlob(blob, 'test-method1.webm');
+    const url = URL.createObjectURL(blob);
+    const check = await checkVideo(url);
+    log('Method 1 check: ' + JSON.stringify(check));
+    info.textContent = 'Method 1: size=' + blob.size + ', duration=' + check.duration + ', framesDifferent=' + check.framesDifferent;
+  };
+
+  recorder.start();
+  log('Recording started...');
+
+  // Animate the preview canvas in real time
+  const startTime = performance.now();
+  function loop() {
+    const elapsed = (performance.now() - startTime) / 1000;
+    const t = Math.min(elapsed, duration);
+    renderFrame(pctx, t);
+    if (elapsed >= duration) {
+      setTimeout(() => { recorder.stop(); }, 500);
+    } else {
+      requestAnimationFrame(loop);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+
+// METHOD 2: captureStream(0) + requestFrame (offscreen)
+async function testMethod2() {
+  log('=== METHOD 2: captureStream(0) + requestFrame ===');
+  const fps = 30, duration = 3;
+  const oc = document.createElement('canvas');
+  oc.width = 640; oc.height = 360;
+  const octx = oc.getContext('2d');
+  renderFrame(octx, 0);
+
+  const stream = oc.captureStream(0);
+  const track = stream.getVideoTracks()[0];
+  let mimeType = 'video/webm;codecs=vp9';
+  if (!MediaRecorder.isTypeSupported(mimeType)) {
+    mimeType = 'video/webm;codecs=vp8';
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+  }
+  log('MIME: ' + mimeType);
+
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8000000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = async () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    log('Method 2 DONE - size: ' + blob.size + ' bytes, chunks: ' + chunks.length);
+    downloadBlob(blob, 'test-method2.webm');
+    const url = URL.createObjectURL(blob);
+    const check = await checkVideo(url);
+    log('Method 2 check: ' + JSON.stringify(check));
+    info.textContent = 'Method 2: size=' + blob.size + ', duration=' + check.duration + ', framesDifferent=' + check.framesDifferent;
+  };
+
+  recorder.start();
+  log('Recording with requestFrame...');
+
+  const totalFrames = duration * fps;
+  const frameInterval = 1000 / fps;
+  const startTime = performance.now();
+
+  for (let i = 0; i < totalFrames; i++) {
+    const t = i / fps;
+    renderFrame(octx, t);
+    if (track.requestFrame) track.requestFrame();
+    const target = startTime + (i + 1) * frameInterval;
+    const wait = Math.max(0, target - performance.now());
+    if (wait > 0) await new Promise(r => setTimeout(r, wait));
+  }
+
+  await new Promise(r => setTimeout(r, 300));
+  recorder.stop();
+}
+
+// METHOD 3: captureStream(fps) + offscreen canvas
+async function testMethod3() {
+  log('=== METHOD 3: captureStream(30) + offscreen ===');
+  const fps = 30, duration = 3;
+  const oc = document.createElement('canvas');
+  oc.width = 640; oc.height = 360;
+  const octx = oc.getContext('2d');
+  renderFrame(octx, 0);
+
+  const stream = oc.captureStream(fps);
+  let mimeType = 'video/webm;codecs=vp9';
+  if (!MediaRecorder.isTypeSupported(mimeType)) {
+    mimeType = 'video/webm;codecs=vp8';
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+  }
+  log('MIME: ' + mimeType);
+
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8000000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = async () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    log('Method 3 DONE - size: ' + blob.size + ' bytes, chunks: ' + chunks.length);
+    downloadBlob(blob, 'test-method3.webm');
+    const url = URL.createObjectURL(blob);
+    const check = await checkVideo(url);
+    log('Method 3 check: ' + JSON.stringify(check));
+    info.textContent = 'Method 3: size=' + blob.size + ', duration=' + check.duration + ', framesDifferent=' + check.framesDifferent;
+  };
+
+  recorder.start();
+  log('Recording offscreen with auto-capture...');
+
+  const startTime = performance.now();
+  function loop() {
+    const elapsed = (performance.now() - startTime) / 1000;
+    const t = Math.min(elapsed, duration);
+    renderFrame(octx, t);
+    if (elapsed >= duration) {
+      setTimeout(() => { recorder.stop(); }, 500);
+    } else {
+      requestAnimationFrame(loop);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+
+// METHOD 4: captureStream(0) + requestFrame + rAF (real-time)
+async function testMethod4() {
+  log('=== METHOD 4: captureStream(0) + requestFrame + rAF ===');
+  const fps = 30, duration = 3;
+  const oc = document.createElement('canvas');
+  oc.width = 640; oc.height = 360;
+  const octx = oc.getContext('2d');
+  renderFrame(octx, 0);
+
+  const stream = oc.captureStream(0);
+  const track = stream.getVideoTracks()[0];
+  let mimeType = 'video/webm;codecs=vp9';
+  if (!MediaRecorder.isTypeSupported(mimeType)) {
+    mimeType = 'video/webm;codecs=vp8';
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+  }
+  log('MIME: ' + mimeType);
+
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 8000000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = async () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    log('Method 4 DONE - size: ' + blob.size + ' bytes, chunks: ' + chunks.length);
+    downloadBlob(blob, 'test-method4.webm');
+    const url = URL.createObjectURL(blob);
+    const check = await checkVideo(url);
+    log('Method 4 check: ' + JSON.stringify(check));
+    info.textContent = 'Method 4: size=' + blob.size + ', duration=' + check.duration + ', framesDifferent=' + check.framesDifferent;
+  };
+
+  recorder.start();
+  log('Recording with rAF + requestFrame...');
+
+  const startTime = performance.now();
+  let lastFrame = -1;
+
+  function loop() {
+    const elapsed = (performance.now() - startTime) / 1000;
+    const t = Math.min(elapsed, duration);
+    const currentFrame = Math.floor(t * fps);
+
+    if (currentFrame > lastFrame) {
+      lastFrame = currentFrame;
+      renderFrame(octx, t);
+      if (track.requestFrame) track.requestFrame();
+    }
+
+    if (elapsed >= duration) {
+      renderFrame(octx, duration);
+      if (track.requestFrame) track.requestFrame();
+      setTimeout(() => { recorder.stop(); }, 500);
+    } else {
+      requestAnimationFrame(loop);
+    }
+  }
+  requestAnimationFrame(loop);
+}
+
+log('Test page loaded. Click a method button to test.');
+</script>
+</body>
+</html>
