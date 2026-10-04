@@ -1603,6 +1603,17 @@ const EntranceAnims = {
   orbit: { name: 'مداری', icon: '◌' },
   typewriter2: { name: 'تایپ سریع', icon: '⌨' },
   reveal: { name: 'آشکار شدن', icon: '◉' },
+  // v6 new entrance animations
+  magnetic: { name: 'مغناطیسی', icon: '◉' },
+  flip3dX: { name: 'فلیپ 3D X', icon: '⇅' },
+  flip3dY: { name: 'فلیپ 3D Y', icon: '⇄' },
+  morphIn: { name: 'تغییر شکل', icon: '◯' },
+  blurFocus: { name: 'فوکوس بلر', icon: '◌' },
+  slideZoom: { name: 'اسلاید زوم', icon: '⊕' },
+  rollIn: { name: 'غلتیدن', icon: '⊘' },
+  typewriter3: { name: 'تایپ کلمه‌ای', icon: '⌨' },
+  dropBounce: { name: 'ریختن پرشی', icon: '⤓' },
+  expandFade: { name: 'گسترش فید', icon: '◉' },
 };
 
 // ---------- Hold Animations ----------
@@ -1699,6 +1710,22 @@ const BgTypes = {
   lightBeam: { name: 'پرتو نور', icon: '※' },
   energyField: { name: 'میدان انرژی', icon: '◉' },
   starfield: { name: 'میدان ستاره', icon: '✦' },
+  // v6 new backgrounds
+  galaxy: { name: 'کهکشان', icon: '◉' },
+  dna: { name: 'DNA', icon: '◉' },
+  auroraBorealis: { name: 'شفق شمالی', icon: '🌠' },
+  lava: { name: 'گدازه', icon: '🔥' },
+  crystal: { name: 'کریستال', icon: '◆' },
+  electricStorm: { name: 'طوفان الکتریکی', icon: '⚡' },
+  nebula: { name: 'سحابی', icon: '◉' },
+  vortex: { name: 'گرداب', icon: '◉' },
+  oceanWaves: { name: 'امواج اقیانوس', icon: '〜' },
+  forestBg: { name: 'جنگل', icon: '🌲' },
+  desert: { name: 'بیابان', icon: '▲' },
+  northernLights: { name: 'شمالگان', icon: '🌠' },
+  plasma5: { name: 'پلاسما پلاس', icon: '◉' },
+  geoPattern: { name: 'الگوی هندسی', icon: '◆' },
+  vapor: { name: 'بخار', icon: '☁' },
 };
 
 // ---------- Project State ----------
@@ -1840,6 +1867,22 @@ const NewBgTypes = {
   lightBeam: { name: 'پرتو نور', icon: '※' },
   energyField: { name: 'میدان انرژی', icon: '◉' },
   starfield: { name: 'میدان ستاره', icon: '✦' },
+  // v6 new backgrounds
+  galaxy: { name: 'کهکشان', icon: '◉' },
+  dna: { name: 'DNA', icon: '◉' },
+  auroraBorealis: { name: 'شفق شمالی', icon: '🌠' },
+  lava: { name: 'گدازه', icon: '🔥' },
+  crystal: { name: 'کریستال', icon: '◆' },
+  electricStorm: { name: 'طوفان الکتریکی', icon: '⚡' },
+  nebula: { name: 'سحابی', icon: '◉' },
+  vortex: { name: 'گرداب', icon: '◉' },
+  oceanWaves: { name: 'امواج اقیانوس', icon: '〜' },
+  forestBg: { name: 'جنگل', icon: '🌲' },
+  desert: { name: 'بیابان', icon: '▲' },
+  northernLights: { name: 'شمالگان', icon: '🌠' },
+  plasma5: { name: 'پلاسما پلاس', icon: '◉' },
+  geoPattern: { name: 'الگوی هندسی', icon: '◆' },
+  vapor: { name: 'بخار', icon: '☁' },
 };
 
 // v4: New Post-FX
@@ -2922,6 +2965,70 @@ function applyEntrance(state, type, p, el) {
       state.glowMult *= 2 - p;
       break;
     }
+    // v6 new entrance animations
+    case 'magnetic': {
+      state.scale *= 0.5 + 0.5 * p;
+      state.offsetX += Math.sin(p * Math.PI * 3) * (1 - p) * 50;
+      state.glowMult *= 1 + (1 - p) * 2;
+      state.opacity *= p;
+      break;
+    }
+    case 'flip3dX': {
+      state.scaleY *= Math.abs(Math.cos(p * Math.PI));
+      state.scaleY = Math.max(0.01, p);
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'flip3dY': {
+      state.scaleX *= Math.abs(Math.cos(p * Math.PI));
+      state.scaleX = Math.max(0.01, p);
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'morphIn': {
+      state.scale *= 0.3 + 0.7 * Easings.easeOutElastic(p);
+      state.rotation += (1 - p) * 45;
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'blurFocus': {
+      state.blur = (1 - p) * 20;
+      state.scale *= 1.1 - 0.1 * p;
+      state.opacity *= p;
+      break;
+    }
+    case 'slideZoom': {
+      state.scale *= 0.5 + 0.5 * p;
+      state.offsetX += (1 - p) * 200;
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'rollIn': {
+      state.rotation += (1 - p) * 720;
+      state.offsetX -= (1 - p) * 300;
+      state.scale *= 0.7 + 0.3 * p;
+      state.opacity *= p;
+      break;
+    }
+    case 'typewriter3': {
+      state.textProgress = Math.min(1, p * 1.2);
+      state.opacity = 1;
+      state.glowMult *= 1 + (1 - p) * 0.5;
+      break;
+    }
+    case 'dropBounce': {
+      const b = Easings.easeOutBounce(p);
+      state.offsetY -= (1 - b) * 300;
+      state.scale *= 0.8 + 0.2 * b;
+      state.opacity *= Math.min(1, p * 2);
+      break;
+    }
+    case 'expandFade': {
+      state.scale *= 0.1 + 0.9 * Easings.easeOutQuint(p);
+      state.opacity *= p;
+      state.glowMult *= 2 - p;
+      break;
+    }
   }
 }
 
@@ -3182,6 +3289,22 @@ function renderBackground(t, c = ctx) {
   if (bg.type === 'lightBeam') drawLightBeam(c, t, bg);
   if (bg.type === 'energyField') drawEnergyField(c, t, bg);
   if (bg.type === 'starfield') drawStarfield(c, t, bg);
+  // v6 new backgrounds
+  if (bg.type === 'galaxy') drawGalaxy(c, t, bg);
+  if (bg.type === 'dna') drawDNA(c, t, bg);
+  if (bg.type === 'auroraBorealis') drawAuroraBorealis(c, t, bg);
+  if (bg.type === 'lava') drawLava(c, t, bg);
+  if (bg.type === 'crystal') drawCrystal(c, t, bg);
+  if (bg.type === 'electricStorm') drawElectricStorm(c, t, bg);
+  if (bg.type === 'nebula') drawNebula(c, t, bg);
+  if (bg.type === 'vortex') drawVortex(c, t, bg);
+  if (bg.type === 'oceanWaves') drawOceanWaves(c, t, bg);
+  if (bg.type === 'forestBg') drawForestBg(c, t, bg);
+  if (bg.type === 'desert') drawDesert(c, t, bg);
+  if (bg.type === 'northernLights') drawNorthernLights(c, t, bg);
+  if (bg.type === 'plasma5') drawPlasma5(c, t, bg);
+  if (bg.type === 'geoPattern') drawGeoPattern(c, t, bg);
+  if (bg.type === 'vapor') drawVapor(c, t, bg);
 
   // Vignette
   if (bg.vignette > 0) {
@@ -3688,6 +3811,403 @@ function drawStarfield(c, t, bg) {
       c.moveTo(cx + Math.cos(baseAngle) * dist * 0.8, cy + Math.sin(baseAngle) * dist * 0.8);
       c.lineTo(x, y); c.stroke();
     }
+  }
+}
+
+// ===== v6 NEW BACKGROUND FUNCTIONS =====
+function drawGalaxy(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  // Spiral arms
+  c.save();
+  c.translate(cx, cy);
+  c.rotate(t * 0.1);
+  for (let arm = 0; arm < 4; arm++) {
+    c.save();
+    c.rotate((arm / 4) * Math.PI * 2);
+    for (let i = 0; i < 150; i++) {
+      const angle = i * 0.15;
+      const r = i * 5;
+      const x = Math.cos(angle) * r;
+      const y = Math.sin(angle) * r * 0.4;
+      const size = 1 + Math.random() * 2;
+      const hue = (i * 2 + arm * 90) % 360;
+      c.fillStyle = `hsla(${hue}, 70%, 60%, ${0.6 - i / 300})`;
+      c.beginPath(); c.arc(x, y, size, 0, Math.PI * 2); c.fill();
+    }
+    c.restore();
+  }
+  c.restore();
+  // Central glow
+  const grad = c.createRadialGradient(cx, cy, 0, cx, cy, 200);
+  grad.addColorStop(0, 'rgba(255,220,150,0.8)');
+  grad.addColorStop(0.5, 'rgba(255,150,100,0.3)');
+  grad.addColorStop(1, 'rgba(255,100,50,0)');
+  c.fillStyle = grad;
+  c.beginPath(); c.arc(cx, cy, 200, 0, Math.PI * 2); c.fill();
+}
+
+function drawDNA(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color1 = bg.particleColor || '#22c55e';
+  const color2 = bg.color2 || '#06b6d4';
+  const cx = W / 2;
+  for (let i = 0; i < 40; i++) {
+    const y = (i / 40) * H + (t * 50) % (H / 40);
+    const phase = i * 0.4 + t * 2;
+    const x1 = cx + Math.sin(phase) * 150;
+    const x2 = cx - Math.sin(phase) * 150;
+    c.fillStyle = color1;
+    c.beginPath(); c.arc(x1, y, 5, 0, Math.PI * 2); c.fill();
+    c.fillStyle = color2;
+    c.beginPath(); c.arc(x2, y, 5, 0, Math.PI * 2); c.fill();
+    if (i % 3 === 0) {
+      c.strokeStyle = color1 + '40';
+      c.lineWidth = 2;
+      c.beginPath(); c.moveTo(x1, y); c.lineTo(x2, y); c.stroke();
+    }
+  }
+}
+
+function drawAuroraBorealis(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = ['#22c55e', '#06b6d4', '#a855f7', '#ec4899'];
+  for (let layer = 0; layer < 4; layer++) {
+    const color = colors[layer];
+    c.save();
+    c.globalAlpha = 0.3;
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 5) {
+      const y = H * 0.3 + Math.sin(x * 0.005 + t * 0.5 + layer * 1.5) * 80 +
+                Math.sin(x * 0.015 + t + layer) * 40 + layer * 60;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H); c.closePath();
+    const grad = c.createLinearGradient(0, H * 0.3, 0, H);
+    grad.addColorStop(0, color + 'CC');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad; c.fill();
+    c.restore();
+  }
+}
+
+function drawLava(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  // Base
+  c.fillStyle = '#1a0000';
+  c.fillRect(0, 0, W, H);
+  // Lava blobs
+  for (let i = 0; i < 8; i++) {
+    const seed = i * 23.7;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.3 + i) * 60;
+    const y = (Math.cos(seed * 1.3) * 0.5 + 0.5) * H + Math.cos(t * 0.2 + i) * 60;
+    const r = 80 + Math.sin(t + i) * 30;
+    const grad = c.createRadialGradient(x, y, 0, x, y, r);
+    const hue = 10 + Math.sin(t + i) * 20;
+    grad.addColorStop(0, `hsla(${hue}, 100%, 60%, 0.9)`);
+    grad.addColorStop(0.5, `hsla(${hue - 10}, 100%, 40%, 0.5)`);
+    grad.addColorStop(1, `hsla(${hue - 20}, 100%, 20%, 0)`);
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawCrystal(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || bg.color2 || '#a855f7';
+  c.save();
+  c.translate(W / 2, H / 2);
+  c.rotate(t * 0.2);
+  for (let i = 0; i < 12; i++) {
+    c.save();
+    c.rotate((i / 12) * Math.PI * 2);
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(200, -50);
+    c.lineTo(300, 0);
+    c.lineTo(200, 50);
+    c.closePath();
+    const grad = c.createLinearGradient(0, 0, 300, 0);
+    grad.addColorStop(0, color + 'CC');
+    grad.addColorStop(1, color + '10');
+    c.fillStyle = grad; c.fill();
+    c.strokeStyle = color + '80';
+    c.lineWidth = 1; c.stroke();
+    c.restore();
+  }
+  c.restore();
+}
+
+function drawElectricStorm(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || '#00ffff';
+  // Lightning bolts
+  for (let i = 0; i < 5; i++) {
+    if (Math.random() > 0.7) {
+      const startX = Math.random() * W;
+      c.strokeStyle = color + 'CC';
+      c.lineWidth = 2 + Math.random() * 3;
+      c.beginPath();
+      c.moveTo(startX, 0);
+      let x = startX, y = 0;
+      while (y < H) {
+        x += (Math.random() - 0.5) * 80;
+        y += 20 + Math.random() * 40;
+        c.lineTo(x, y);
+      }
+      c.stroke();
+      // Glow
+      c.strokeStyle = color + '40';
+      c.lineWidth = 8;
+      c.stroke();
+    }
+  }
+  // Flash
+  if (Math.random() > 0.9) {
+    c.fillStyle = color + '20';
+    c.fillRect(0, 0, W, H);
+  }
+}
+
+function drawNebula(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = ['#6366f1', '#a855f7', '#ec4899', '#06b6d4'];
+  for (let i = 0; i < 6; i++) {
+    const seed = i * 31.3;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.2 + i) * 50;
+    const y = (Math.cos(seed * 1.7) * 0.5 + 0.5) * H + Math.cos(t * 0.15 + i) * 50;
+    const r = 200 + Math.sin(t + i) * 80;
+    const color = colors[i % colors.length];
+    const grad = c.createRadialGradient(x, y, 0, x, y, r);
+    grad.addColorStop(0, color + '60');
+    grad.addColorStop(0.5, color + '20');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+  }
+  // Stars
+  for (let i = 0; i < 100; i++) {
+    const x = (Math.sin(i * 13.7) * 0.5 + 0.5) * W;
+    const y = (Math.cos(i * 17.3) * 0.5 + 0.5) * H;
+    const tw = 0.5 + 0.5 * Math.sin(t * 3 + i);
+    c.fillStyle = `rgba(255,255,255,${tw * 0.8})`;
+    c.beginPath(); c.arc(x, y, 1, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawVortex(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const color = bg.particleColor || bg.color2 || '#6366f1';
+  c.save();
+  c.translate(cx, cy);
+  for (let i = 0; i < 300; i++) {
+    const angle = i * 0.1 + t * 2;
+    const r = i * 3;
+    const x = Math.cos(angle) * r;
+    const y = Math.sin(angle) * r;
+    const alpha = Math.max(0, 1 - i / 300);
+    c.fillStyle = color + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+    c.beginPath(); c.arc(x, y, 2, 0, Math.PI * 2); c.fill();
+  }
+  c.restore();
+  // Center
+  const grad = c.createRadialGradient(cx, cy, 0, cx, cy, 100);
+  grad.addColorStop(0, '#000000');
+  grad.addColorStop(1, '#00000000');
+  c.fillStyle = grad;
+  c.beginPath(); c.arc(cx, cy, 100, 0, Math.PI * 2); c.fill();
+}
+
+function drawOceanWaves(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const colors = [bg.color2 + '40', bg.color2 + '80', bg.color2 + 'C0'];
+  for (let layer = 0; layer < 3; layer++) {
+    c.fillStyle = colors[layer];
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 5) {
+      const y = H * 0.5 + Math.sin(x * 0.008 + t * 1.5 + layer * 1.5) * 60 +
+                Math.sin(x * 0.02 + t * 2 + layer) * 20 + layer * 80;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H); c.closePath(); c.fill();
+  }
+  // Sun reflection
+  const grad = c.createRadialGradient(W * 0.5, H * 0.4, 0, W * 0.5, H * 0.4, 150);
+  grad.addColorStop(0, 'rgba(255,220,100,0.4)');
+  grad.addColorStop(1, 'rgba(255,220,100,0)');
+  c.fillStyle = grad;
+  c.fillRect(0, 0, W, H);
+}
+
+function drawForestBg(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  // Sky
+  const grad = c.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#0a3d0a');
+  grad.addColorStop(1, '#000000');
+  c.fillStyle = grad;
+  c.fillRect(0, 0, W, H);
+  // Trees
+  for (let layer = 0; layer < 3; layer++) {
+    const alpha = 0.3 + layer * 0.3;
+    c.fillStyle = `rgba(0,${30 + layer * 30},0,${alpha})`;
+    for (let i = 0; i < 15; i++) {
+      const x = i * (W / 15) + layer * 30;
+      const treeH = 200 + Math.sin(i * 2.3) * 100 + layer * 50;
+      c.beginPath();
+      c.moveTo(x, H - treeH);
+      c.lineTo(x - 40, H);
+      c.lineTo(x + 40, H);
+      c.closePath(); c.fill();
+      // Layers of the tree
+      for (let j = 0; j < 3; j++) {
+        c.beginPath();
+        c.moveTo(x, H - treeH + j * 50);
+        c.lineTo(x - 35 + j * 5, H - treeH + 80 + j * 50);
+        c.lineTo(x + 35 - j * 5, H - treeH + 80 + j * 50);
+        c.closePath(); c.fill();
+      }
+    }
+  }
+  // Fireflies
+  for (let i = 0; i < 30; i++) {
+    const x = (Math.sin(i * 13.7) * 0.5 + 0.5) * W + Math.sin(t + i) * 30;
+    const y = (Math.cos(i * 17.3) * 0.5 + 0.5) * H * 0.7 + Math.cos(t * 0.5 + i) * 20;
+    const tw = 0.3 + 0.7 * Math.sin(t * 3 + i * 2);
+    c.fillStyle = `rgba(255,255,150,${tw})`;
+    c.beginPath(); c.arc(x, y, 2, 0, Math.PI * 2); c.fill();
+  }
+}
+
+function drawDesert(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  // Sky gradient
+  const grad = c.createLinearGradient(0, 0, 0, H * 0.7);
+  grad.addColorStop(0, '#FF6F00');
+  grad.addColorStop(0.5, '#FF9100');
+  grad.addColorStop(1, '#FFC400');
+  c.fillStyle = grad;
+  c.fillRect(0, 0, W, H * 0.7);
+  // Sun
+  c.fillStyle = '#FFEB3B';
+  c.beginPath(); c.arc(W * 0.7, H * 0.3, 80, 0, Math.PI * 2); c.fill();
+  // Sand dunes
+  const layers = [
+    { color: '#BF360C', y: 0.6 },
+    { color: '#D84315', y: 0.7 },
+    { color: '#E64A19', y: 0.8 },
+    { color: '#F4511E', y: 0.9 },
+  ];
+  layers.forEach((layer, i) => {
+    c.fillStyle = layer.color;
+    c.beginPath();
+    c.moveTo(0, H);
+    for (let x = 0; x <= W; x += 10) {
+      const y = H * layer.y + Math.sin(x * 0.005 + i * 2) * 40;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H); c.closePath(); c.fill();
+  });
+}
+
+function drawNorthernLights(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  // Dark sky
+  c.fillStyle = '#000511';
+  c.fillRect(0, 0, W, H);
+  // Stars
+  for (let i = 0; i < 80; i++) {
+    const x = (Math.sin(i * 13.7) * 0.5 + 0.5) * W;
+    const y = (Math.cos(i * 17.3) * 0.5 + 0.5) * H * 0.5;
+    c.fillStyle = `rgba(255,255,255,${0.5 + Math.random() * 0.5})`;
+    c.beginPath(); c.arc(x, y, 1, 0, Math.PI * 2); c.fill();
+  }
+  // Aurora curtains
+  const colors = ['#22c55e', '#06b6d4', '#a855f7'];
+  colors.forEach((color, ci) => {
+    c.save();
+    c.globalAlpha = 0.4;
+    c.beginPath();
+    c.moveTo(0, H * 0.3);
+    for (let x = 0; x <= W; x += 5) {
+      const y = H * 0.3 + Math.sin(x * 0.003 + t * 0.3 + ci * 2) * 100 +
+                Math.sin(x * 0.01 + t + ci) * 50;
+      c.lineTo(x, y);
+    }
+    c.lineTo(W, H * 0.8); c.lineTo(0, H * 0.8); c.closePath();
+    const grad = c.createLinearGradient(0, H * 0.3, 0, H * 0.8);
+    grad.addColorStop(0, color + '00');
+    grad.addColorStop(0.3, color + 'AA');
+    grad.addColorStop(0.7, color + '60');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad; c.fill();
+    c.restore();
+  });
+}
+
+function drawPlasma5(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  c.save();
+  c.translate(cx, cy);
+  for (let i = 0; i < 5; i++) {
+    c.save();
+    c.rotate(t * 0.3 + i * (Math.PI * 2 / 5));
+    const hue = (i * 72 + t * 30) % 360;
+    const grad = c.createRadialGradient(150, 0, 0, 150, 0, 250);
+    grad.addColorStop(0, `hsla(${hue}, 80%, 60%, 0.8)`);
+    grad.addColorStop(1, `hsla(${hue}, 80%, 40%, 0)`);
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(150, 0, 250, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+  c.restore();
+}
+
+function drawGeoPattern(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || bg.color2 || '#6366f1';
+  const size = 60;
+  c.strokeStyle = color + '60';
+  c.lineWidth = 1.5;
+  for (let row = 0; row < H / size + 1; row++) {
+    for (let col = 0; col < W / size + 1; col++) {
+      const x = col * size + (row % 2 ? size / 2 : 0);
+      const y = row * size * 0.866;
+      const phase = Math.sin(t + col * 0.3 + row * 0.4);
+      const r = size / 2 * (0.7 + phase * 0.3);
+      c.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2;
+        const px = x + Math.cos(a) * r;
+        const py = y + Math.sin(a) * r;
+        if (i === 0) c.moveTo(px, py); else c.lineTo(px, py);
+      }
+      c.closePath(); c.stroke();
+      if (phase > 0.5) {
+        c.fillStyle = color + Math.floor(phase * 60).toString(16).padStart(2, '0');
+        c.fill();
+      }
+    }
+  }
+}
+
+function drawVapor(c, t, bg) {
+  const W = canvas.width, H = canvas.height;
+  const color = bg.particleColor || bg.color2 || '#80deea';
+  for (let i = 0; i < 20; i++) {
+    const seed = i * 23.7;
+    const x = (Math.sin(seed) * 0.5 + 0.5) * W + Math.sin(t * 0.2 + i) * 40;
+    const y = ((t * 30 + seed * 80) % (H + 100)) - 50;
+    const r = 60 + Math.sin(t + i) * 20;
+    const grad = c.createRadialGradient(x, y, 0, x, y, r);
+    grad.addColorStop(0, color + '30');
+    grad.addColorStop(1, color + '00');
+    c.fillStyle = grad;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
   }
 }
 
