@@ -1652,6 +1652,12 @@ const EntranceAnims = {
   typewriter3: { name: 'تایپ کلمه‌ای', icon: '⌨' },
   dropBounce: { name: 'ریختن پرشی', icon: '⤓' },
   expandFade: { name: 'گسترش فید', icon: '◉' },
+  // v11 new entrance animations
+  blurZoom: { name: 'بلر زوم', icon: '⊕' },
+  flipCard: { name: 'فلیپ کارت', icon: '⟳' },
+  rise: { name: 'ظهور', icon: '↑' },
+  popIn: { name: 'پاپ این', icon: '◉' },
+  sweep: { name: 'جارو', icon: '→' },
 };
 
 // ---------- Hold Animations ----------
@@ -3093,6 +3099,36 @@ function applyEntrance(state, type, p, el) {
       state.scale *= 0.1 + 0.9 * Easings.easeOutQuint(p);
       state.opacity *= p;
       state.glowMult *= 2 - p;
+      break;
+    }
+    // v11 new entrance animations
+    case 'blurZoom': {
+      state.blur = (1 - p) * 15;
+      state.scale *= 0.5 + 0.5 * Easings.easeOutCubic(p);
+      state.opacity *= p;
+      break;
+    }
+    case 'flipCard': {
+      state.scaleY = Math.abs(Math.cos(p * Math.PI)) * 0.5 + 0.5;
+      state.rotation += (1 - p) * 30;
+      state.opacity *= Math.min(1, p * 1.5);
+      break;
+    }
+    case 'rise': {
+      state.offsetY += (1 - p) * 100;
+      state.opacity *= p;
+      state.scale *= 0.95 + 0.05 * p;
+      break;
+    }
+    case 'popIn': {
+      state.scale *= Easings.easeOutBack(p);
+      state.opacity *= Math.min(1, p * 2);
+      break;
+    }
+    case 'sweep': {
+      state.offsetX += (1 - p) * 150;
+      state.opacity *= Math.min(1, p * 1.5);
+      state.blur = (1 - p) * 5;
       break;
     }
   }
@@ -5444,10 +5480,16 @@ async function exportVideo(format) {
 
   const duration = project.canvas.duration;
 
-  // v10: Use auto-capture stream at target fps
-  // The browser automatically captures frames at the specified rate
-  // This produces smooth, real-time video without manual frame pushing
-  const stream = exportCanvas.captureStream(fps);
+  // v11: Pre-render the first frame to load all images into cache
+  // This ensures all subsequent renders are synchronous
+  title.textContent = 'آماده‌سازی تصاویر...';
+  await renderToContext(exportCtx, exportW, exportH, 0);
+  // Also pre-render at mid-point to catch any delayed loads
+  await renderToContext(exportCtx, exportW, exportH, duration / 2);
+
+  // v11: Use manual capture mode - we control exactly when each frame is captured
+  const stream = exportCanvas.captureStream(0);
+  const track = stream.getVideoTracks()[0];
 
   const includeAudio = document.getElementById('export-audio-toggle').classList.contains('on') && project.audio.enabled && audioElement;
   let audioStream = null;
@@ -5489,43 +5531,50 @@ async function exportVideo(format) {
   recorder.start();
   if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
 
-  // v10: Real-time rendering using requestAnimationFrame
-  // The animation plays in real-time, and captureStream(fps) auto-captures
-  // frames at the target fps. This produces smooth video without lag.
+  // v11: Real-time recording with requestAnimationFrame + requestFrame
+  // - requestAnimationFrame provides smooth real-time pacing (synced to display refresh)
+  // - track.requestFrame() explicitly captures each rendered frame
+  // - Images are pre-loaded, so rendering is effectively synchronous
+  // - The video duration will exactly match the animation duration
   const startTime = performance.now();
+  const frameInterval = 1000 / fps;
+  let lastCapturedFrame = -1;
 
   return new Promise((resolve) => {
-    let rendering = false;
-    async function recordLoop(timestamp) {
-      if (rendering) {
-        requestAnimationFrame(recordLoop);
-        return;
-      }
-      rendering = true;
-
+    function recordLoop() {
       const elapsed = (performance.now() - startTime) / 1000;
       const t = Math.min(elapsed, duration);
 
-      // Update progress
-      const pct = Math.round((t / duration) * 100);
-      fill.style.width = pct + '%';
-      text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
-      title.textContent = 'در حال ضبط ویدیو...';
+      // Calculate which frame we should be on
+      const currentFrame = Math.floor(t * fps);
+
+      // Only render and capture if we've advanced to a new frame
+      // This prevents duplicate captures and ensures proper frame timing
+      if (currentFrame > lastCapturedFrame || elapsed >= duration) {
+        lastCapturedFrame = currentFrame;
+
+        // Render the frame at time t (synchronous since images are cached)
+        _renderFrameInternal(t, exportCtx).then(() => {
+          // Explicitly capture this frame
+          if (track.requestFrame) track.requestFrame();
+
+          // Update progress
+          const pct = Math.round((t / duration) * 100);
+          fill.style.width = pct + '%';
+          text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
+          title.textContent = 'در حال ضبط ویدیو...';
+        });
+      }
 
       if (elapsed >= duration) {
-        // Render the final frame
-        await renderToContext(exportCtx, exportW, exportH, duration);
-
-        // Wait a bit for the encoder to process the last captured frames
+        // Wait for the last frame to be processed, then stop
         setTimeout(() => {
           if (audioElement) audioElement.pause();
           recorder.stop();
           resolve();
         }, 500);
       } else {
-        // Render the current frame in real-time
-        await renderToContext(exportCtx, exportW, exportH, t);
-        rendering = false;
+        // Schedule next check on next animation frame
         requestAnimationFrame(recordLoop);
       }
     }
