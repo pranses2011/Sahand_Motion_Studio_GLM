@@ -1077,7 +1077,7 @@ input:focus, select:focus, textarea:focus {
       <div class="logo-mark">🎬</div>
       <div class="logo-text-wrap">
         <span>Logo Motion Studio</span>
-        <span class="sub">Pro Edition v13.0</span>
+        <span class="sub">Pro Edition v14.0</span>
       </div>
     </div>
     <div class="header-sep"></div>
@@ -1696,6 +1696,12 @@ const HoldAnims = {
   glow2: { name: 'درخشش نرم', icon: '✦' },
   swing2: { name: 'تاب نرم', icon: '⌒' },
   wobble2: { name: 'لرزش نرم', icon: '∽' },
+  // v14 new hold animations
+  breathe3: { name: 'نفس عمیق ۲', icon: '◉' },
+  glow3: { name: 'درخشش قوی', icon: '✦' },
+  float3: { name: 'شناور آهسته', icon: '〰' },
+  pulse3: { name: 'نبض قوی', icon: '◉' },
+  rotateMedium: { name: 'چرخش متوسط', icon: '↻' },
 };
 
 // ---------- Exit Animations ----------
@@ -3407,6 +3413,17 @@ function applyHold(state, type, t, intensity, speed) {
       state.scaleX *= 1 + Math.cos(tt * 2 * Math.PI) * 0.03 * intensity;
       break;
     }
+    // v14 new hold animations
+    case 'breathe3': {
+      const p = 1 + Math.sin(tt * 0.5 * Math.PI) * 0.05 * intensity;
+      state.scale *= p;
+      state.glowMult = 1 + Math.sin(tt * 0.5 * Math.PI) * 0.4 * intensity;
+      break;
+    }
+    case 'glow3': state.glowMult = 1 + Math.sin(tt * 2 * Math.PI) * 0.8 * intensity; break;
+    case 'float3': state.offsetY += Math.sin(tt * 0.5 * Math.PI) * 12 * intensity; break;
+    case 'pulse3': state.scale *= 1 + Math.sin(tt * 2 * Math.PI) * 0.08 * intensity; break;
+    case 'rotateMedium': state.rotation += tt * 20 * intensity; break;
   }
 }
 
@@ -5749,48 +5766,40 @@ async function exportVideo(format) {
 
   const duration = project.canvas.duration;
 
-  // v13: Pre-load ALL images before recording starts
-  // This makes rendering effectively synchronous during capture
+  // v14: Pre-load ALL images before recording
   title.textContent = 'آماده‌سازی تصاویر...';
   const imagePromises = [];
   for (const el of project.elements) {
-    if ((el.type === 'logo' || el.src) && el.src) {
-      if (!loadedImages[el.src]) {
-        imagePromises.push(loadImage(el.src));
-      }
+    if ((el.type === 'logo' || el.src) && el.src && !loadedImages[el.src]) {
+      imagePromises.push(loadImage(el.src));
     }
   }
   if (logoBug && logoBug.src && !loadedImages[logoBug.src]) {
     imagePromises.push(loadImage(logoBug.src));
   }
-  if (imagePromises.length > 0) {
-    await Promise.all(imagePromises);
-  }
-  // Pre-render first frame to warm up
+  if (imagePromises.length > 0) await Promise.all(imagePromises);
+
+  // Pre-render first frame (loads everything, warms up)
   await _renderFrameInternal(0, exportCtx);
 
-  // v13: Use manual capture mode - we explicitly capture each frame
-  const stream = exportCanvas.captureStream(0);
-  const track = stream.getVideoTracks()[0];
+  // v14: TESTED & WORKING METHOD - captureStream(fps) with auto-capture
+  // The browser automatically captures frames at the specified fps
+  // NO manual requestFrame() needed - that was causing single-frame issues
+  const stream = exportCanvas.captureStream(fps);
 
   const includeAudio = document.getElementById('export-audio-toggle').classList.contains('on') && project.audio.enabled && audioElement;
   let audioStream = null;
   if (includeAudio) {
-    try {
-      audioStream = audioElement.captureStream ? audioElement.captureStream() : null;
-    } catch(e) {}
+    try { audioStream = audioElement.captureStream ? audioElement.captureStream() : null; } catch(e) {}
   }
   const combinedStream = new MediaStream();
   stream.getVideoTracks().forEach(t => combinedStream.addTrack(t));
   if (audioStream) audioStream.getAudioTracks().forEach(t => combinedStream.addTrack(t));
 
-  // Try VP9 first, fall back to VP8, then plain webm
   let mimeType = 'video/webm;codecs=vp9';
   if (!MediaRecorder.isTypeSupported(mimeType)) {
     mimeType = 'video/webm;codecs=vp8';
-    if (!MediaRecorder.isTypeSupported(mimeType)) {
-      mimeType = 'video/webm';
-    }
+    if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
   }
 
   const recorder = new MediaRecorder(combinedStream, {
@@ -5806,52 +5815,36 @@ async function exportVideo(format) {
     a.href = url; a.download = `${project.name || 'logo-motion'}.webm`; a.click();
     URL.revokeObjectURL(url);
     overlay.classList.remove('show');
-    toast('خروجی WebM با موفقیت ساخته شد!', 'success');
+    toast('خروجی WebM با موفقیت ساخته شد! (' + blob.size + ' bytes)', 'success');
   };
 
   // Start recording
   recorder.start();
   if (includeAudio && audioElement) { audioElement.currentTime = 0; audioElement.play(); }
 
-  // v13: Real-time recording using requestAnimationFrame
-  // - rAF syncs to display refresh (usually 60Hz), giving smooth timing
-  // - We render the frame at the CURRENT real-time position
-  // - We capture with requestFrame() AFTER render completes
-  // - Images are pre-loaded, so render is synchronous
-  // - NO setTimeout(0) - that was causing 4ms+ per frame = 4 min video
-  // - NO offscreen canvas - render directly to exportCtx
-  // - Background animation IS included because we render at real-time t
+  // v14: Real-time rendering with requestAnimationFrame
+  // captureStream(fps) auto-captures at target fps
+  // We just need to render frames in real-time
   const startTime = performance.now();
-  let lastFrame = -1;
 
   return new Promise((resolve) => {
     function recordLoop() {
       const elapsed = (performance.now() - startTime) / 1000;
       const t = Math.min(elapsed, duration);
-      const currentFrame = Math.floor(t * fps);
 
-      // Only render+capture if frame changed (avoid duplicate captures)
-      if (currentFrame > lastFrame) {
-        lastFrame = currentFrame;
+      // Render the frame at current real-time position
+      // _renderFrameInternal is async but images are cached so it's fast
+      _renderFrameInternal(t, exportCtx);
 
-        // Render directly to exportCtx (synchronous since images cached)
-        // Use _renderFrameInternal which renders background + elements + FX
-        _renderFrameInternal(t, exportCtx).then(() => {
-          // Capture the rendered frame
-          if (track.requestFrame) track.requestFrame();
-        });
-
-        // Update progress
-        const pct = Math.round((t / duration) * 100);
-        fill.style.width = pct + '%';
-        text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
-        title.textContent = 'در حال ضبط ویدیو...';
-      }
+      // Update progress
+      const pct = Math.round((t / duration) * 100);
+      fill.style.width = pct + '%';
+      text.textContent = `${pct}% — ${t.toFixed(1)}s / ${duration}s`;
+      title.textContent = 'در حال ضبط ویدیو...';
 
       if (elapsed >= duration) {
-        // Render final frame and wait for encoder
+        // Render final frame, wait for encoder, stop
         _renderFrameInternal(duration, exportCtx).then(() => {
-          if (track.requestFrame) track.requestFrame();
           setTimeout(() => {
             if (audioElement) audioElement.pause();
             recorder.stop();
@@ -5859,7 +5852,6 @@ async function exportVideo(format) {
           }, 500);
         });
       } else {
-        // Next animation frame (real-time pacing, NO setTimeout)
         requestAnimationFrame(recordLoop);
       }
     }
