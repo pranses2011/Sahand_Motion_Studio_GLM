@@ -298,14 +298,7 @@ header {
 .preview-area {
   flex: 1;
   display: flex; align-items: center; justify-content: center;
-  background:
-    linear-gradient(45deg, #0a0a12 25%, transparent 25%),
-    linear-gradient(-45deg, #0a0a12 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #0a0a12 75%),
-    linear-gradient(-45deg, transparent 75%, #0a0a12 75%);
-  background-size: 24px 24px;
-  background-position: 0 0, 0 12px, 12px -12px, -12px 0px;
-  background-color: #050508;
+  background: radial-gradient(ellipse at center, #0a0a14 0%, #050508 100%);
   position: relative;
   overflow: hidden;
   padding: 24px;
@@ -1320,10 +1313,11 @@ input:focus, select:focus, textarea:focus {
           <label>کیفیت:</label>
           <div class="input-wrap">
             <select id="export-quality">
-              <option value="ultra"> فوق‌العاده (12 Mbps)</option>
-              <option value="high" selected>بالا (8 Mbps)</option>
-              <option value="medium">متوسط (4 Mbps)</option>
-              <option value="low">پایین (2 Mbps)</option>
+              <option value="lossless">بدون اتلاف (50 Mbps)</option>
+              <option value="ultra" selected>فوق‌العاده (20 Mbps)</option>
+              <option value="high">بالا (12 Mbps)</option>
+              <option value="medium">متوسط (6 Mbps)</option>
+              <option value="low">پایین (3 Mbps)</option>
             </select>
           </div>
         </div>
@@ -1670,6 +1664,17 @@ const ExitAnims = {
   sink: { name: 'فرورفتن', icon: '↓' },
   stretch: { name: 'کشیدگی', icon: '⇕' },
   shatter: { name: 'تخریب', icon: '✦' },
+  // v7 new exit animations
+  magneticOut: { name: 'مغناطیسی خروج', icon: '◉' },
+  flipOut3D: { name: 'فلیپ ۳D خروج', icon: '⇅' },
+  blurDefocus: { name: 'بی‌فوکوس', icon: '◌' },
+  slideZoomOut: { name: 'اسلاید زوم خارج', icon: '⊖' },
+  rollOut: { name: 'غلتیدن خارج', icon: '⊘' },
+  dropDown: { name: 'سقوط', icon: '↓' },
+  expand: { name: 'گسترش', icon: '◉' },
+  collapse: { name: 'فروریختن', icon: '◉' },
+  scatter: { name: 'پراکندگی', icon: '✦' },
+  vaporize: { name: 'تبخیر', icon: '◌' },
 };
 
 // ---------- Background Types ----------
@@ -2800,6 +2805,12 @@ const ctx = canvas.getContext('2d');
 function updateCanvasSize() {
   canvas.width = project.canvas.width;
   canvas.height = project.canvas.height;
+  // v7: Enable anti-aliasing and high quality rendering
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.textRendering = 'geometricPrecision';
+  ctx.webkitImageSmoothingEnabled = true;
+  ctx.mozImageSmoothingEnabled = true;
   updateZoom();
 }
 
@@ -3097,6 +3108,70 @@ function applyExit(state, type, p, el) {
       state.offsetY += Math.cos(p * 28 + 2) * p * 40;
       state.rotation += p * 90;
       state.opacity *= (1 - p);
+      break;
+    }
+    // v7 new exit animations
+    case 'magneticOut': {
+      state.scale *= 1 + p * 0.3;
+      state.offsetX += Math.sin(p * Math.PI * 3) * p * 60;
+      state.glowMult *= 1 + p * 2;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'flipOut3D': {
+      state.scaleY = Math.max(0.01, 1 - p);
+      state.rotation += p * 90;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'blurDefocus': {
+      state.blur = p * 25;
+      state.scale *= 1 + p * 0.2;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'slideZoomOut': {
+      state.scale *= 1 + p * 0.5;
+      state.offsetX += p * 200;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'rollOut': {
+      state.rotation += p * 720;
+      state.offsetX += p * 300;
+      state.scale *= 1 - p * 0.3;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'dropDown': {
+      state.offsetY += p * 400;
+      state.rotation += p * 45;
+      state.opacity *= (1 - p * 0.7);
+      break;
+    }
+    case 'expand': {
+      state.scale *= 1 + p * 1.5;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'collapse': {
+      state.scale *= Math.max(0.01, 1 - p * 1.2);
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'scatter': {
+      state.offsetX += Math.sin(p * 20) * p * 100;
+      state.offsetY += Math.cos(p * 18) * p * 100;
+      state.rotation += p * 180;
+      state.scale *= 1 - p * 0.5;
+      state.opacity *= (1 - p);
+      break;
+    }
+    case 'vaporize': {
+      state.opacity *= (1 - p);
+      state.blur = p * 12;
+      state.scale *= 1 + p * 0.15;
+      state.offsetY -= p * 30;
       break;
     }
   }
@@ -4726,7 +4801,9 @@ function applyPostFX(c, t) {
 
 // ---------- Main render ----------
 async function renderFrame(t) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // v7: Always start with opaque black fill to prevent transparency
+  ctx.fillStyle = '#000000';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.save();
   // v3: Camera effects
   applyCamera(t, ctx);
@@ -4983,10 +5060,15 @@ function closeModal(id) { document.getElementById(id).classList.remove('show'); 
 
 // ---------- Export ----------
 async function renderToContext(targetCtx, w, h, t) {
+  // v7: Always enable high quality smoothing on target
+  targetCtx.imageSmoothingEnabled = true;
+  targetCtx.imageSmoothingQuality = 'high';
   if (w !== canvas.width || h !== canvas.height) {
     const off = document.createElement('canvas');
     off.width = canvas.width; off.height = canvas.height;
     const offCtx = off.getContext('2d');
+    offCtx.imageSmoothingEnabled = true;
+    offCtx.imageSmoothingQuality = 'high';
     await _renderFrameInternal(t, offCtx);
     targetCtx.clearRect(0, 0, w, h);
     targetCtx.drawImage(off, 0, 0, w, h);
@@ -4999,6 +5081,9 @@ async function _renderFrameInternal(t, c) {
   const W = canvas.width, H = canvas.height;
   const realCtx = window.ctx;
   window.ctx = c;
+  // v7: Always start with opaque black fill
+  c.fillStyle = '#000000';
+  c.fillRect(0, 0, W, H);
   c.save();
   // v3: Camera effects
   applyCamera(t, c);
@@ -5266,11 +5351,13 @@ async function exportVideo(format) {
   const totalFrames = Math.ceil(project.canvas.duration * fps);
   const scale = parseFloat(document.getElementById('export-scale').value);
   const quality = document.getElementById('export-quality').value;
-  const bitrate = quality === 'ultra' ? 12000000 : quality === 'high' ? 8000000 : quality === 'medium' ? 4000000 : 2000000;
+  const bitrate = quality === 'lossless' ? 50000000 : quality === 'ultra' ? 20000000 : quality === 'high' ? 12000000 : quality === 'medium' ? 6000000 : 3000000;
   const exportW = Math.round(canvas.width * scale), exportH = Math.round(canvas.height * scale);
   const exportCanvas = document.createElement('canvas');
   exportCanvas.width = exportW; exportCanvas.height = exportH;
-  const exportCtx = exportCanvas.getContext('2d');
+  const exportCtx = exportCanvas.getContext('2d', { alpha: false, desynchronized: false });
+  exportCtx.imageSmoothingEnabled = true;
+  exportCtx.imageSmoothingQuality = 'high';
 
   const stream = exportCanvas.captureStream(0);
   const track = stream.getVideoTracks()[0];
